@@ -41,8 +41,8 @@ async function bootstrap() {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER)); // Utilise Winston comme logger global pour NestJS
 
   const config = new DocumentBuilder()
-    .setTitle('Documentation Salv Skate Co.')
-    .setDescription('API REST pour le site de Salv Skate Co.')
+    .setTitle('Documentation Escape the Horde')
+    .setDescription('API REST pour le jeu Escape the Horde')
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

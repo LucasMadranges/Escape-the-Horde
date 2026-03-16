@@ -9,6 +9,7 @@ import { format, transports } from 'winston';
 import { HttpExceptionFilter } from '../common/http-exception.filter';
 import { DatabaseModule } from '../database/database.module';
 import { PlayersModule } from '../modules/players/players.module';
+import { RealtimeModule } from '../modules/realtime/realtime.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -72,6 +73,7 @@ import { AppService } from './app.service';
     }),
     DatabaseModule,
     PlayersModule,
+    RealtimeModule,
   ],
   controllers: [AppController],
   providers: [

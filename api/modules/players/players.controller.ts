@@ -7,7 +7,7 @@ import { UpdatePlayerDto } from './dto/update-player.dto';
 import { PlayersService } from './players.service';
 
 @Controller('players')
-@ApiTags('players')
+@ApiTags('Players')
 export class PlayersController {
   constructor(private readonly playersService: PlayersService) {}
 
