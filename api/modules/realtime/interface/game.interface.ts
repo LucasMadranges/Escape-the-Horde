@@ -1,4 +1,4 @@
-export type GameStatus = 'waiting' | 'started';
+export type GameStatus = 'waiting' | 'started' | 'finished';
 
 export interface JoinGamePayload {
   gameId: string;
@@ -11,7 +11,7 @@ export interface GamePlayerState {
   playerId: string;
   username: string;
   connected: boolean;
-  socketId: string;
+  socketId?: string;
 }
 
 export interface GameState {
@@ -19,11 +19,9 @@ export interface GameState {
   status: GameStatus;
   players: GamePlayerState[];
   createdAt: string;
+  updatedAt: string;
 }
 
-export interface GameRoom {
-  gameId: string;
-  status: GameStatus;
-  players: Map<string, GamePlayerState>;
-  createdAt: Date;
+export interface CreateGamePayload {
+  status?: GameStatus;
 }

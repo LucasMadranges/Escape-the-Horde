@@ -1,74 +1,101 @@
-import { Injectable } from '@nestjs/common';
-import { GamePlayerState, GameRoom, GameState, JoinGamePayload } from './interface/game.interface';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { GameService } from '../game/game.service';
+import { SessionService } from '../session/session.service';
+import {
+  CreateGamePayload,
+  GamePlayerState,
+  GameState,
+  JoinGamePayload,
+} from './interface/game.interface';
 
 @Injectable()
 export class RealtimeService {
-  private readonly rooms = new Map<string, GameRoom>();
+  private readonly presenceByPlayer = new Map<string, { connected: boolean; socketId?: string }>();
+  private readonly usernameByPlayer = new Map<string, string>();
 
-  joinGame(payload: JoinGamePayload): GameState {
-    const room = this.getOrCreateRoom(payload.gameId);
+  constructor(
+    private readonly gameService: GameService,
+    private readonly sessionService: SessionService,
+  ) {}
 
-    room.players.set(payload.playerId, {
-      playerId: payload.playerId,
-      username: payload.username,
+  async createGame(payload: CreateGamePayload = {}): Promise<GameState> {
+    const game = await this.gameService.create({
+      status: payload.status ?? 'waiting',
+    });
+
+    return {
+      gameId: game.id,
+      status: game.status,
+      players: [],
+      createdAt: game.createdAt.toISOString(),
+      updatedAt: game.updatedAt.toISOString(),
+    };
+  }
+
+  async joinGame(payload: JoinGamePayload): Promise<GameState> {
+    const game = await this.gameService.findOne(payload.gameId);
+    if (!game) {
+      throw new NotFoundException('Game introuvable');
+    }
+
+    await this.sessionService.assignPlayerToGame(payload.playerId, payload.gameId);
+    this.presenceByPlayer.set(payload.playerId, {
       connected: true,
       socketId: payload.socketId,
     });
+    this.usernameByPlayer.set(payload.playerId, payload.username);
 
-    return this.toGameState(room);
+    return this.getGame(payload.gameId);
   }
 
-  getGame(gameId: string): GameState {
-    const room = this.getOrCreateRoom(gameId);
-    return this.toGameState(room);
+  async getGame(gameId: string): Promise<GameState> {
+    const game = await this.gameService.findOne(gameId);
+    if (!game) {
+      throw new NotFoundException('Game introuvable');
+    }
+
+    const sessions = await this.sessionService.findByGameId(gameId);
+    const players: GamePlayerState[] = sessions.map((session) => {
+      const presence = this.presenceByPlayer.get(session.playerId);
+      return {
+        playerId: session.playerId,
+        username:
+          this.usernameByPlayer.get(session.playerId) ?? `Player-${session.playerId.slice(0, 8)}`,
+        connected: presence?.connected ?? false,
+        socketId: presence?.socketId,
+      };
+    });
+
+    return {
+      gameId: game.id,
+      status: game.status,
+      players,
+      createdAt: game.createdAt.toISOString(),
+      updatedAt: game.updatedAt.toISOString(),
+    };
   }
 
-  launchGame(gameId: string): GameState {
-    const room = this.getOrCreateRoom(gameId);
-    room.status = 'started';
-    return this.toGameState(room);
+  async launchGame(gameId: string): Promise<GameState> {
+    await this.gameService.update(gameId, { status: 'started' });
+    return this.getGame(gameId);
   }
 
-  markDisconnected(gameId: string, playerId: string): GameState | null {
-    const room = this.rooms.get(gameId);
-    if (!room) {
+  async finishGame(gameId: string): Promise<GameState> {
+    await this.gameService.update(gameId, { status: 'finished' });
+    return this.getGame(gameId);
+  }
+
+  async markDisconnected(gameId: string, playerId: string): Promise<GameState | null> {
+    const game = await this.gameService.findOne(gameId);
+    if (!game) {
       return null;
     }
 
-    const player = room.players.get(playerId);
-    if (!player) {
-      return this.toGameState(room);
-    }
+    this.presenceByPlayer.set(playerId, {
+      connected: false,
+    });
 
-    player.connected = false;
-    room.players.set(playerId, player);
-
-    return this.toGameState(room);
-  }
-
-  private getOrCreateRoom(gameId: string): GameRoom {
-    const existing = this.rooms.get(gameId);
-    if (existing) {
-      return existing;
-    }
-
-    const room: GameRoom = {
-      gameId,
-      status: 'waiting',
-      players: new Map<string, GamePlayerState>(),
-      createdAt: new Date(),
-    };
-
-    this.rooms.set(gameId, room);
-    return room;
-  }
-
-  private toGameState(room: GameRoom): GameState {
-    return {
-      gameId: room.gameId,
-      status: room.status,
-      players: Array.from(room.players.values()),
-      createdAt: room.createdAt.toISOString(),
-    };
+    return this.getGame(gameId);
   }
 }

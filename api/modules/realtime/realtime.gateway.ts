@@ -12,7 +12,7 @@ import { Server, Socket } from 'socket.io';
 
 import { RealtimeService } from './realtime.service';
 import { SocketPresence } from './interface/socket.interface';
-import { JoinGamePayload } from './interface/game.interface';
+import { CreateGamePayload, JoinGamePayload } from './interface/game.interface';
 
 @WebSocketGateway({
   namespace: '/game',
@@ -42,16 +42,43 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       return;
     }
 
-    const game = this.realtimeService.markDisconnected(presence.gameId, presence.playerId);
-    this.socketPresence.delete(client.id);
+    void this.realtimeService
+      .markDisconnected(presence.gameId, presence.playerId)
+      .then((game) => {
+        this.socketPresence.delete(client.id);
+        if (game) {
+          this.server.to(this.toRoom(presence.gameId)).emit('game:state', game);
+        }
+      })
+      .catch((error: unknown) => {
+        this.logger.error(`Failed to handle disconnect: ${this.toErrorMessage(error)}`);
+      });
+  }
 
-    if (game) {
-      this.server.to(this.toRoom(presence.gameId)).emit('game:state', game);
+  @SubscribeMessage('game:create')
+  async handleCreateGame(@MessageBody() rawBody: unknown) {
+    const body = this.normalizePayload<CreateGamePayload>(rawBody);
+
+    this.logger.log('Received game:create');
+
+    try {
+      const game = await this.realtimeService.createGame(body ?? {});
+      return {
+        event: 'game:created',
+        data: game,
+      };
+    } catch (error: unknown) {
+      return {
+        event: 'game:error',
+        data: {
+          message: this.toErrorMessage(error),
+        },
+      };
     }
   }
 
   @SubscribeMessage('game:join')
-  handleJoin(@MessageBody() rawBody: unknown, @ConnectedSocket() client: Socket) {
+  async handleJoin(@MessageBody() rawBody: unknown, @ConnectedSocket() client: Socket) {
     const body = this.normalizePayload<Omit<JoinGamePayload, 'socketId'>>(rawBody);
 
     this.logger.log(`Received game:join from ${client.id}`);
@@ -68,26 +95,35 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
     client.join(this.toRoom(body.gameId));
 
-    const game = this.realtimeService.joinGame({
-      ...body,
-      socketId: client.id,
-    });
+    try {
+      const game = await this.realtimeService.joinGame({
+        ...body,
+        socketId: client.id,
+      });
 
-    this.socketPresence.set(client.id, {
-      gameId: body.gameId,
-      playerId: body.playerId,
-    });
+      this.socketPresence.set(client.id, {
+        gameId: body.gameId,
+        playerId: body.playerId,
+      });
 
-    this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
+      this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
 
-    return {
-      event: 'game:joined',
-      data: game,
-    };
+      return {
+        event: 'game:joined',
+        data: game,
+      };
+    } catch (error: unknown) {
+      return {
+        event: 'game:error',
+        data: {
+          message: this.toErrorMessage(error),
+        },
+      };
+    }
   }
 
   @SubscribeMessage('game:get')
-  handleGetGame(@MessageBody() rawBody: unknown) {
+  async handleGetGame(@MessageBody() rawBody: unknown) {
     const body = this.normalizePayload<{ gameId: string }>(rawBody);
 
     this.logger.log(`Received game:get for gameId=${body?.gameId ?? 'undefined'}`);
@@ -101,14 +137,23 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       };
     }
 
-    return {
-      event: 'game:state',
-      data: this.realtimeService.getGame(body.gameId),
-    };
+    try {
+      return {
+        event: 'game:state',
+        data: await this.realtimeService.getGame(body.gameId),
+      };
+    } catch (error: unknown) {
+      return {
+        event: 'game:error',
+        data: {
+          message: this.toErrorMessage(error),
+        },
+      };
+    }
   }
 
   @SubscribeMessage('game:launch')
-  handleLaunch(@MessageBody() rawBody: unknown) {
+  async handleLaunch(@MessageBody() rawBody: unknown) {
     const body = this.normalizePayload<{ gameId: string }>(rawBody);
 
     this.logger.log(`Received game:launch for gameId=${body?.gameId ?? 'undefined'}`);
@@ -122,13 +167,55 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       };
     }
 
-    const game = this.realtimeService.launchGame(body.gameId);
-    this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
+    try {
+      const game = await this.realtimeService.launchGame(body.gameId);
+      this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
 
-    return {
-      event: 'game:launched',
-      data: game,
-    };
+      return {
+        event: 'game:launched',
+        data: game,
+      };
+    } catch (error: unknown) {
+      return {
+        event: 'game:error',
+        data: {
+          message: this.toErrorMessage(error),
+        },
+      };
+    }
+  }
+
+  @SubscribeMessage('game:finish')
+  async handleFinish(@MessageBody() rawBody: unknown) {
+    const body = this.normalizePayload<{ gameId: string }>(rawBody);
+
+    this.logger.log(`Received game:finish for gameId=${body?.gameId ?? 'undefined'}`);
+
+    if (!body?.gameId) {
+      return {
+        event: 'game:error',
+        data: {
+          message: `Payload invalide: gameId est obligatoire. Recu=${this.safeStringify(rawBody)}`,
+        },
+      };
+    }
+
+    try {
+      const game = await this.realtimeService.finishGame(body.gameId);
+      this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
+
+      return {
+        event: 'game:finished',
+        data: game,
+      };
+    } catch (error: unknown) {
+      return {
+        event: 'game:error',
+        data: {
+          message: this.toErrorMessage(error),
+        },
+      };
+    }
   }
 
   private toRoom(gameId: string): string {
@@ -163,5 +250,13 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     } catch {
       return '[unserializable]';
     }
+  }
+
+  private toErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return 'Erreur inconnue';
   }
 }
