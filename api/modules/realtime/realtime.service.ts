@@ -162,30 +162,39 @@ export class RealtimeService {
   }
 
   async markDisconnected(gameId: string, playerId: string): Promise<GameState | null> {
-    const state = this.stateCacheByGameId.get(gameId);
-    if (!state) {
+    const game = await this.gameService.findOne(gameId);
+    if (!game) {
       return null;
     }
 
-    this.presenceByPlayer.set(playerId, {
-      connected: false,
-    });
+    this.presenceByPlayer.delete(playerId);
+    this.usernameByPlayer.delete(playerId);
+    await this.sessionService.delete(playerId);
 
-    const updatedPlayers = state.players.map((player) => {
-      if (player.playerId !== playerId) {
-        return player;
-      }
+    const remainingSessions = await this.sessionService.findByGameId(gameId);
+    if (remainingSessions.length == 0) {
+      await this.gameService.delete(gameId);
+      this.stateCacheByGameId.delete(gameId);
+      return null;
+    }
 
+    const updatedPlayers: GamePlayerState[] = remainingSessions.map((session) => {
+      const presence = this.presenceByPlayer.get(session.playerId);
       return {
-        ...player,
-        connected: false,
-        socketId: undefined,
+        playerId: session.playerId,
+        username:
+          this.usernameByPlayer.get(session.playerId) ?? `Player-${session.playerId.slice(0, 8)}`,
+        connected: presence?.connected ?? false,
+        socketId: presence?.socketId,
       };
     });
 
+    const cached = this.stateCacheByGameId.get(gameId);
     const updatedState: GameState = {
-      ...state,
+      gameId,
+      status: game.status,
       players: updatedPlayers,
+      createdAt: cached?.createdAt ?? game.createdAt.toISOString(),
       updatedAt: new Date().toISOString(),
     };
 

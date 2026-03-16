@@ -3,6 +3,9 @@ extends Node
 signal connected(socket_id: String)
 signal played(game_state: Dictionary)
 signal joined(game_state: Dictionary)
+signal game_state_updated(game_state: Dictionary)
+signal player_sync_received(payload: Dictionary)
+signal zombie_spawn_received(payload: Dictionary)
 signal realtime_error(message: String)
 
 const WS_URL := "ws://127.0.0.1:3000/ws/game"
@@ -16,6 +19,8 @@ var pending_join_game_id := ""
 var player_id := ""
 var username := ""
 var http_request: HTTPRequest
+var current_game_id := ""
+var last_game_state: Dictionary = {}
 
 func _ready() -> void:
 	randomize()
@@ -77,12 +82,20 @@ func join_existing_game() -> void:
 		emit_signal("realtime_error", "Reponse API games invalide")
 		return
 
-	for game in parsed:
+	var games: Array = parsed
+	games.sort_custom(func(a, b):
+		if typeof(a) != TYPE_DICTIONARY or typeof(b) != TYPE_DICTIONARY:
+			return false
+		return str(a.get("createdAt", "")) > str(b.get("createdAt", ""))
+	)
+
+	# Rejoindre uniquement une partie en attente.
+	for game in games:
 		if typeof(game) == TYPE_DICTIONARY and str(game.get("status", "")) == "waiting":
 			_join_game(str(game.get("id", "")))
 			return
 
-	emit_signal("realtime_error", "Aucune game en attente")
+	emit_signal("realtime_error", "aucune partie trouvé")
 
 
 func _join_game(game_id: String) -> void:
@@ -127,11 +140,60 @@ func _handle_message(raw: String) -> void:
 			if play_requested:
 				play()
 		"game:played":
+			current_game_id = str(data.get("gameId", ""))
+			last_game_state = data
 			emit_signal("played", data)
 		"game:joined":
+			current_game_id = str(data.get("gameId", ""))
+			last_game_state = data
 			emit_signal("joined", data)
+		"game:state":
+			current_game_id = str(data.get("gameId", current_game_id))
+			last_game_state = data
+			emit_signal("game_state_updated", data)
+		"game:player_sync":
+			emit_signal("player_sync_received", data)
+		"game:zombie_spawn":
+			emit_signal("zombie_spawn_received", data)
 		"game:error":
 			emit_signal("realtime_error", str(data.get("message", "unknown")))
+
+
+func sync_player_state(position: Vector2, velocity: Vector2) -> void:
+	if current_game_id.is_empty() or ws.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		return
+
+	_send_event("game:sync_player", {
+		"x": position.x,
+		"y": position.y,
+		"vx": velocity.x,
+		"vy": velocity.y,
+	})
+
+
+func send_zombie_spawn(position: Vector2) -> void:
+	if current_game_id.is_empty() or ws.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		return
+
+	_send_event("game:zombie_spawn", {
+		"x": position.x,
+		"y": position.y,
+	})
+
+
+func is_host() -> bool:
+	if not last_game_state.has("players"):
+		return false
+
+	var players: Variant = last_game_state.get("players", [])
+	if typeof(players) != TYPE_ARRAY or players.size() == 0:
+		return false
+
+	var first: Variant = players[0]
+	if typeof(first) != TYPE_DICTIONARY:
+		return false
+
+	return str(first.get("playerId", "")) == player_id
 
 func _build_player_id() -> String:
 	var pattern := "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"

@@ -266,6 +266,75 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
   }
 
+  @SubscribeMessage('game:sync_player')
+  async handleSyncPlayer(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ x: number; y: number; vx?: number; vy?: number }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    if (typeof body?.x !== 'number' || typeof body?.y !== 'number') {
+      return this.errorResponse(rawBody, 'x et y sont obligatoires');
+    }
+
+    const payload = {
+      playerId: presence.playerId,
+      x: body.x,
+      y: body.y,
+      vx: typeof body.vx === 'number' ? body.vx : 0.0,
+      vy: typeof body.vy === 'number' ? body.vy : 0.0,
+    };
+
+    this.broadcastToGame(presence.gameId, 'game:player_sync', payload, client);
+
+    return {
+      event: 'game:sync_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:zombie_spawn')
+  async handleZombieSpawn(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ x: number; y: number }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    if (typeof body?.x !== 'number' || typeof body?.y !== 'number') {
+      return this.errorResponse(rawBody, 'x et y sont obligatoires');
+    }
+
+    const payload = {
+      x: body.x,
+      y: body.y,
+    };
+
+    this.broadcastToGame(presence.gameId, 'game:zombie_spawn', payload, client);
+
+    return {
+      event: 'game:zombie_spawn_ack',
+      data: { ok: true },
+    };
+  }
+
   private addSocketToGame(gameId: string, socket: WebSocket) {
     const set = this.socketsByGame.get(gameId) ?? new Set<WebSocket>();
     set.add(socket);
@@ -284,13 +353,17 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
   }
 
-  private broadcastToGame(gameId: string, event: string, data: unknown) {
+  private broadcastToGame(gameId: string, event: string, data: unknown, except?: WebSocket) {
     const sockets = this.socketsByGame.get(gameId);
     if (!sockets) {
       return;
     }
 
     for (const socket of sockets) {
+      if (except && socket === except) {
+        continue;
+      }
+
       this.send(socket, event, data);
     }
   }
