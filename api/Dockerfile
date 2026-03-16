@@ -1,32 +1,26 @@
-# ─── Stage 1 : Build ────────────────────────────────────────────────────────────
-FROM golang:1.25-alpine AS builder
-
-# Dépendances système nécessaires à la compilation (cgo désactivé → pas besoin de gcc)
-RUN apk add --no-cache git
-
+FROM node:22-alpine AS base
 WORKDIR /app
 
-# Copier les fichiers de dépendances en premier pour profiter du cache Docker
-COPY go.mod go.sum ./
-RUN go mod download
+FROM base AS deps
+COPY package.json package-lock.json* ./
+RUN npm ci
 
-# Copier le reste du code source
+FROM deps AS development
 COPY . .
-
-# Compiler un binaire statique sans CGO
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o api-server .
-
-# ─── Stage 2 : Image finale ──────────────────────────────────────────────────────
-FROM alpine:3.21
-
-# Certificats TLS + timezone
-RUN apk add --no-cache ca-certificates tzdata
-
-WORKDIR /app
-
-# Copier uniquement le binaire compilé
-COPY --from=builder /app/api-server .
-
 EXPOSE 3000
+CMD ["npm", "run", "start:dev"]
 
-ENTRYPOINT ["./api-server"]
+FROM deps AS build
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine AS production
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev
+
+COPY --from=build /app/dist ./dist
+EXPOSE 3000
+CMD ["node", "dist/main"]

@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+
+    // Cible Node.js 22 (LTS actuel)
+    "target": "ES2023",
+    "lib": ["ES2023"],
+
+    // CommonJS — standard NestJS (reflect-metadata + decorateurs)
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    // Décorateurs NestJS (obligatoire)
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    // Nécessaire pour que les décorateurs de propriétés TypeORM/NestJS fonctionnent
+    // (ES2022+ active useDefineForClassFields: true par défaut, ce qui les casse)
+    "useDefineForClassFields": false,
+
+    // Sortie
+    "outDir": "./dist",
+    "rootDir": "./",
+    "removeComments": true,
+    "incremental": true,
+
+    // Chemins internes à l'API
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    // Ajustements de strictness pour NestJS
+    "strict": true,
+    "strictNullChecks": true,
+    "strictBindCallApply": false,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "modules/**/*", "database/**/*", "common/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+}
