@@ -1,5 +1,11 @@
 export type GameStatus = 'waiting' | 'started' | 'finished';
 
+export interface PlayPayload {
+  playerId: string;
+  username: string;
+  socketId: string;
+}
+
 export interface JoinGamePayload {
   gameId: string;
   playerId: string;

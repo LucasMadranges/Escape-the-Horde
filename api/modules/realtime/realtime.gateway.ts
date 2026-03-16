@@ -6,48 +6,57 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  WsResponse,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
-import { Server, Socket } from 'socket.io';
+import { randomUUID } from 'node:crypto';
+import { Server, WebSocket } from 'ws';
 
 import { RealtimeService } from './realtime.service';
 import { SocketPresence } from './interface/socket.interface';
-import { CreateGamePayload, JoinGamePayload } from './interface/game.interface';
+import { CreateGamePayload, JoinGamePayload, PlayPayload } from './interface/game.interface';
 
 @WebSocketGateway({
-  namespace: '/game',
-  cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
-    credentials: true,
-  },
+  path: '/ws/game',
 })
 export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server!: Server;
 
   private readonly logger = new Logger(RealtimeGateway.name);
+  private readonly clientIdBySocket = new Map<WebSocket, string>();
   private readonly socketPresence = new Map<string, SocketPresence>();
+  private readonly socketsByGame = new Map<string, Set<WebSocket>>();
 
   constructor(private readonly realtimeService: RealtimeService) {}
 
-  handleConnection(client: Socket) {
-    this.logger.log(`Socket connected: ${client.id}`);
-    client.emit('game:connected', { socketId: client.id });
+  handleConnection(client: WebSocket) {
+    const socketId = randomUUID();
+    this.clientIdBySocket.set(client, socketId);
+
+    this.logger.log(`Socket connected: ${socketId}`);
+    this.send(client, 'game:connected', { socketId });
   }
 
-  handleDisconnect(client: Socket) {
-    this.logger.log(`Socket disconnected: ${client.id}`);
-    const presence = this.socketPresence.get(client.id);
+  handleDisconnect(client: WebSocket) {
+    const socketId = this.clientIdBySocket.get(client) ?? 'unknown';
+
+    this.logger.log(`Socket disconnected: ${socketId}`);
+    const presence = this.socketPresence.get(socketId);
     if (!presence) {
+      this.clientIdBySocket.delete(client);
       return;
     }
 
     void this.realtimeService
       .markDisconnected(presence.gameId, presence.playerId)
       .then((game) => {
-        this.socketPresence.delete(client.id);
+        this.socketPresence.delete(socketId);
+        this.clientIdBySocket.delete(client);
+        this.removeSocketFromGame(presence.gameId, client);
+
         if (game) {
-          this.server.to(this.toRoom(presence.gameId)).emit('game:state', game);
+          this.broadcastToGame(presence.gameId, 'game:state', game);
         }
       })
       .catch((error: unknown) => {
@@ -55,8 +64,50 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       });
   }
 
+  @SubscribeMessage('game:play')
+  async handlePlay(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<Omit<PlayPayload, 'socketId'>>(rawBody);
+    const socketId = this.requireSocketId(client);
+
+    this.logger.log(`Received game:play from ${socketId}`);
+
+    if (!body?.playerId || !body?.username) {
+      return this.errorResponse(rawBody, 'playerId et username sont obligatoires');
+    }
+
+    try {
+      const game = await this.realtimeService.play({
+        playerId: body.playerId,
+        username: body.username,
+        socketId,
+      });
+
+      this.socketPresence.set(socketId, {
+        gameId: game.gameId,
+        playerId: body.playerId,
+      });
+      this.addSocketToGame(game.gameId, client);
+      this.broadcastToGame(game.gameId, 'game:state', game);
+
+      return {
+        event: 'game:played',
+        data: game,
+      };
+    } catch (error: unknown) {
+      return {
+        event: 'game:error',
+        data: {
+          message: this.toErrorMessage(error),
+        },
+      };
+    }
+  }
+
   @SubscribeMessage('game:create')
-  async handleCreateGame(@MessageBody() rawBody: unknown) {
+  async handleCreateGame(@MessageBody() rawBody: unknown): Promise<WsResponse<unknown>> {
     const body = this.normalizePayload<CreateGamePayload>(rawBody);
 
     this.logger.log('Received game:create');
@@ -78,35 +129,32 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   }
 
   @SubscribeMessage('game:join')
-  async handleJoin(@MessageBody() rawBody: unknown, @ConnectedSocket() client: Socket) {
+  async handleJoin(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
     const body = this.normalizePayload<Omit<JoinGamePayload, 'socketId'>>(rawBody);
+    const socketId = this.requireSocketId(client);
 
-    this.logger.log(`Received game:join from ${client.id}`);
+    this.logger.log(`Received game:join from ${socketId}`);
 
     if (!body?.gameId || !body?.playerId || !body?.username) {
-      this.logger.warn(
-        `Invalid game:join payload from ${client.id}: ${this.safeStringify(rawBody)}`,
-      );
-      client.emit('game:error', {
-        message: 'Payload invalide: gameId, playerId et username sont obligatoires',
-      });
-      return;
+      return this.errorResponse(rawBody, 'gameId, playerId et username sont obligatoires');
     }
-
-    client.join(this.toRoom(body.gameId));
 
     try {
       const game = await this.realtimeService.joinGame({
         ...body,
-        socketId: client.id,
+        socketId,
       });
 
-      this.socketPresence.set(client.id, {
+      this.socketPresence.set(socketId, {
         gameId: body.gameId,
         playerId: body.playerId,
       });
+      this.addSocketToGame(body.gameId, client);
 
-      this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
+      this.broadcastToGame(body.gameId, 'game:state', game);
 
       return {
         event: 'game:joined',
@@ -123,7 +171,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   }
 
   @SubscribeMessage('game:get')
-  async handleGetGame(@MessageBody() rawBody: unknown) {
+  async handleGetGame(@MessageBody() rawBody: unknown): Promise<WsResponse<unknown>> {
     const body = this.normalizePayload<{ gameId: string }>(rawBody);
 
     this.logger.log(`Received game:get for gameId=${body?.gameId ?? 'undefined'}`);
@@ -153,7 +201,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   }
 
   @SubscribeMessage('game:launch')
-  async handleLaunch(@MessageBody() rawBody: unknown) {
+  async handleLaunch(@MessageBody() rawBody: unknown): Promise<WsResponse<unknown>> {
     const body = this.normalizePayload<{ gameId: string }>(rawBody);
 
     this.logger.log(`Received game:launch for gameId=${body?.gameId ?? 'undefined'}`);
@@ -169,7 +217,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
     try {
       const game = await this.realtimeService.launchGame(body.gameId);
-      this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
+      this.broadcastToGame(body.gameId, 'game:state', game);
 
       return {
         event: 'game:launched',
@@ -186,7 +234,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   }
 
   @SubscribeMessage('game:finish')
-  async handleFinish(@MessageBody() rawBody: unknown) {
+  async handleFinish(@MessageBody() rawBody: unknown): Promise<WsResponse<unknown>> {
     const body = this.normalizePayload<{ gameId: string }>(rawBody);
 
     this.logger.log(`Received game:finish for gameId=${body?.gameId ?? 'undefined'}`);
@@ -202,7 +250,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
     try {
       const game = await this.realtimeService.finishGame(body.gameId);
-      this.server.to(this.toRoom(body.gameId)).emit('game:state', game);
+      this.broadcastToGame(body.gameId, 'game:state', game);
 
       return {
         event: 'game:finished',
@@ -218,8 +266,52 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
   }
 
-  private toRoom(gameId: string): string {
-    return `game:${gameId}`;
+  private addSocketToGame(gameId: string, socket: WebSocket) {
+    const set = this.socketsByGame.get(gameId) ?? new Set<WebSocket>();
+    set.add(socket);
+    this.socketsByGame.set(gameId, set);
+  }
+
+  private removeSocketFromGame(gameId: string, socket: WebSocket) {
+    const set = this.socketsByGame.get(gameId);
+    if (!set) {
+      return;
+    }
+
+    set.delete(socket);
+    if (set.size === 0) {
+      this.socketsByGame.delete(gameId);
+    }
+  }
+
+  private broadcastToGame(gameId: string, event: string, data: unknown) {
+    const sockets = this.socketsByGame.get(gameId);
+    if (!sockets) {
+      return;
+    }
+
+    for (const socket of sockets) {
+      this.send(socket, event, data);
+    }
+  }
+
+  private send(socket: WebSocket, event: string, data: unknown) {
+    if (socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+
+    socket.send(JSON.stringify({ event, data }));
+  }
+
+  private requireSocketId(client: WebSocket): string {
+    const socketId = this.clientIdBySocket.get(client);
+    if (socketId) {
+      return socketId;
+    }
+
+    const fallback = randomUUID();
+    this.clientIdBySocket.set(client, fallback);
+    return fallback;
   }
 
   private normalizePayload<T>(payload: unknown): T {
@@ -258,5 +350,14 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     }
 
     return 'Erreur inconnue';
+  }
+
+  private errorResponse(rawBody: unknown, message: string): WsResponse<unknown> {
+    return {
+      event: 'game:error',
+      data: {
+        message: `Payload invalide: ${message}. Recu=${this.safeStringify(rawBody)}`,
+      },
+    };
   }
 }

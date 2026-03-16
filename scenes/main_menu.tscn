@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Settings_Pressed.png" id="6_settings_p"]
 [ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Quit_Not-Pressed.png" id="7_quit_n"]
 [ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Quit_Pressed.png" id="8_quit_p"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Load_Not-Pressed.png" id="9_join_n"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Load_Pressed.png" id="10_join_p"]
 
 [node name="MainMenu" type="Node2D"]
 script = ExtResource("1_script")
@@ -44,6 +46,13 @@ ignore_texture_size = true
 stretch_mode = 0
 texture_normal = ExtResource("3_play_n")
 texture_pressed = ExtResource("4_play_p")
+
+[node name="JoinButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 84)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("9_join_n")
+texture_pressed = ExtResource("10_join_p")
 
 [node name="SettingsButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
 custom_minimum_size = Vector2(304, 84)

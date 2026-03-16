@@ -1,6 +1,7 @@
 import fastifyHelmet from '@fastify/helmet';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { WsAdapter } from '@nestjs/platform-ws';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { cleanupOpenApiDoc, ZodValidationPipe } from 'nestjs-zod';
@@ -35,6 +36,7 @@ async function bootstrap() {
   ); // Personnalise l'en-tête X-Powered-By pour masquer la technologie utilisée
 
   app.useGlobalPipes(new ZodValidationPipe()); // Utilise Zod pour la validation des données d'entrée
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   app.enableShutdownHooks(); // Permet de gérer les hooks de shutdown pour une fermeture propre de l'application
 
