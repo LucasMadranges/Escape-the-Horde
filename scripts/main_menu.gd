@@ -5,11 +5,20 @@ var realtime_client: Node
 
 
 func _ready() -> void:
-	realtime_client = preload("res://scripts/network/realtime_client.gd").new()
-	add_child(realtime_client)
-	realtime_client.played.connect(_on_played)
-	realtime_client.joined.connect(_on_joined)
-	realtime_client.realtime_error.connect(_on_realtime_error)
+	var existing := get_tree().root.get_node_or_null("RealtimeClient")
+	if existing:
+		realtime_client = existing
+	else:
+		realtime_client = preload("res://scripts/network/realtime_client.gd").new()
+		realtime_client.name = "RealtimeClient"
+		get_tree().root.call_deferred("add_child", realtime_client)
+
+	if not realtime_client.played.is_connected(_on_played):
+		realtime_client.played.connect(_on_played)
+	if not realtime_client.joined.is_connected(_on_joined):
+		realtime_client.joined.connect(_on_joined)
+	if not realtime_client.realtime_error.is_connected(_on_realtime_error):
+		realtime_client.realtime_error.connect(_on_realtime_error)
 
 	$UI/CenterContainer/VBox/PlayButton.pressed.connect(
 		func():
