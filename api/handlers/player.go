@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"escape-the-horde-api/dto"
 	"escape-the-horde-api/ent"
 	"escape-the-horde-api/ent/player"
 	"escape-the-horde-api/utils"
@@ -9,26 +10,19 @@ import (
 	"github.com/google/uuid"
 )
 
+// PlayerHandler contient les dependances pour les handlers joueurs.
 type PlayerHandler struct {
 	client *ent.Client
 }
 
+// NewPlayerHandler cree un nouveau PlayerHandler.
 func NewPlayerHandler(client *ent.Client) *PlayerHandler {
 	return &PlayerHandler{client: client}
 }
 
-type playerResponse struct {
-	ID         uuid.UUID `json:"id"`
-	Username   string    `json:"username"`
-	Level      int       `json:"level"`
-	Experience int       `json:"experience"`
-	Gold       int       `json:"gold"`
-	CreatedAt  string    `json:"created_at"`
-	UpdatedAt  string    `json:"updated_at"`
-}
-
-func toResponse(p *ent.Player) playerResponse {
-	return playerResponse{
+// toResponse convertit une entite Player en DTO de reponse.
+func toResponse(p *ent.Player) dto.PlayerResponse {
+	return dto.PlayerResponse{
 		ID:         p.ID,
 		Username:   p.Username,
 		Level:      utils.CalculateLevel(p.Experience),
@@ -45,7 +39,7 @@ func (h *PlayerHandler) GetAll(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	result := make([]playerResponse, len(players))
+	result := make([]dto.PlayerResponse, len(players))
 	for i, p := range players {
 		result[i] = toResponse(p)
 	}
@@ -161,7 +155,7 @@ func (h *PlayerHandler) GetLeaderboard(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	result := make([]playerResponse, len(players))
+	result := make([]dto.PlayerResponse, len(players))
 	for i, p := range players {
 		result[i] = toResponse(p)
 	}
