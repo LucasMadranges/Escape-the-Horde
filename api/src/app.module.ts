@@ -8,7 +8,7 @@ import { format, transports } from 'winston';
 
 import { HttpExceptionFilter } from '../common/http-exception.filter';
 import { DatabaseModule } from '../database/database.module';
-import { ProductsModule } from '../modules/players/players.module';
+import { PlayersModule } from '../modules/players/players.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -35,8 +35,7 @@ import { AppService } from './app.service';
                         typeof info.timestamp === 'string'
                           ? info.timestamp
                           : new Date().toISOString();
-                      const context =
-                        typeof info.context === 'string' ? info.context : 'App';
+                      const context = typeof info.context === 'string' ? info.context : 'App';
                       const message =
                         typeof info.message === 'string'
                           ? info.message
@@ -72,7 +71,7 @@ import { AppService } from './app.service';
       ],
     }),
     DatabaseModule,
-    ProductsModule,
+    PlayersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,0 +1,21 @@
+# Ignorer les dossiers cachés
+.*
+!.prettierrc
+!eslint.config.cjs
+
+# Build
+dist/
+build/
+out/
+coverage/
+
+# Dépendances
+node_modules/
+
+# Environnement
+.env
+*.log
+
+# Server
+apps/launcher/minecraft
+apps/minecraft/run
