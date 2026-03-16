@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://1sokvlnestt6"]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/settings_panel.tscn" id="2_settings"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Play_Not-Pressed.png" id="3_play_n"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Play_Pressed.png" id="4_play_p"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Settings_Not-Pressed.png" id="5_settings_n"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Settings_Pressed.png" id="6_settings_p"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Quit_Not-Pressed.png" id="7_quit_n"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Quit_Pressed.png" id="8_quit_p"]
+
+[node name="MainMenu" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+color = Color(0.05, 0.055, 0.1, 1)
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.05, 0.055, 0.1, 1)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="CenterContainer" type="CenterContainer" parent="UI"]
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/CenterContainer"]
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="UI/CenterContainer/VBox"]
+text = "ESCAPE THE HORDE"
+theme_override_font_sizes/font_size = 52
+theme_override_colors/font_color = Color(1.0, 0.85, 0.3, 1)
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(0, 32)
+
+[node name="PlayButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 84)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("3_play_n")
+texture_pressed = ExtResource("4_play_p")
+
+[node name="SettingsButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 84)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("5_settings_n")
+texture_pressed = ExtResource("6_settings_p")
+
+[node name="QuitButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 84)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("7_quit_n")
+texture_pressed = ExtResource("8_quit_p")
+
+[node name="SettingsPanel" parent="UI" instance=ExtResource("2_settings")]
+visible = false

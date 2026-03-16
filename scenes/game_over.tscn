@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://ctmhs0h7jandr"]
+
+[ext_resource type="Script" path="res://scripts/game_over.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Play_Not-Pressed.png" id="2_play_n"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Play_Pressed.png" id="3_play_p"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Blank_Not-Pressed.png" id="4_blank_n"]
+[ext_resource type="Texture2D" path="res://assets/UI/Menu/Main Menu/Blank_Pressed.png" id="5_blank_p"]
+
+[node name="GameOver" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+color = Color(0.03, 0.03, 0.06, 1)
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="CenterContainer" type="CenterContainer" parent="UI"]
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/CenterContainer"]
+theme_override_constants/separation = 20
+
+[node name="GameOverLabel" type="Label" parent="UI/CenterContainer/VBox"]
+text = "GAME OVER"
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(0.9, 0.15, 0.15, 1)
+horizontal_alignment = 1
+
+[node name="WaveLabel" type="Label" parent="UI/CenterContainer/VBox"]
+text = "Vague atteinte : 1"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(0, 24)
+
+[node name="RetryButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 84)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("2_play_n")
+texture_pressed = ExtResource("3_play_p")
+
+[node name="MenuButton" type="TextureButton" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 84)
+ignore_texture_size = true
+stretch_mode = 0
+texture_normal = ExtResource("4_blank_n")
+texture_pressed = ExtResource("5_blank_p")
+
+[node name="Label" type="Label" parent="UI/CenterContainer/VBox/MenuButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "MENU"
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+vertical_alignment = 1
+mouse_filter = 2
