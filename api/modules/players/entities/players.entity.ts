@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Player {
@@ -19,7 +26,7 @@ export class Player {
 
   @Column({ type: 'int', default: 0 })
   @ApiProperty({
-    description: 'Montant d\'argent du joueur',
+    description: "Montant d'argent du joueur",
     example: 100,
   })
   gold!: number;
@@ -31,9 +38,9 @@ export class Player {
   })
   experience!: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 }

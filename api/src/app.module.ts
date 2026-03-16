@@ -8,8 +8,10 @@ import { format, transports } from 'winston';
 
 import { HttpExceptionFilter } from '../common/http-exception.filter';
 import { DatabaseModule } from '../database/database.module';
+import { GameModule } from '../modules/game/game.module';
 import { PlayersModule } from '../modules/players/players.module';
 import { RealtimeModule } from '../modules/realtime/realtime.module';
+import { SessionModule } from '../modules/session/session.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -72,8 +74,10 @@ import { AppService } from './app.service';
       ],
     }),
     DatabaseModule,
+    GameModule,
     PlayersModule,
     RealtimeModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [
