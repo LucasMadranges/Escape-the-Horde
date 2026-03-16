@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+signal died(zombie_id: String)
+
 const SPEED := 55.0
 const MAX_HEALTH := 60
 const SPRITE_SCALE := Vector2(4.0, 4.0)
@@ -10,6 +12,7 @@ const ATTACK_RANGE := 16.0
 
 var health := MAX_HEALTH
 var attack_timer := 0.0
+var zombie_id := ""
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -87,4 +90,5 @@ func take_damage(amount: int) -> void:
 	get_tree().create_timer(0.12).timeout.connect(func():
 		if is_instance_valid(self): modulate = Color.WHITE)
 	if health <= 0:
+		emit_signal("died", zombie_id)
 		queue_free()

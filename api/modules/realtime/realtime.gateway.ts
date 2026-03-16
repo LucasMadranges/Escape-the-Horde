@@ -307,7 +307,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     @MessageBody() rawBody: unknown,
     @ConnectedSocket() client: WebSocket,
   ): Promise<WsResponse<unknown>> {
-    const body = this.normalizePayload<{ x: number; y: number }>(rawBody);
+    const body = this.normalizePayload<{ x: number; y: number; zombieId: string }>(rawBody);
     const socketId = this.requireSocketId(client);
     const presence = this.socketPresence.get(socketId);
 
@@ -318,19 +318,48 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       };
     }
 
-    if (typeof body?.x !== 'number' || typeof body?.y !== 'number') {
-      return this.errorResponse(rawBody, 'x et y sont obligatoires');
+    if (typeof body?.x !== 'number' || typeof body?.y !== 'number' || !body?.zombieId) {
+      return this.errorResponse(rawBody, 'x, y et zombieId sont obligatoires');
     }
 
     const payload = {
       x: body.x,
       y: body.y,
+      zombieId: body.zombieId,
     };
 
     this.broadcastToGame(presence.gameId, 'game:zombie_spawn', payload, client);
 
     return {
       event: 'game:zombie_spawn_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:zombie_kill')
+  async handleZombieKill(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ zombieId: string }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    if (!body?.zombieId) {
+      return this.errorResponse(rawBody, 'zombieId est obligatoire');
+    }
+
+    this.broadcastToGame(presence.gameId, 'game:zombie_kill', { zombieId: body.zombieId }, client);
+
+    return {
+      event: 'game:zombie_kill_ack',
       data: { ok: true },
     };
   }

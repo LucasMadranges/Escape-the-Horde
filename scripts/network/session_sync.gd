@@ -79,7 +79,10 @@ func _on_player_sync_received(payload: Dictionary) -> void:
 
 	var x := float(payload.get("x", 0.0))
 	var y := float(payload.get("y", 0.0))
+	var vx := float(payload.get("vx", 0.0))
+	var vy := float(payload.get("vy", 0.0))
 	node.global_position = Vector2(x, y)
+	_update_remote_animation(node, Vector2(vx, vy))
 
 func _ensure_remote_player(player_id: String, username: String) -> void:
 	if remote_nodes.has(player_id):
@@ -88,19 +91,15 @@ func _ensure_remote_player(player_id: String, username: String) -> void:
 			existing_label.text = username
 		return
 
-	var holder := Node2D.new()
+	var holder := CharacterBody2D.new()
 	holder.name = "Remote_%s" % player_id
+	holder.scale = Vector2(4.0, 4.0)
 
-	var body := Polygon2D.new()
-	body.name = "Body"
-	body.color = Color(0.2, 0.75, 1.0, 0.9)
-	body.polygon = PackedVector2Array([
-		Vector2(-10, -10),
-		Vector2(10, -10),
-		Vector2(10, 10),
-		Vector2(-10, 10),
-	])
-	holder.add_child(body)
+	var sprite := AnimatedSprite2D.new()
+	sprite.name = "AnimatedSprite2D"
+	sprite.sprite_frames = _build_remote_sprite_frames()
+	sprite.play("idle_down")
+	holder.add_child(sprite)
 
 	var name_label := Label.new()
 	name_label.name = "Name"
@@ -110,3 +109,47 @@ func _ensure_remote_player(player_id: String, username: String) -> void:
 
 	remote_players_root.add_child(holder)
 	remote_nodes[player_id] = holder
+
+
+func _build_remote_sprite_frames() -> SpriteFrames:
+	var sf := SpriteFrames.new()
+	sf.clear_all()
+	_add_anim(sf, "idle_down", "res://assets/Character/Main/Idle/Character_down_idle-Sheet6.png", 6, 13, 16)
+	_add_anim(sf, "run_down", "res://assets/Character/Main/Run/Character_down_run-Sheet6.png", 6, 13, 17)
+	_add_anim(sf, "idle_side", "res://assets/Character/Main/Idle/Character_side_idle-Sheet6.png", 6, 12, 16)
+	_add_anim(sf, "run_side", "res://assets/Character/Main/Run/Character_side_run-Sheet6.png", 6, 14, 17)
+	_add_anim(sf, "idle_up", "res://assets/Character/Main/Idle/Character_up_idle-Sheet6.png", 6, 11, 16)
+	_add_anim(sf, "run_up", "res://assets/Character/Main/Run/Character_up_run-Sheet6.png", 6, 13, 17)
+	return sf
+
+
+func _add_anim(sf: SpriteFrames, anim: String, path: String, n: int, fw: int, fh: int, fps := 8.0) -> void:
+	var tex := load(path) as Texture2D
+	if not tex:
+		return
+
+	sf.add_animation(anim)
+	sf.set_animation_loop(anim, true)
+	sf.set_animation_speed(anim, fps)
+	for i in n:
+		var at := AtlasTexture.new()
+		at.atlas = tex
+		at.region = Rect2(i * fw, 0, fw, fh)
+		sf.add_frame(anim, at)
+
+
+func _update_remote_animation(node: Node2D, vel: Vector2) -> void:
+	var sprite: AnimatedSprite2D = node.get_node_or_null("AnimatedSprite2D")
+	if sprite == null:
+		return
+
+	var moving := vel.length_squared() > 1.0
+	if abs(vel.x) > abs(vel.y):
+		sprite.flip_h = vel.x < 0.0
+		sprite.play("run_side" if moving else "idle_side")
+	elif vel.y > 0.0:
+		sprite.flip_h = false
+		sprite.play("run_down" if moving else "idle_down")
+	else:
+		sprite.flip_h = false
+		sprite.play("run_up" if moving else "idle_up")

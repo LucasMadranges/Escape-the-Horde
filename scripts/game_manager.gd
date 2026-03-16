@@ -13,6 +13,8 @@ var spawn_interval := 1.8
 var wave_active := false
 var realtime_client: Node
 var is_host := true
+var zombies_by_id := {}
+var suppress_kill_broadcast := {}
 
 @onready var enemies_node: Node2D = get_parent().get_node("Enemies")
 @onready var wave_label: Label = get_parent().get_node("UI/WaveLabel")
@@ -27,6 +29,8 @@ func _ready() -> void:
 			realtime_client.game_state_updated.connect(_on_game_state_updated)
 		if realtime_client.has_signal("zombie_spawn_received") and not realtime_client.zombie_spawn_received.is_connected(_on_zombie_spawn_received):
 			realtime_client.zombie_spawn_received.connect(_on_zombie_spawn_received)
+		if realtime_client.has_signal("zombie_kill_received") and not realtime_client.zombie_kill_received.is_connected(_on_zombie_kill_received):
+			realtime_client.zombie_kill_received.connect(_on_zombie_kill_received)
 		if realtime_client.has_method("is_host"):
 			is_host = bool(realtime_client.is_host())
 
@@ -80,15 +84,23 @@ func _spawn_zombie() -> void:
 		return
 	var angle := randf() * TAU
 	var spawn_pos: Vector2 = player.global_position + Vector2(cos(angle), sin(angle)) * SPAWN_RADIUS
-	_spawn_zombie_at(spawn_pos)
+	var zombie_id := _generate_zombie_id()
+	_spawn_zombie_at(spawn_pos, zombie_id)
 	if realtime_client and realtime_client.has_method("send_zombie_spawn"):
-		realtime_client.send_zombie_spawn(spawn_pos)
+		realtime_client.send_zombie_spawn(spawn_pos, zombie_id)
 
 
-func _spawn_zombie_at(spawn_pos: Vector2) -> void:
+func _spawn_zombie_at(spawn_pos: Vector2, zombie_id: String) -> void:
+	if zombies_by_id.has(zombie_id):
+		return
+
 	var z := zombie_scene.instantiate()
 	z.global_position = spawn_pos
+	z.zombie_id = zombie_id
+	if z.has_signal("died"):
+		z.died.connect(_on_zombie_died)
 	enemies_node.add_child(z)
+	zombies_by_id[zombie_id] = z
 
 
 func _on_game_state_updated(_state: Dictionary) -> void:
@@ -100,6 +112,39 @@ func _on_zombie_spawn_received(payload: Dictionary) -> void:
 	if is_host:
 		return
 
+	var zombie_id := str(payload.get("zombieId", ""))
+	if zombie_id.is_empty():
+		return
+
 	var x := float(payload.get("x", 0.0))
 	var y := float(payload.get("y", 0.0))
-	_spawn_zombie_at(Vector2(x, y))
+	_spawn_zombie_at(Vector2(x, y), zombie_id)
+
+
+func _on_zombie_died(zombie_id: String) -> void:
+	if zombie_id.is_empty():
+		return
+
+	zombies_by_id.erase(zombie_id)
+	if suppress_kill_broadcast.has(zombie_id):
+		suppress_kill_broadcast.erase(zombie_id)
+		return
+
+	if realtime_client and realtime_client.has_method("send_zombie_kill"):
+		realtime_client.send_zombie_kill(zombie_id)
+
+
+func _on_zombie_kill_received(payload: Dictionary) -> void:
+	var zombie_id := str(payload.get("zombieId", ""))
+	if zombie_id.is_empty() or not zombies_by_id.has(zombie_id):
+		return
+
+	var zombie = zombies_by_id[zombie_id]
+	zombies_by_id.erase(zombie_id)
+	if is_instance_valid(zombie):
+		suppress_kill_broadcast[zombie_id] = true
+		zombie.queue_free()
+
+
+func _generate_zombie_id() -> String:
+	return "%s-%s" % [str(Time.get_ticks_msec()), str(randi() % 1000000)]

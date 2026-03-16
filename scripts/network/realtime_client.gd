@@ -6,6 +6,7 @@ signal joined(game_state: Dictionary)
 signal game_state_updated(game_state: Dictionary)
 signal player_sync_received(payload: Dictionary)
 signal zombie_spawn_received(payload: Dictionary)
+signal zombie_kill_received(payload: Dictionary)
 signal realtime_error(message: String)
 
 const WS_URL := "ws://127.0.0.1:3000/ws/game"
@@ -155,6 +156,8 @@ func _handle_message(raw: String) -> void:
 			emit_signal("player_sync_received", data)
 		"game:zombie_spawn":
 			emit_signal("zombie_spawn_received", data)
+		"game:zombie_kill":
+			emit_signal("zombie_kill_received", data)
 		"game:error":
 			emit_signal("realtime_error", str(data.get("message", "unknown")))
 
@@ -171,13 +174,23 @@ func sync_player_state(position: Vector2, velocity: Vector2) -> void:
 	})
 
 
-func send_zombie_spawn(position: Vector2) -> void:
+func send_zombie_spawn(position: Vector2, zombie_id: String) -> void:
 	if current_game_id.is_empty() or ws.get_ready_state() != WebSocketPeer.STATE_OPEN:
 		return
 
 	_send_event("game:zombie_spawn", {
 		"x": position.x,
 		"y": position.y,
+		"zombieId": zombie_id,
+	})
+
+
+func send_zombie_kill(zombie_id: String) -> void:
+	if zombie_id.is_empty() or current_game_id.is_empty() or ws.get_ready_state() != WebSocketPeer.STATE_OPEN:
+		return
+
+	_send_event("game:zombie_kill", {
+		"zombieId": zombie_id,
 	})
 
 
