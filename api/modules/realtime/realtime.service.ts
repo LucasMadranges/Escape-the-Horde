@@ -6,6 +6,7 @@ import {
   CreateGamePayload,
   GamePlayerState,
   GameState,
+  GameZombieState,
   JoinGamePayload,
   PlayPayload,
 } from './interface/game.interface';
@@ -29,7 +30,9 @@ export class RealtimeService {
     const state: GameState = {
       gameId: game.id,
       status: game.status,
+      hostPlayerId: undefined,
       players: [],
+      zombies: [],
       createdAt: game.createdAt.toISOString(),
       updatedAt: game.updatedAt.toISOString(),
     };
@@ -80,6 +83,7 @@ export class RealtimeService {
 
     const updated = {
       ...state,
+      hostPlayerId: state.hostPlayerId ?? state.players[0]?.playerId ?? payload.playerId,
       updatedAt: new Date().toISOString(),
     };
 
@@ -99,7 +103,10 @@ export class RealtimeService {
     }
 
     const sessions = await this.sessionService.findByGameId(gameId);
-    const players: GamePlayerState[] = sessions.map((session) => {
+    const orderedSessions = [...sessions].sort(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+    );
+    const players: GamePlayerState[] = orderedSessions.map((session) => {
       const presence = this.presenceByPlayer.get(session.playerId);
       return {
         playerId: session.playerId,
@@ -113,7 +120,9 @@ export class RealtimeService {
     const state: GameState = {
       gameId: game.id,
       status: game.status,
+      hostPlayerId: players[0]?.playerId,
       players,
+      zombies: [],
       createdAt: game.createdAt.toISOString(),
       updatedAt: game.updatedAt.toISOString(),
     };
@@ -178,7 +187,10 @@ export class RealtimeService {
       return null;
     }
 
-    const updatedPlayers: GamePlayerState[] = remainingSessions.map((session) => {
+    const orderedRemainingSessions = [...remainingSessions].sort(
+      (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
+    );
+    const updatedPlayers: GamePlayerState[] = orderedRemainingSessions.map((session) => {
       const presence = this.presenceByPlayer.get(session.playerId);
       return {
         playerId: session.playerId,
@@ -190,14 +202,86 @@ export class RealtimeService {
     });
 
     const cached = this.stateCacheByGameId.get(gameId);
+    const nextHostPlayerId =
+      cached?.hostPlayerId &&
+      updatedPlayers.some((player) => player.playerId === cached.hostPlayerId)
+        ? cached.hostPlayerId
+        : updatedPlayers[0]?.playerId;
     const updatedState: GameState = {
       gameId,
       status: game.status,
+      hostPlayerId: nextHostPlayerId,
       players: updatedPlayers,
+      zombies: cached?.zombies ?? [],
       createdAt: cached?.createdAt ?? game.createdAt.toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
+    this.stateCacheByGameId.set(gameId, updatedState);
+    return updatedState;
+  }
+
+  async isHost(gameId: string, playerId: string): Promise<boolean> {
+    const state = await this.getGame(gameId);
+    return state.hostPlayerId === playerId;
+  }
+
+  async registerZombieSpawn(gameId: string, zombie: GameZombieState): Promise<GameState> {
+    const state = await this.getGame(gameId);
+    if (state.zombies.some((existingZombie) => existingZombie.zombieId === zombie.zombieId)) {
+      return state;
+    }
+
+    const zombieState: GameZombieState = {
+      zombieId: zombie.zombieId,
+      x: zombie.x,
+      y: zombie.y,
+      vx: zombie.vx ?? 0,
+      vy: zombie.vy ?? 0,
+      targetPlayerId: zombie.targetPlayerId,
+    };
+
+    const updatedState: GameState = {
+      ...state,
+      zombies: [...state.zombies, zombieState],
+      updatedAt: new Date().toISOString(),
+    };
+    this.stateCacheByGameId.set(gameId, updatedState);
+    return updatedState;
+  }
+
+  async registerZombieKill(gameId: string, zombieId: string): Promise<GameState> {
+    const state = await this.getGame(gameId);
+    const updatedZombies = state.zombies.filter((zombie) => zombie.zombieId !== zombieId);
+    if (updatedZombies.length === state.zombies.length) {
+      return state;
+    }
+
+    const updatedState: GameState = {
+      ...state,
+      zombies: updatedZombies,
+      updatedAt: new Date().toISOString(),
+    };
+    this.stateCacheByGameId.set(gameId, updatedState);
+    return updatedState;
+  }
+
+  async syncZombieStates(gameId: string, zombies: GameZombieState[]): Promise<GameState> {
+    const state = await this.getGame(gameId);
+    const normalizedZombies = zombies.map((zombie) => ({
+      zombieId: zombie.zombieId,
+      x: zombie.x,
+      y: zombie.y,
+      vx: zombie.vx ?? 0,
+      vy: zombie.vy ?? 0,
+      targetPlayerId: zombie.targetPlayerId,
+    }));
+
+    const updatedState: GameState = {
+      ...state,
+      zombies: normalizedZombies,
+      updatedAt: new Date().toISOString(),
+    };
     this.stateCacheByGameId.set(gameId, updatedState);
     return updatedState;
   }

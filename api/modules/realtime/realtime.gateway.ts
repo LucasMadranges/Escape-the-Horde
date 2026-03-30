@@ -14,7 +14,12 @@ import { Server, WebSocket } from 'ws';
 
 import { RealtimeService } from './realtime.service';
 import { SocketPresence } from './interface/socket.interface';
-import { CreateGamePayload, JoinGamePayload, PlayPayload } from './interface/game.interface';
+import {
+  CreateGamePayload,
+  GameZombieState,
+  JoinGamePayload,
+  PlayPayload,
+} from './interface/game.interface';
 
 @WebSocketGateway({
   path: '/ws/game',
@@ -322,13 +327,24 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       return this.errorResponse(rawBody, 'x, y et zombieId sont obligatoires');
     }
 
+    const isHost = await this.realtimeService.isHost(presence.gameId, presence.playerId);
+    if (!isHost) {
+      return {
+        event: 'game:error',
+        data: { message: 'Seul le host peut spawner des zombies' },
+      };
+    }
+
     const payload = {
       x: body.x,
       y: body.y,
       zombieId: body.zombieId,
     };
 
+    const game = await this.realtimeService.registerZombieSpawn(presence.gameId, payload);
+
     this.broadcastToGame(presence.gameId, 'game:zombie_spawn', payload, client);
+    this.broadcastToGame(presence.gameId, 'game:state', game);
 
     return {
       event: 'game:zombie_spawn_ack',
@@ -356,10 +372,106 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       return this.errorResponse(rawBody, 'zombieId est obligatoire');
     }
 
+    const game = await this.realtimeService.registerZombieKill(presence.gameId, body.zombieId);
+
     this.broadcastToGame(presence.gameId, 'game:zombie_kill', { zombieId: body.zombieId }, client);
+    this.broadcastToGame(presence.gameId, 'game:state', game);
 
     return {
       event: 'game:zombie_kill_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:zombie_sync')
+  async handleZombieSync(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ zombies: GameZombieState[] }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    const isHost = await this.realtimeService.isHost(presence.gameId, presence.playerId);
+    if (!isHost) {
+      return {
+        event: 'game:error',
+        data: { message: 'Seul le host peut synchroniser les zombies' },
+      };
+    }
+
+    const zombies = Array.isArray(body?.zombies)
+      ? body.zombies
+          .filter(
+            (zombie) =>
+              !!zombie &&
+              typeof zombie.zombieId === 'string' &&
+              zombie.zombieId.length > 0 &&
+              typeof zombie.x === 'number' &&
+              typeof zombie.y === 'number',
+          )
+          .map((zombie) => ({
+            zombieId: zombie.zombieId,
+            x: zombie.x,
+            y: zombie.y,
+            vx: typeof zombie.vx === 'number' ? zombie.vx : 0,
+            vy: typeof zombie.vy === 'number' ? zombie.vy : 0,
+            targetPlayerId:
+              typeof zombie.targetPlayerId === 'string' ? zombie.targetPlayerId : undefined,
+          }))
+      : [];
+
+    await this.realtimeService.syncZombieStates(presence.gameId, zombies);
+    this.broadcastToGame(presence.gameId, 'game:zombie_sync', { zombies }, client);
+
+    return {
+      event: 'game:zombie_sync_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:player_damage')
+  async handlePlayerDamage(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ playerId: string; amount: number }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    const isHost = await this.realtimeService.isHost(presence.gameId, presence.playerId);
+    if (!isHost) {
+      return {
+        event: 'game:error',
+        data: { message: 'Seul le host peut appliquer des degats' },
+      };
+    }
+
+    if (!body?.playerId || typeof body?.amount !== 'number' || body.amount <= 0) {
+      return this.errorResponse(rawBody, 'playerId et amount sont obligatoires');
+    }
+
+    this.broadcastToGame(presence.gameId, 'game:player_damage', {
+      playerId: body.playerId,
+      amount: body.amount,
+    });
+
+    return {
+      event: 'game:player_damage_ack',
       data: { ok: true },
     };
   }

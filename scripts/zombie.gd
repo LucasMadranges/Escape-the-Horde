@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 signal died(zombie_id: String)
+signal attack_player(player_id: String, damage: int)
 
 const SPEED := 55.0
 const MAX_HEALTH := 60
@@ -13,6 +14,12 @@ const ATTACK_RANGE := 16.0
 var health := MAX_HEALTH
 var attack_timer := 0.0
 var zombie_id := ""
+var is_authoritative := true
+var target_player_id := ""
+var target_position := Vector2.ZERO
+var network_position := Vector2.ZERO
+var network_velocity := Vector2.ZERO
+var has_network_state := false
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
@@ -22,6 +29,7 @@ func _ready() -> void:
 	scale = SPRITE_SCALE
 	collision_layer = 2
 	collision_mask = 1
+	network_position = global_position
 	_setup_animations()
 
 
@@ -53,11 +61,18 @@ func _add_anim(sf: SpriteFrames, anim: String, path: String, n: int, fw: int, fh
 
 
 func _physics_process(delta: float) -> void:
-	var player := get_tree().get_first_node_in_group("player") as Node2D
-	if not is_instance_valid(player):
+	if is_authoritative:
+		_process_authoritative(delta)
+	else:
+		_process_replica(delta)
+
+
+func _process_authoritative(delta: float) -> void:
+	if target_player_id.is_empty():
+		velocity = Vector2.ZERO
 		return
 
-	var to_player := player.global_position - global_position
+	var to_player := target_position - global_position
 	var dir := to_player.normalized()
 	velocity = dir * SPEED
 	move_and_slide()
@@ -66,8 +81,19 @@ func _physics_process(delta: float) -> void:
 	attack_timer -= delta
 	if to_player.length() < ATTACK_RANGE * SPRITE_SCALE.x and attack_timer <= 0.0:
 		attack_timer = ATTACK_COOLDOWN
-		if player.has_method("take_damage"):
-			player.take_damage(ATTACK_DAMAGE)
+		emit_signal("attack_player", target_player_id, ATTACK_DAMAGE)
+
+
+func _process_replica(delta: float) -> void:
+	if not has_network_state:
+		return
+
+	global_position = global_position.lerp(network_position, clampf(delta * 14.0, 0.0, 1.0))
+	velocity = network_velocity
+
+	var dir := network_velocity.normalized()
+	if dir.length_squared() > 0.001:
+		_update_animation(dir)
 
 
 func _update_animation(dir: Vector2) -> void:
@@ -92,3 +118,25 @@ func take_damage(amount: int) -> void:
 	if health <= 0:
 		emit_signal("died", zombie_id)
 		queue_free()
+
+
+func set_authoritative(value: bool) -> void:
+	is_authoritative = value
+	if is_authoritative:
+		has_network_state = false
+
+
+func set_target(player_id: String, target_pos: Vector2) -> void:
+	target_player_id = player_id
+	target_position = target_pos
+
+
+func apply_network_state(net_pos: Vector2, velocity_state: Vector2, target_id: String) -> void:
+	network_position = net_pos
+	network_velocity = velocity_state
+	target_player_id = target_id
+	has_network_state = true
+
+
+func get_target_player_id() -> String:
+	return target_player_id

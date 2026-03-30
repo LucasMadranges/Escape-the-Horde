@@ -20,10 +20,21 @@ export interface GamePlayerState {
   socketId?: string;
 }
 
+export interface GameZombieState {
+  zombieId: string;
+  x: number;
+  y: number;
+  vx?: number;
+  vy?: number;
+  targetPlayerId?: string;
+}
+
 export interface GameState {
   gameId: string;
   status: GameStatus;
+  hostPlayerId?: string;
   players: GamePlayerState[];
+  zombies: GameZombieState[];
   createdAt: string;
   updatedAt: string;
 }
