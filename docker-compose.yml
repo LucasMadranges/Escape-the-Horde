@@ -1,0 +1,28 @@
+services:
+  db:
+    container_name: db-game
+    image: postgres:18.2
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql
+
+  api:
+    container_name: api-game
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: production
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  db_data:
+    driver: local
