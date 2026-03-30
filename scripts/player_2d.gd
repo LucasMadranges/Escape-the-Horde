@@ -4,9 +4,12 @@ const SPEED := 220.0
 const MAX_HEALTH := 100
 const SPRITE_SCALE := Vector2(4.0, 4.0)
 const ARENA_HALF := Vector2(1100.0, 800.0)
+const PLAYER_STATUS_CONTROLLER_SCRIPT := preload("res://scripts/game/player/player_status_controller.gd")
 
 var health := MAX_HEALTH
+var life_state_name := "alive"
 var bullet_scene := preload("res://scenes/bullet.tscn")
+var status_controller: Node
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
@@ -19,6 +22,12 @@ func _ready() -> void:
 	collision_mask = 2
 	_setup_animations()
 	_setup_light()
+
+	status_controller = PLAYER_STATUS_CONTROLLER_SCRIPT.new()
+	status_controller.name = "PlayerStatusController"
+	add_child(status_controller)
+	if status_controller.has_method("setup"):
+		status_controller.setup(self, camera, MAX_HEALTH)
 
 
 func _setup_light() -> void:
@@ -70,11 +79,22 @@ func _add_anim(sf: SpriteFrames, anim: String, path: String, n: int, fw: int, fh
 
 
 func _physics_process(delta: float) -> void:
+	if status_controller and status_controller.has_method("allows_player_control") and not bool(status_controller.allows_player_control()):
+		velocity = Vector2.ZERO
+		if status_controller.has_method("physics_update"):
+			status_controller.physics_update(delta)
+		return
+
 	var dir := _get_input()
 	velocity = dir * SPEED
 	move_and_slide()
 	global_position = global_position.clamp(-ARENA_HALF, ARENA_HALF)
 	_update_animation(dir)
+
+
+func _process(delta: float) -> void:
+	if status_controller and status_controller.has_method("process_update"):
+		status_controller.process_update(delta)
 
 
 func _get_input() -> Vector2:
@@ -91,6 +111,9 @@ func _get_input() -> Vector2:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if status_controller and status_controller.has_method("blocks_input") and bool(status_controller.blocks_input()):
+		return
+
 	if event is InputEventMouseButton:
 		var mbe := event as InputEventMouseButton
 		if mbe.button_index == MOUSE_BUTTON_LEFT and mbe.pressed:
@@ -129,9 +152,8 @@ func _update_animation(move_dir: Vector2) -> void:
 
 
 func take_damage(amount: int) -> void:
-	health -= amount
-	modulate = Color(1, 0.2, 0.2)
-	get_tree().create_timer(0.15).timeout.connect(func():
-		if is_instance_valid(self): modulate = Color.WHITE)
-	if health <= 0:
-		get_tree().change_scene_to_file("res://scenes/game_over.tscn")
+	if status_controller and status_controller.has_method("apply_damage"):
+		status_controller.apply_damage(amount)
+		return
+
+	health = max(0, health - amount)

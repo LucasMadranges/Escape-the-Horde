@@ -19,6 +19,26 @@ static func create(player_id: String, username: String) -> CharacterBody2D:
 	name_label.position = Vector2(-40, -34)
 	holder.add_child(name_label)
 
+	var status_label := Label.new()
+	status_label.name = "Status"
+	status_label.text = ""
+	status_label.position = Vector2(-34, -46)
+	status_label.scale = Vector2(0.45, 0.45)
+	status_label.modulate = Color(1.0, 0.6, 0.6)
+	holder.add_child(status_label)
+
+	var revive_bar := ProgressBar.new()
+	revive_bar.name = "ReviveBar"
+	revive_bar.min_value = 0.0
+	revive_bar.max_value = 100.0
+	revive_bar.value = 0.0
+	revive_bar.show_percentage = false
+	revive_bar.custom_minimum_size = Vector2(84, 8)
+	revive_bar.position = Vector2(-42, -58)
+	revive_bar.scale = Vector2(0.25, 0.25)
+	revive_bar.visible = false
+	holder.add_child(revive_bar)
+
 	return holder
 
 

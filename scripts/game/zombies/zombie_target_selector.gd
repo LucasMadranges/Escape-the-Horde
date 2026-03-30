@@ -15,6 +15,8 @@ static func select_nearest_target(zombie_position: Vector2, player_states: Dicti
 		var state_dict := state as Dictionary
 		if not state_dict.has("position"):
 			continue
+		if str(state_dict.get("status", "alive")) != "alive":
+			continue
 
 		var position: Vector2 = state_dict.get("position", Vector2.ZERO)
 		var distance_sq := zombie_position.distance_squared_to(position)

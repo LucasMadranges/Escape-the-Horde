@@ -476,6 +476,167 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     };
   }
 
+  @SubscribeMessage('game:player_down')
+  async handlePlayerDown(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ bleedoutDurationMs?: number }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    const downedAtMs = Date.now();
+    const bleedoutDurationMs =
+      typeof body?.bleedoutDurationMs === 'number'
+        ? Math.max(1000, Math.floor(body.bleedoutDurationMs))
+        : 30000;
+
+    this.broadcastToGame(presence.gameId, 'game:player_downed', {
+      playerId: presence.playerId,
+      downedAtMs,
+      bleedoutDurationMs,
+    });
+
+    return {
+      event: 'game:player_downed_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:player_revive_start')
+  async handlePlayerReviveStart(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ targetPlayerId: string; durationMs?: number }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    if (!body?.targetPlayerId) {
+      return this.errorResponse(rawBody, 'targetPlayerId est obligatoire');
+    }
+
+    const startedAtMs = Date.now();
+    const durationMs =
+      typeof body.durationMs === 'number' ? Math.max(500, Math.floor(body.durationMs)) : 3000;
+
+    this.broadcastToGame(presence.gameId, 'game:player_revive_started', {
+      targetPlayerId: body.targetPlayerId,
+      reviverPlayerId: presence.playerId,
+      startedAtMs,
+      durationMs,
+    });
+
+    return {
+      event: 'game:player_revive_started_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:player_revive_cancel')
+  async handlePlayerReviveCancel(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ targetPlayerId: string }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    if (!body?.targetPlayerId) {
+      return this.errorResponse(rawBody, 'targetPlayerId est obligatoire');
+    }
+
+    this.broadcastToGame(presence.gameId, 'game:player_revive_canceled', {
+      targetPlayerId: body.targetPlayerId,
+      reviverPlayerId: presence.playerId,
+      canceledAtMs: Date.now(),
+    });
+
+    return {
+      event: 'game:player_revive_canceled_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:player_revived')
+  async handlePlayerRevived(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const body = this.normalizePayload<{ targetPlayerId: string }>(rawBody);
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    if (!body?.targetPlayerId) {
+      return this.errorResponse(rawBody, 'targetPlayerId est obligatoire');
+    }
+
+    this.broadcastToGame(presence.gameId, 'game:player_revived', {
+      playerId: body.targetPlayerId,
+      revivedByPlayerId: presence.playerId,
+      revivedAtMs: Date.now(),
+    });
+
+    return {
+      event: 'game:player_revived_ack',
+      data: { ok: true },
+    };
+  }
+
+  @SubscribeMessage('game:player_dead')
+  async handlePlayerDead(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): Promise<WsResponse<unknown>> {
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+
+    if (!presence) {
+      return {
+        event: 'game:error',
+        data: { message: 'Socket non associee a une game' },
+      };
+    }
+
+    this.broadcastToGame(presence.gameId, 'game:player_dead', {
+      playerId: presence.playerId,
+      deadAtMs: Date.now(),
+    });
+
+    return {
+      event: 'game:player_dead_ack',
+      data: { ok: true },
+    };
+  }
+
   private addSocketToGame(gameId: string, socket: WebSocket) {
     const set = this.socketsByGame.get(gameId) ?? new Set<WebSocket>();
     set.add(socket);

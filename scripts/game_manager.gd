@@ -5,8 +5,7 @@ extends Node
 const SPAWN_RADIUS := 600.0
 const BASE_ENEMIES := 5
 const ZOMBIE_SYNC_INTERVAL := 0.08
-const ZombieTargetSelector := preload("res://scripts/game/zombies/zombie_target_selector.gd")
-const ZombieSnapshotCodec := preload("res://scripts/game/zombies/zombie_snapshot_codec.gd")
+const ZOMBIE_REGISTRY_SCRIPT := preload("res://scripts/game/zombies/zombie_registry.gd")
 
 var wave := 1
 var enemies_per_wave: int
@@ -16,9 +15,8 @@ var spawn_interval := 1.8
 var wave_active := false
 var realtime_client: Node
 var is_host := true
-var zombies_by_id := {}
-var suppress_kill_broadcast := {}
 var zombie_sync_timer := 0.0
+var zombie_registry: RefCounted
 
 @onready var enemies_node: Node2D = get_parent().get_node("Enemies")
 @onready var session_sync: Node = get_parent().get_node_or_null("SessionSync")
@@ -28,6 +26,15 @@ var zombie_sync_timer := 0.0
 
 
 func _ready() -> void:
+	zombie_registry = ZOMBIE_REGISTRY_SCRIPT.new()
+	zombie_registry.setup(
+		zombie_scene,
+		enemies_node,
+		is_host,
+		Callable(self, "_on_zombie_died"),
+		Callable(self, "_on_zombie_attack_player"),
+	)
+
 	realtime_client = get_tree().root.get_node_or_null("RealtimeClient")
 	if realtime_client:
 		if realtime_client.has_signal("game_state_updated") and not realtime_client.game_state_updated.is_connected(_on_game_state_updated):
@@ -104,32 +111,16 @@ func _spawn_zombie() -> void:
 	var angle := randf() * TAU
 	var spawn_pos: Vector2 = player.global_position + Vector2(cos(angle), sin(angle)) * SPAWN_RADIUS
 	var zombie_id := _generate_zombie_id()
-	_spawn_zombie_at(spawn_pos, zombie_id)
+	zombie_registry.spawn_at(spawn_pos, zombie_id)
 	if realtime_client and realtime_client.has_method("send_zombie_spawn"):
 		realtime_client.send_zombie_spawn(spawn_pos, zombie_id)
-
-
-func _spawn_zombie_at(spawn_pos: Vector2, zombie_id: String) -> void:
-	if zombies_by_id.has(zombie_id):
-		return
-
-	var z := zombie_scene.instantiate()
-	z.global_position = spawn_pos
-	z.zombie_id = zombie_id
-	if z.has_method("set_authoritative"):
-		z.set_authoritative(is_host)
-	if z.has_signal("attack_player"):
-		z.attack_player.connect(_on_zombie_attack_player)
-	if z.has_signal("died"):
-		z.died.connect(_on_zombie_died)
-	enemies_node.add_child(z)
-	zombies_by_id[zombie_id] = z
 
 
 func _on_game_state_updated(_state: Dictionary) -> void:
 	if realtime_client and realtime_client.has_method("is_host"):
 		is_host = bool(realtime_client.is_host())
-	_apply_authority_to_existing_zombies()
+	if zombie_registry:
+		zombie_registry.set_authority(is_host)
 
 	if not _state.has("zombies"):
 		return
@@ -138,7 +129,7 @@ func _on_game_state_updated(_state: Dictionary) -> void:
 	if typeof(zombies_variant) != TYPE_ARRAY:
 		return
 
-	_reconcile_zombies(zombies_variant)
+	zombie_registry.reconcile(zombies_variant)
 
 
 func _on_zombie_spawn_received(payload: Dictionary) -> void:
@@ -151,43 +142,7 @@ func _on_zombie_spawn_received(payload: Dictionary) -> void:
 
 	var x := float(payload.get("x", 0.0))
 	var y := float(payload.get("y", 0.0))
-	_spawn_zombie_at(Vector2(x, y), zombie_id)
-
-
-func _reconcile_zombies(zombies: Array) -> void:
-	var expected_ids := {}
-	for zombie_data in zombies:
-		var parsed := ZombieSnapshotCodec.parse_snapshot(zombie_data)
-		if parsed.is_empty():
-			continue
-
-		var zombie_id := str(parsed.get("zombieId", ""))
-
-		expected_ids[zombie_id] = true
-		var x := float(parsed.get("x", 0.0))
-		var y := float(parsed.get("y", 0.0))
-		_spawn_zombie_at(Vector2(x, y), zombie_id)
-
-		if is_host:
-			continue
-
-		var zombie = zombies_by_id.get(zombie_id)
-		if zombie and zombie.has_method("apply_network_state"):
-			zombie.apply_network_state(
-				Vector2(x, y),
-				Vector2(float(parsed.get("vx", 0.0)), float(parsed.get("vy", 0.0))),
-				str(parsed.get("targetPlayerId", "")),
-			)
-
-	for zombie_id in zombies_by_id.keys():
-		if expected_ids.has(zombie_id):
-			continue
-
-		var zombie = zombies_by_id[zombie_id]
-		zombies_by_id.erase(zombie_id)
-		if is_instance_valid(zombie):
-			suppress_kill_broadcast[zombie_id] = true
-			zombie.queue_free()
+	zombie_registry.spawn_at(Vector2(x, y), zombie_id)
 
 
 func _on_zombie_sync_received(payload: Dictionary) -> void:
@@ -198,16 +153,15 @@ func _on_zombie_sync_received(payload: Dictionary) -> void:
 	if typeof(zombies_variant) != TYPE_ARRAY:
 		return
 
-	_reconcile_zombies(zombies_variant)
+	zombie_registry.reconcile(zombies_variant)
 
 
 func _on_zombie_died(zombie_id: String) -> void:
 	if zombie_id.is_empty():
 		return
 
-	zombies_by_id.erase(zombie_id)
-	if suppress_kill_broadcast.has(zombie_id):
-		suppress_kill_broadcast.erase(zombie_id)
+	zombie_registry.erase_only(zombie_id)
+	if zombie_registry.consume_suppress_kill(zombie_id):
 		return
 
 	if realtime_client and realtime_client.has_method("send_zombie_kill"):
@@ -238,14 +192,10 @@ func _on_player_damage_received(payload: Dictionary) -> void:
 
 func _on_zombie_kill_received(payload: Dictionary) -> void:
 	var zombie_id := str(payload.get("zombieId", ""))
-	if zombie_id.is_empty() or not zombies_by_id.has(zombie_id):
+	if zombie_id.is_empty() or not zombie_registry.has(zombie_id):
 		return
 
-	var zombie = zombies_by_id[zombie_id]
-	zombies_by_id.erase(zombie_id)
-	if is_instance_valid(zombie):
-		suppress_kill_broadcast[zombie_id] = true
-		zombie.queue_free()
+	zombie_registry.remove_and_free(zombie_id, true)
 
 
 func _update_host_zombie_targets() -> void:
@@ -256,19 +206,7 @@ func _update_host_zombie_targets() -> void:
 	if player_states.is_empty():
 		return
 
-	for zombie_id in zombies_by_id.keys():
-		var zombie = zombies_by_id[zombie_id]
-		if not is_instance_valid(zombie) or not zombie.has_method("set_target"):
-			continue
-
-		var target := ZombieTargetSelector.select_nearest_target(zombie.global_position, player_states)
-		if target.is_empty():
-			continue
-
-		zombie.set_target(
-			str(target.get("playerId", "")),
-			target.get("position", zombie.global_position),
-		)
+	zombie_registry.update_targets(player_states)
 
 
 func _sync_zombies_to_session(delta: float) -> void:
@@ -280,14 +218,8 @@ func _sync_zombies_to_session(delta: float) -> void:
 		return
 
 	zombie_sync_timer = ZOMBIE_SYNC_INTERVAL
-	var snapshots := ZombieSnapshotCodec.build_snapshots(zombies_by_id)
+	var snapshots: Array = zombie_registry.build_snapshots()
 	realtime_client.send_zombie_sync(snapshots)
-
-
-func _apply_authority_to_existing_zombies() -> void:
-	for zombie in zombies_by_id.values():
-		if is_instance_valid(zombie) and zombie.has_method("set_authoritative"):
-			zombie.set_authoritative(is_host)
 
 
 func _get_player_states() -> Dictionary:
