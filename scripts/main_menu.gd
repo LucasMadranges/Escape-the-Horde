@@ -1,5 +1,8 @@
 extends Node2D
 
+const WAITING_ROOM_SCENE_PATH := "res://scenes/waiting_room.tscn"
+const SESSIONS_BROWSER_SCENE_PATH := "res://scenes/sessions_browser.tscn"
+
 @onready var settings_panel = $UI/SettingsPanel
 var realtime_client: Node
 
@@ -26,7 +29,7 @@ func _ready() -> void:
 	)
 	$UI/CenterContainer/VBox/JoinButton.pressed.connect(
 		func():
-			realtime_client.join_existing_game()
+			get_tree().change_scene_to_file(SESSIONS_BROWSER_SCENE_PATH)
 	)
 	$UI/CenterContainer/VBox/SettingsButton.pressed.connect(func(): settings_panel.show())
 	$UI/CenterContainer/VBox/QuitButton.pressed.connect(func(): get_tree().quit())
@@ -35,11 +38,11 @@ func _ready() -> void:
 
 
 func _on_played(_game_state: Dictionary) -> void:
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file(WAITING_ROOM_SCENE_PATH)
 
 
 func _on_joined(_game_state: Dictionary) -> void:
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	get_tree().change_scene_to_file(WAITING_ROOM_SCENE_PATH)
 
 
 func _on_realtime_error(message: String) -> void:
