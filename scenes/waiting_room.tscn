@@ -1,0 +1,92 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/waiting_room.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/game/player/waiting_room_player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/network/session_sync.gd" id="3_session_sync"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 6.0
+
+[node name="WaitingRoom" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.045, 0.055, 0.08, 1)
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.12, 0.14, 0.17, 1)
+polygon = PackedVector2Array(-1200, -900, 1200, -900, 1200, 900, -1200, 900)
+
+[node name="Interactions" type="Node2D" parent="."]
+
+[node name="RemotePlayers" type="Node2D" parent="."]
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("2_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(1.5, 1.5)
+
+[node name="SessionSync" type="Node" parent="."]
+script = ExtResource("3_session_sync")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_left = 700.0
+offset_top = 28.0
+offset_right = 1250.0
+offset_bottom = 360.0
+
+[node name="Margin" type="MarginContainer" parent="UI/Panel"]
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="UI/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Salle d'attente"
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+
+[node name="GameIdLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Session: -"
+
+[node name="RoomStatusLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "En attente des joueurs..."
+
+[node name="PlayersCountLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+text = "Joueurs connectes: 0"
+
+[node name="PlayersPanel" type="PanelContainer" parent="UI/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 150)
+
+[node name="PlayersScroll" type="ScrollContainer" parent="UI/Panel/Margin/VBox/PlayersPanel"]
+layout_mode = 2
+
+[node name="PlayersList" type="VBoxContainer" parent="UI/Panel/Margin/VBox/PlayersPanel/PlayersScroll"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Footer" type="HBoxContainer" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LaunchButton" type="Button" parent="UI/Panel/Margin/VBox/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Lancer la partie"
+
+[node name="LeaveButton" type="Button" parent="UI/Panel/Margin/VBox/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Quitter session"

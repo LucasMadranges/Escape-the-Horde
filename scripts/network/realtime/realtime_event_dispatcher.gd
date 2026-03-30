@@ -11,6 +11,8 @@ static func dispatch(client: Node, event_name: String, data: Variant) -> void:
 			client._on_played_event(data)
 		REALTIME_CONFIG_SCRIPT.EVENT_JOINED:
 			client._on_joined_event(data)
+		REALTIME_CONFIG_SCRIPT.EVENT_LAUNCHED:
+			client._on_launched_event(data)
 		REALTIME_CONFIG_SCRIPT.EVENT_STATE:
 			client._on_state_event(data)
 		REALTIME_CONFIG_SCRIPT.EVENT_ERROR:

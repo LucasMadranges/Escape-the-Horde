@@ -8,6 +8,7 @@ const REALTIME_EVENT_DISPATCHER_SCRIPT := preload("res://scripts/network/realtim
 signal connected(socket_id: String)
 signal played(game_state: Dictionary)
 signal joined(game_state: Dictionary)
+signal launched(game_state: Dictionary)
 signal game_state_updated(game_state: Dictionary)
 signal player_sync_received(payload: Dictionary)
 signal zombie_spawn_received(payload: Dictionary)
@@ -81,6 +82,10 @@ func join_existing_game() -> void:
 	_join_game(str(result.get("gameId", "")))
 
 
+func join_game_by_id(game_id: String) -> void:
+	_join_game(game_id)
+
+
 func _join_game(game_id: String) -> void:
 	if game_id.is_empty():
 		emit_signal("realtime_error", "Game ID invalide")
@@ -135,6 +140,12 @@ func _on_joined_event(data: Dictionary) -> void:
 	current_game_id = str(data.get("gameId", ""))
 	last_game_state = data
 	emit_signal("joined", data)
+
+
+func _on_launched_event(data: Dictionary) -> void:
+	current_game_id = str(data.get("gameId", current_game_id))
+	last_game_state = data
+	emit_signal("launched", data)
 
 
 func _on_state_event(data: Dictionary) -> void:
@@ -276,6 +287,15 @@ func send_player_dead() -> void:
 		return
 
 	_send_event("game:player_dead", {})
+
+
+func launch_game() -> void:
+	if not _can_send(true):
+		return
+
+	_send_event("game:launch", {
+		"gameId": current_game_id,
+	})
 
 
 func request_game_state() -> void:
