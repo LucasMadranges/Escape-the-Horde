@@ -5,11 +5,13 @@ const MAX_HEALTH := 100
 const SPRITE_SCALE := Vector2(4.0, 4.0)
 const ARENA_HALF := Vector2(1100.0, 800.0)
 const PLAYER_STATUS_CONTROLLER_SCRIPT := preload("res://scripts/game/player/player_status_controller.gd")
+const FIELD_OF_VIEW_SCRIPT := preload("res://scripts/field_of_view.gd")
 
 var health := MAX_HEALTH
 var life_state_name := "alive"
 var bullet_scene := preload("res://scenes/bullet.tscn")
 var status_controller: Node
+var field_of_view: Node2D
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
@@ -28,6 +30,14 @@ func _ready() -> void:
 	add_child(status_controller)
 	if status_controller.has_method("setup"):
 		status_controller.setup(self, camera, MAX_HEALTH)
+
+	# Initialiser le système de champ de vision (détection + tir automatique)
+	field_of_view = FIELD_OF_VIEW_SCRIPT.new()
+	field_of_view.name = "FieldOfView"
+	field_of_view.fov_angle = 90.0
+	field_of_view.fov_distance = 400.0
+	field_of_view.shoot_cooldown = 0.3
+	add_child(field_of_view)
 
 
 func _setup_light() -> void:
