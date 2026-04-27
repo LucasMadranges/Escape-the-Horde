@@ -17,10 +17,10 @@ export const databaseProviders = [
         database: configService.getOrThrow<string>('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         // En prod : jamais de synchronize automatique (risque de perte de données)
-        synchronize: !isProd,
+        synchronize: !isProd || !configService.get<string>('POSTGRES_SSL_CA'),
         // En dev : logs SQL complets ; en prod : uniquement les erreurs
         logging: isProd ? ['error', 'warn'] : true,
-        ...(isProd && {
+        ...(isProd && configService.get<string>('POSTGRES_SSL_CA') && {
           ssl: {
             rejectUnauthorized: true,
             ca: configService.get<string>('POSTGRES_SSL_CA'),
