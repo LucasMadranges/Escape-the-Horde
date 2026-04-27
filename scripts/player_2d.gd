@@ -30,7 +30,7 @@ func _ready() -> void:
 	add_to_group("player")
 	scale = SPRITE_SCALE
 	collision_layer = 1
-	collision_mask = 2
+	collision_mask = 2 | 8  # zombies (layer 2) + murs (layer 4)
 	_setup_animations()
 	_setup_light()
 

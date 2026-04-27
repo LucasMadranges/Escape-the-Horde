@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
-const SPEED := 200.0
-const SPRITE_SCALE := Vector2(4.0, 4.0)
+const SPEED := 100.0
+const SPRITE_SCALE := Vector2(1.0, 1.0)
 const ARENA_HALF := Vector2(1100.0, 800.0)
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -12,7 +12,7 @@ func _ready() -> void:
 	add_to_group("player")
 	scale = SPRITE_SCALE
 	collision_layer = 1
-	collision_mask = 0
+	collision_mask = 1
 	_setup_animations()
 	_setup_light()
 
