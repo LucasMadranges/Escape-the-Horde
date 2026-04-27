@@ -6,12 +6,14 @@ const SPRITE_SCALE := Vector2(4.0, 4.0)
 const ARENA_HALF := Vector2(1100.0, 800.0)
 const PLAYER_STATUS_CONTROLLER_SCRIPT := preload("res://scripts/game/player/player_status_controller.gd")
 const FIELD_OF_VIEW_SCRIPT := preload("res://scripts/field_of_view.gd")
+const FOV_OVERLAY_SCRIPT := preload("res://scripts/fov_overlay.gd")
 
 var health := MAX_HEALTH
 var life_state_name := "alive"
 var bullet_scene := preload("res://scenes/bullet.tscn")
 var status_controller: Node
 var field_of_view: Node2D
+var _fov_canvas_layer: CanvasLayer
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
@@ -38,6 +40,25 @@ func _ready() -> void:
 	field_of_view.fov_distance = 400.0
 	field_of_view.shoot_cooldown = 0.3
 	add_child(field_of_view)
+
+	_fov_canvas_layer = CanvasLayer.new()
+	_fov_canvas_layer.layer = 10
+	get_parent().add_child(_fov_canvas_layer)
+
+	var fov_overlay := FOV_OVERLAY_SCRIPT.new()
+	fov_overlay.name = "FovOverlay"
+	_fov_canvas_layer.add_child(fov_overlay)
+
+	var rect := ColorRect.new()
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rect.material = fov_overlay.get_shader_material()
+	_fov_canvas_layer.add_child(rect)
+
+	field_of_view.visibility_polygon_updated.connect(
+		func(origin: Vector2, arc: PackedVector2Array) -> void:
+			fov_overlay.on_visibility_polygon_updated(origin, arc)
+	)
 
 
 func _setup_light() -> void:
@@ -131,9 +152,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _shoot() -> void:
-	var b := bullet_scene.instantiate()
 	var mouse_world := get_global_mouse_position()
-	b.direction = (mouse_world - global_position).normalized()
+	_shoot_at((mouse_world - global_position).normalized())
+
+
+func _shoot_at(direction: Vector2) -> void:
+	var b := bullet_scene.instantiate()
+	b.direction = direction
 	b.global_position = global_position
 	var root := get_parent()
 	if root.has_node("Bullets"):

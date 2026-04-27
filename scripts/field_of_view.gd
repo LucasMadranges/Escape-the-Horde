@@ -3,15 +3,25 @@ extends Node2D
 
 signal target_in_fov(target: Node2D)
 signal target_left_fov(target: Node2D)
+signal visibility_polygon_updated(origin: Vector2, arc_points: PackedVector2Array)
 
 ## Angle du champ de vision en degrés
-@export var fov_angle: float = 60.0
+@export var fov_angle: float = 90.0
 
-## Distance maximale de détection
-@export var fov_distance: float = 300.0
+## Distance maximale de détection (pixels monde)
+@export var fov_distance: float = 400.0
 
 ## Délai de tir (secondes)
 @export var shoot_cooldown: float = 0.3
+
+## Pas angulaire des raycasts (degrés) — plus petit = plus précis mais plus coûteux
+@export var ray_step_degrees: float = 2.0
+
+## Opacité de l'overlay sombre (0 = transparent, 1 = noir total)
+@export var overlay_alpha: float = 0.85
+
+## Masque de couche physique des murs (Layer 4 = valeur 8)
+@export_flags_2d_physics var wall_layer_mask: int = 8
 
 var _current_target: Node2D = null
 var _shoot_timer: float = 0.0
@@ -19,6 +29,7 @@ var _player: CharacterBody2D
 
 ## Zombies actuellement dans le FOV
 var targets_in_fov: Array[Node2D] = []
+var _visibility_arc: PackedVector2Array = PackedVector2Array()
 
 
 func _ready() -> void:
@@ -29,10 +40,47 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_shoot_timer -= delta
+	_visibility_arc = _cast_visibility_polygon()
+	visibility_polygon_updated.emit(_player.global_position, _visibility_arc)
 	_update_fov()
 	_find_closest_target()
 	_try_shoot()
-	queue_redraw()  # Redessiner le cône chaque frame
+	queue_redraw()
+
+## Lance des rayons dans le cône et retourne les points de collision (coordonnées monde)
+func _cast_visibility_polygon() -> PackedVector2Array:
+	if not _player:
+		return PackedVector2Array()
+
+	var aim_direction := _player.get_global_mouse_position() - _player.global_position
+	if aim_direction.length_squared() < 0.001:
+		return PackedVector2Array()
+
+	var space_state := get_world_2d().direct_space_state
+	var origin := _player.global_position
+	var aim_angle := aim_direction.normalized().angle()
+	var half_fov := deg_to_rad(fov_angle / 2.0)
+	var step := deg_to_rad(ray_step_degrees)
+
+	var arc := PackedVector2Array()
+	var num_rays := int(ceil(fov_angle / ray_step_degrees)) + 1
+
+	for i in range(num_rays):
+		var angle := aim_angle - half_fov + i * step
+		var dir := Vector2(cos(angle), sin(angle))
+		var query := PhysicsRayQueryParameters2D.create(
+			origin, origin + dir * fov_distance, wall_layer_mask
+		)
+		query.exclude = [_player.get_rid()]
+		var result := space_state.intersect_ray(query)
+
+		if result.is_empty():
+			arc.append(origin + dir * fov_distance)
+		else:
+			arc.append(result.position)
+
+	return arc
+
 
 ## Met à jour la liste des zombies dans le FOV
 func _update_fov() -> void:
@@ -53,28 +101,34 @@ func _update_fov() -> void:
 	targets_in_fov = new_targets
 
 
-## Vérifie si un zombie est dans le champ de vision
 func _is_in_fov(target: Node2D) -> bool:
 	if not target or not _player:
 		return false
 
-	var to_target = target.global_position - _player.global_position
-	var distance = to_target.length()
+	var to_target := target.global_position - _player.global_position
+	var distance := to_target.length()
 
-	# Vérifier la distance
 	if distance > fov_distance or distance < 1.0:
 		return false
 
-	# Vérifier l'angle
-	var aim_direction = _player.get_global_mouse_position() - _player.global_position
+	var aim_direction := _player.get_global_mouse_position() - _player.global_position
 	if aim_direction.length_squared() < 0.001:
 		return false
 
-	var aim_angle = aim_direction.normalized().angle()
-	var target_angle = to_target.normalized().angle()
-	var angle_diff = angle_difference(aim_angle, target_angle)
+	var aim_angle := aim_direction.normalized().angle()
+	var target_angle := to_target.normalized().angle()
+	var angle_diff := angle_difference(aim_angle, target_angle)
 
-	return abs(angle_diff) <= deg_to_rad(fov_angle / 2.0)
+	if abs(angle_diff) > deg_to_rad(fov_angle / 2.0):
+		return false
+
+	var space_state := get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(
+		_player.global_position, target.global_position, wall_layer_mask
+	)
+	query.exclude = [_player.get_rid()]
+	var result := space_state.intersect_ray(query)
+	return result.is_empty()
 
 
 ## Calcule la différence d'angle (retourne une valeur entre -PI et PI)
@@ -126,26 +180,11 @@ func _try_shoot() -> void:
 
 ## Tire en direction de la cible
 func _shoot_at_target(target: Node2D) -> void:
-	if not _player.has_method("_shoot"):
-		push_error("Le joueur n'a pas de méthode _shoot")
+	if not _player.has_method("_shoot_at"):
+		push_error("FieldOfView: le joueur n'a pas de méthode _shoot_at")
 		return
-
-	# Sauvegarder la position actuelle de la souris
-	var original_mouse_pos = _player.get_global_mouse_position()
-
-	# Simuler un clic en changeant temporairement la position de la souris
-	var target_pos = target.global_position
-	_player.global_position  # Juste une référence pour éviter l'erreur
-
-	# Appeler directement la fonction _shoot avec la direction
-	var b = _player.bullet_scene.instantiate()
-	b.direction = (target_pos - _player.global_position).normalized()
-	b.global_position = _player.global_position
-	var root = _player.get_parent()
-	if root.has_node("Bullets"):
-		root.get_node("Bullets").add_child(b)
-	else:
-		root.add_child(b)
+	var direction := (target.global_position - _player.global_position).normalized()
+	_player._shoot_at(direction)
 
 
 ## Retourne la cible actuelle
@@ -153,69 +192,41 @@ func get_current_target() -> Node2D:
 	return _current_target
 
 
-## Retourne l'angle du FOV
-func get_fov_angle() -> float:
-	return fov_angle
-
-
-## Retourne la distance du FOV
-func get_fov_distance() -> float:
-	return fov_distance
-
-
 ## Visualise le champ de vision avec effet lampe de poche blanc chaud
 func _draw() -> void:
-	if not _player:
+	if not _player or _visibility_arc.is_empty():
 		return
 
-	var aim_direction = _player.get_global_mouse_position() - _player.global_position
-	if aim_direction.length_squared() < 0.001:
-		return
+	# Polygone en éventail en espace local (to_local corrige le scale 4x du joueur)
+	var fan := PackedVector2Array()
+	fan.append(Vector2.ZERO)
+	for world_point in _visibility_arc:
+		fan.append(to_local(world_point))
+	fan.append(Vector2.ZERO)
 
-	var aim_angle = aim_direction.normalized().angle()
-	var half_fov = deg_to_rad(fov_angle / 2.0)
+	# Gradient blanc chaud → orange sur 4 couches
+	var color_center := Color(1.0, 0.85, 0.4)
+	var color_edge := Color(0.8, 0.5, 0.2)
+	for i in range(4):
+		var t := float(i) / 3.0
+		var col := color_center.lerp(color_edge, t)
+		col.a = 0.35 * (1.0 - t * 0.6)
+		draw_colored_polygon(fan, col)
 
-	# Effet lampe de poche blanc chaud : dessiner plusieurs couches avec alphas décroissants
-	var layers = 5  # Nombre de couches pour le dégradé
-	var angle_step = deg_to_rad(1.0)
-	
-	for layer in range(layers):
-		var progress = float(layer) / float(layers)  # 0.0 à 1.0
-		var current_distance = fov_distance * progress
-		var alpha = 0.25 * (1.0 - progress)  # Décroît de 0.25 à 0
-		
-		# Couleur blanc chaud/orange (comme une lampe de poche)
-		# Au centre : blanc chaud, aux bords : orange plus foncé
-		var color_center = Color(1.0, 0.85, 0.4)  # Blanc chaud
-		var color_edge = Color(0.8, 0.5, 0.2)    # Orange chaud
-		var color = color_center.lerp(color_edge, progress)
-		color.a = alpha
-		
-		if current_distance < 10.0:  # Éviter les polygones trop petits
-			continue
-		
-		# Créer le polygone pour cette couche
-		var points: PackedVector2Array = []
-		points.append(Vector2.ZERO)
-		
-		var current_angle = aim_angle - half_fov
-		var end_angle = aim_angle + half_fov
-		
-		while current_angle <= end_angle:
-			points.append(Vector2(cos(current_angle), sin(current_angle)) * current_distance)
-			current_angle += angle_step
-		
-		points.append(Vector2.ZERO)
-		
-		# Dessiner cette couche
-		draw_colored_polygon(points, color)
-	
-	# Dessiner les limites du FOV en orange/blanc chaud
-	var left_end = Vector2(cos(aim_angle - half_fov), sin(aim_angle - half_fov)) * fov_distance
-	var right_end = Vector2(cos(aim_angle + half_fov), sin(aim_angle + half_fov)) * fov_distance
-	
-	var edge_color = Color(1.0, 0.85, 0.4)
-	draw_line(Vector2.ZERO, left_end, edge_color, 2.0)
-	draw_line(Vector2.ZERO, right_end, edge_color, 2.0)
-	draw_line(left_end, right_end, edge_color, 2.0)
+	# Bords du cône
+	if fan.size() >= 3:
+		var edge_col := Color(1.0, 0.85, 0.4, 0.5)
+		draw_line(Vector2.ZERO, fan[1], edge_col, 1.5)
+		draw_line(Vector2.ZERO, fan[fan.size() - 2], edge_col, 1.5)
+
+	if _current_target and is_instance_valid(_current_target):
+		_draw_target_indicator(_current_target)
+
+
+func _draw_target_indicator(target: Node2D) -> void:
+	var local_pos := to_local(target.global_position)
+	var s := 5.0 / _player.scale.x
+	var tip := local_pos + Vector2(0, -10.0 / _player.scale.x)
+	var tri := PackedVector2Array([tip, tip + Vector2(-s, -s * 1.5), tip + Vector2(s, -s * 1.5)])
+	draw_colored_polygon(tri, Color(1.0, 0.25, 0.25, 0.9))
 
