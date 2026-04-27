@@ -23,12 +23,21 @@ func _ready() -> void:
 	if not realtime_client.realtime_error.is_connected(_on_realtime_error):
 		realtime_client.realtime_error.connect(_on_realtime_error)
 
+	$UI/CenterContainer/VBox/UsernameInput.text_changed.connect(func(text: String) -> void:
+		var trimmed := text.strip_edges()
+		if not trimmed.is_empty():
+			GameData.username = trimmed
+			realtime_client.username = trimmed
+	)
+
 	$UI/CenterContainer/VBox/PlayButton.pressed.connect(
 		func():
+			_apply_username()
 			realtime_client.play()
 	)
 	$UI/CenterContainer/VBox/JoinButton.pressed.connect(
 		func():
+			_apply_username()
 			get_tree().change_scene_to_file(SESSIONS_BROWSER_SCENE_PATH)
 	)
 	$UI/CenterContainer/VBox/SettingsButton.pressed.connect(func(): settings_panel.show())
@@ -38,6 +47,19 @@ func _ready() -> void:
 	$UI/CenterContainer/VBox/TestShopButton.pressed.connect(
 		func(): get_tree().change_scene_to_file("res://scenes/shop.tscn")
 	)
+	$UI/CenterContainer/VBox/TestLevel2Button.pressed.connect(
+		func():
+			GameData.current_level = 2
+			get_tree().change_scene_to_file("res://scenes/level_2.tscn")
+	)
+
+
+func _apply_username() -> void:
+	var input := $UI/CenterContainer/VBox/UsernameInput as LineEdit
+	var trimmed := input.text.strip_edges()
+	if not trimmed.is_empty():
+		GameData.username = trimmed
+		realtime_client.username = trimmed
 
 
 func _on_played(_game_state: Dictionary) -> void:

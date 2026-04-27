@@ -293,6 +293,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
     const payload = {
       playerId: presence.playerId,
+      username: this.realtimeService.getUsername(presence.playerId),
       x: body.x,
       y: body.y,
       vx: typeof body.vx === 'number' ? body.vx : 0.0,

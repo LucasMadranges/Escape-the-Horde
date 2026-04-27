@@ -20,6 +20,7 @@ signal player_revive_started_received(payload: Dictionary)
 signal player_revive_canceled_received(payload: Dictionary)
 signal player_revived_received(payload: Dictionary)
 signal player_dead_received(payload: Dictionary)
+signal scene_change_received(payload: Dictionary)
 signal realtime_error(message: String)
 
 var ws := WebSocketPeer.new()
@@ -36,7 +37,10 @@ var last_game_state: Dictionary = {}
 func _ready() -> void:
 	randomize()
 	player_id = REALTIME_IDENTITY_SCRIPT.build_player_id()
-	username = "Player_%s" % player_id.substr(0, 6)
+	if not GameData.username.is_empty():
+		username = GameData.username
+	else:
+		username = "Player_%s" % player_id.substr(0, 6)
 	http_request = HTTPRequest.new()
 	add_child(http_request)
 	connect_socket()
@@ -203,6 +207,7 @@ func sync_player_state(position: Vector2, velocity: Vector2) -> void:
 		"y": position.y,
 		"vx": velocity.x,
 		"vy": velocity.y,
+		"username": username,
 	})
 
 
@@ -287,6 +292,17 @@ func send_player_dead() -> void:
 		return
 
 	_send_event("game:player_dead", {})
+
+
+func send_scene_change(target: String) -> void:
+	if not _can_send(true):
+		return
+
+	_send_event("game:scene_change", {"target": target})
+
+
+func _on_scene_change_event(data: Dictionary) -> void:
+	scene_change_received.emit(data)
 
 
 func launch_game() -> void:

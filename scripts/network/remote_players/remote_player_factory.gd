@@ -16,7 +16,14 @@ static func create(player_id: String, username: String) -> CharacterBody2D:
 	var name_label := Label.new()
 	name_label.name = "Name"
 	name_label.text = username
-	name_label.position = Vector2(-40, -34)
+	name_label.scale = Vector2(0.25, 0.25)
+	name_label.custom_minimum_size = Vector2(200, 0)
+	name_label.position = Vector2(-25, -26)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.add_theme_font_size_override("font_size", 14)
+	name_label.add_theme_color_override("font_color", Color(0.4, 0.9, 1.0))
+	name_label.add_theme_constant_override("outline_size", 3)
+	name_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	holder.add_child(name_label)
 
 	var status_label := Label.new()

@@ -21,8 +21,6 @@ var status_controller: Node
 var field_of_view: Node2D
 var _fov_canvas_layer: CanvasLayer
 var _shoot_timer: float = 0.0
-var _hud_layer: CanvasLayer
-var _hud_slots: Array = []
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
@@ -68,7 +66,6 @@ func _ready() -> void:
 			fov_overlay.on_visibility_polygon_updated(origin, arc)
 	)
 
-	_setup_weapon_hud()
 
 
 func _setup_light() -> void:
@@ -137,7 +134,6 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	if status_controller and status_controller.has_method("process_update"):
 		status_controller.process_update(delta)
-	_refresh_weapon_hud()
 
 
 func _get_input() -> Vector2:
@@ -204,51 +200,6 @@ func _switch_slot(slot: int) -> void:
 		return
 	GameData.active_slot = slot
 	GameData.active_weapon = GameData.weapon_slots[slot]
-
-
-func _setup_weapon_hud() -> void:
-	_hud_layer = CanvasLayer.new()
-	_hud_layer.layer = 11
-	add_child(_hud_layer)
-	for i in 2:
-		var bg := ColorRect.new()
-		bg.color = Color(0, 0, 0, 0.45)
-		bg.anchor_top = 1.0
-		bg.anchor_bottom = 1.0
-		bg.offset_left = 10.0
-		bg.offset_right = 200.0
-		bg.offset_top = -62.0 + i * 32.0
-		bg.offset_bottom = bg.offset_top + 28.0
-		_hud_layer.add_child(bg)
-
-		var lbl := Label.new()
-		lbl.anchor_top = 1.0
-		lbl.anchor_bottom = 1.0
-		lbl.offset_left = 12.0
-		lbl.offset_right = 198.0
-		lbl.offset_top = -61.0 + i * 32.0
-		lbl.offset_bottom = lbl.offset_top + 26.0
-		lbl.add_theme_font_size_override("font_size", 14)
-		lbl.add_theme_constant_override("outline_size", 2)
-		lbl.add_theme_color_override("font_outline_color", Color.BLACK)
-		_hud_layer.add_child(lbl)
-		_hud_slots.append(lbl)
-	_refresh_weapon_hud()
-
-
-func _refresh_weapon_hud() -> void:
-	if _hud_slots.size() < 2:
-		return
-	const NAMES := {"pistol": "Pistolet", "shotgun": "Fusil a pompe", "rifle": "Fusil d'assaut"}
-	for i in 2:
-		var w: String = GameData.weapon_slots[i]
-		var wname: String = NAMES.get(w, "-") if w != "" else "-"
-		var active := i == GameData.active_slot
-		_hud_slots[i].text = ("► " if active else "  ") + "[%d] %s" % [i + 1, wname]
-		_hud_slots[i].add_theme_color_override(
-			"font_color",
-			Color(1.0, 0.88, 0.2) if active else Color(0.6, 0.6, 0.6)
-		)
 
 
 func _update_animation(move_dir: Vector2) -> void:

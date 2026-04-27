@@ -92,7 +92,7 @@ func _on_game_state_updated(game_state: Dictionary) -> void:
 		if player_id.is_empty() or player_id == local_player_id:
 			continue
 
-		var username := str(player_data.get("username", player_id))
+		var username := _display_name(str(player_data.get("username", player_id)), player_id)
 		var has_status: bool = player_data.has("status")
 		var status: String = condition_store.get_player_status(player_id)
 		if has_status:
@@ -128,7 +128,8 @@ func _on_player_sync_received(payload: Dictionary) -> void:
 	if player_id.is_empty() or player_id == local_player_id:
 		return
 
-	remote_visuals.ensure_player(player_id, player_id)
+	var sync_username := _display_name(str(payload.get("username", player_id)), player_id)
+	remote_visuals.ensure_player(player_id, sync_username)
 	if not remote_visuals.has(player_id):
 		return
 
@@ -239,3 +240,9 @@ func get_revive_state(player_id: String) -> Dictionary:
 
 func get_alive_remote_nodes() -> Array:
 	return remote_visuals.get_alive_remote_nodes()
+
+
+func _display_name(raw: String, player_id: String) -> String:
+	if raw.is_empty() or raw == player_id or (raw.length() == 36 and raw.count("-") == 4):
+		return "Player_%s" % player_id.substr(0, 6)
+	return raw

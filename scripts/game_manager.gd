@@ -22,6 +22,8 @@ var zombie_sync_timer := 0.0
 var zombie_registry: RefCounted
 var spawn_markers: Array[Marker2D] = []
 var last_spawn_marker: Marker2D
+var _enemies_ever_spawned := false
+var _shop_triggered := false
 
 @onready var enemies_node: Node2D = get_parent().get_node("Enemies")
 @onready var spawn_zones_root: Node = get_parent().get_node_or_null("ZombieSpawnZones")
@@ -45,6 +47,8 @@ func _ready() -> void:
 
 	realtime_client = get_tree().root.get_node_or_null("RealtimeClient")
 	if realtime_client:
+		if realtime_client.has_signal("scene_change_received") and not realtime_client.scene_change_received.is_connected(_on_scene_change_received):
+			realtime_client.scene_change_received.connect(_on_scene_change_received)
 		if realtime_client.has_signal("game_state_updated") and not realtime_client.game_state_updated.is_connected(_on_game_state_updated):
 			realtime_client.game_state_updated.connect(_on_game_state_updated)
 		if realtime_client.has_signal("zombie_spawn_received") and not realtime_client.zombie_spawn_received.is_connected(_on_zombie_spawn_received):
@@ -77,6 +81,19 @@ func _announce_wave() -> void:
 	spawn_timer = 0.5
 
 
+func _go_to_shop() -> void:
+	await get_tree().create_timer(1.5).timeout
+	GameData.current_level += 1
+	get_tree().change_scene_to_file("res://scenes/shop.tscn")
+
+
+func _on_scene_change_received(payload: Dictionary) -> void:
+	var target: String = payload.get("target", "")
+	if target == "shop":
+		GameData.current_level += 1
+		get_tree().change_scene_to_file("res://scenes/shop.tscn")
+
+
 func _process(delta: float) -> void:
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 	if is_instance_valid(player) and player.has_method("take_damage"):
@@ -86,13 +103,23 @@ func _process(delta: float) -> void:
 		_update_host_zombie_targets()
 		_sync_zombies_to_session(delta)
 
+	var alive := enemies_node.get_child_count()
+
+	if not _shop_triggered:
+		if alive > 0:
+			_enemies_ever_spawned = true
+		elif _enemies_ever_spawned:
+			_shop_triggered = true
+			GameData.wave_reached = wave
+			enemies_label.text = "Ennemis: 0"
+			_go_to_shop()
+
 	if not wave_active:
 		return
 
 	if not is_host:
 		return
 
-	var alive := enemies_node.get_child_count()
 	enemies_label.text = "Ennemis: %d" % alive
 
 	if enemies_spawned < enemies_per_wave:
@@ -103,11 +130,6 @@ func _process(delta: float) -> void:
 			spawn_timer = spawn_interval
 	elif alive == 0:
 		wave_active = false
-		wave += 1
-		GameData.wave_reached = wave
-		enemies_per_wave = BASE_ENEMIES + (wave - 1) * 3
-		enemies_label.text = "Ennemis: 0"
-		_announce_wave()
 
 
 func _spawn_zombie() -> void:

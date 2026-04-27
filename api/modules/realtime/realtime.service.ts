@@ -221,6 +221,10 @@ export class RealtimeService {
     return updatedState;
   }
 
+  getUsername(playerId: string): string {
+    return this.usernameByPlayer.get(playerId) ?? `Player-${playerId.slice(0, 6)}`;
+  }
+
   async isHost(gameId: string, playerId: string): Promise<boolean> {
     const state = await this.getGame(gameId);
     return state.hostPlayerId === playerId;

@@ -1,0 +1,506 @@
+[gd_scene format=3 uid="uid://dq8m3k5fp2nav"]
+
+[ext_resource type="Script" uid="uid://b4brq45kb7fvs" path="res://scripts/player_2d.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://c384xp4tlohvp" path="res://scripts/game_manager.gd" id="2_gm"]
+[ext_resource type="PackedScene" uid="uid://c3hvfvhkiwmm8" path="res://scenes/zombie.tscn" id="3_zombie"]
+[ext_resource type="Script" uid="uid://d5m5a11ypo23" path="res://scripts/pause_layer.gd" id="4_pause_layer"]
+[ext_resource type="PackedScene" uid="uid://d1splvmoetut7" path="res://scenes/pause_menu.tscn" id="5_pause_menu"]
+[ext_resource type="Script" uid="uid://dsl7uu8ws3dbs" path="res://scripts/network/session_sync.gd" id="6_session_sync"]
+[ext_resource type="Texture2D" uid="uid://d2ric3m5akt33" path="res://assets/Objects/Gray-brick.png" id="7_gray_brick"]
+[ext_resource type="Texture2D" uid="uid://sqp81y36pkug" path="res://assets/Objects/Metal-Plates.png" id="8_metal_plates"]
+[ext_resource type="Texture2D" uid="uid://by16xnkblpim5" path="res://assets/Objects/Buildings/Brick-wall_1_Lying.png" id="9_wall_lie"]
+[ext_resource type="Texture2D" uid="uid://ckrfjrdpywihd" path="res://assets/Objects/Buildings/Destroyed-wall_not-corner.png" id="10_wall_break"]
+[ext_resource type="Texture2D" uid="uid://hdsxftx6teax" path="res://assets/Objects/Buildings/Destroyed-wall_corner.png" id="11_wall_corner"]
+[ext_resource type="Texture2D" uid="uid://wew82ldpdqug" path="res://assets/Objects/Buildings/Door_4_Metal.png" id="12_door_metal"]
+[ext_resource type="Texture2D" uid="uid://cjyvwvyqkmo4h" path="res://assets/Objects/Buildings/Door_2_Ajar_Beige.png" id="13_door_ajar"]
+[ext_resource type="Texture2D" uid="uid://lux7ynlu88ap" path="res://assets/Objects/Buildings/Hatch_1_Open.png" id="14_hatch_open"]
+[ext_resource type="Texture2D" uid="uid://bld16avylce8o" path="res://assets/Objects/Buildings/Hatch_1_Closed.png" id="15_hatch_closed"]
+[ext_resource type="Texture2D" uid="uid://cb1dhl8qhftnm" path="res://assets/Objects/Manhole.png" id="16_manhole"]
+[ext_resource type="Texture2D" uid="uid://xas5gdh3m7xf" path="res://assets/Objects/Barrel_rust_red_1.png" id="17_barrel"]
+[ext_resource type="Texture2D" uid="uid://c6g32x5b35drf" path="res://assets/Objects/Pallet_1.png" id="18_pallet"]
+[ext_resource type="Texture2D" uid="uid://c7dirkw2t3pua" path="res://assets/Objects/Bench_4_side_Overgrown_Dark-Green.png" id="19_bench"]
+[ext_resource type="Texture2D" uid="uid://dvfgec4cgwd7w" path="res://assets/Objects/Buildings/layered-posters_2_For-ground-and-walls.png" id="38_posters"]
+[ext_resource type="Texture2D" uid="uid://dgqoarwjhj6pq" path="res://assets/Objects/Windows/Window_11_Boarded-up_gray.png" id="40_window_boarded"]
+[ext_resource type="Texture2D" uid="uid://ckukrrosvpcku" path="res://assets/Objects/Buildings/Roof-hole_2_Red.png" id="41_roof_hole"]
+[ext_resource type="Texture2D" uid="uid://dcnng6lfuiayr" path="res://assets/Objects/Buildings/Air-vent_2_rusty.png" id="42_air_vent"]
+[ext_resource type="Texture2D" uid="uid://cy3cdhfavh335" path="res://assets/Objects/Buildings/Ladder_Balcony_Metal_1_Rusty.png" id="43_ladder"]
+[ext_resource type="Script" uid="uid://brx8p7wxh8chs" path="res://scripts/map_effects.gd" id="48_map_fx"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="49_hud"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 6.0
+
+[node name="Game" type="Node2D"]
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.07, 0.06, 0.055, 1)
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.16, 0.13, 0.11, 1)
+polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, 1450, -2050, 1450)
+
+[node name="NorthOfficeZone" type="Polygon2D" parent="."]
+color = Color(0.13, 0.10, 0.085, 1)
+polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, -430, -2050, -430)
+
+[node name="SouthStorageZone" type="Polygon2D" parent="."]
+color = Color(0.12, 0.095, 0.075, 1)
+polygon = PackedVector2Array(-2050, 430, 2050, 430, 2050, 1450, -2050, 1450)
+
+[node name="CentralCorridor" type="Polygon2D" parent="."]
+color = Color(0.175, 0.14, 0.115, 1)
+polygon = PackedVector2Array(-2050, -430, 2050, -430, 2050, 430, -2050, 430)
+
+[node name="WestLobbyAccent" type="Polygon2D" parent="."]
+color = Color(0.14, 0.11, 0.09, 1)
+polygon = PackedVector2Array(-2050, -1450, -1550, -1450, -1550, 1450, -2050, 1450)
+
+[node name="EastElevatorAccent" type="Polygon2D" parent="."]
+color = Color(0.14, 0.11, 0.09, 1)
+polygon = PackedVector2Array(1550, -1450, 2050, -1450, 2050, 1450, 1550, 1450)
+
+[node name="FloorGrime" type="Polygon2D" parent="."]
+color = Color(0.09, 0.07, 0.06, 0.35)
+polygon = PackedVector2Array(-1200, -180, 1200, -180, 1200, 180, -1200, 180)
+
+[node name="WallDividers" type="Node2D" parent="."]
+
+[node name="HorzWallNorthWest" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(-2050, -450, -380, -450, -380, -410, -2050, -410)
+
+[node name="HorzWallNorthEast" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(380, -450, 2050, -450, 2050, -410, 380, -410)
+
+[node name="HorzWallSouthWest" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(-2050, 410, -380, 410, -380, 450, -2050, 450)
+
+[node name="HorzWallSouthEast" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(380, 410, 2050, 410, 2050, 450, 380, 450)
+
+[node name="VertWallWestNorth" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(-1570, -1450, -1530, -1450, -1530, -270, -1570, -270)
+
+[node name="VertWallWestSouth" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(-1570, 270, -1530, 270, -1530, 1450, -1570, 1450)
+
+[node name="VertWallEastNorth" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(1530, -1450, 1570, -1450, 1570, -270, 1530, -270)
+
+[node name="VertWallEastSouth" type="Polygon2D" parent="WallDividers"]
+color = Color(0.065, 0.05, 0.04, 1)
+polygon = PackedVector2Array(1530, 270, 1570, 270, 1570, 1450, 1530, 1450)
+
+[node name="MapDecor" type="Node2D" parent="."]
+
+[node name="NorthOffices" type="Node2D" parent="MapDecor"]
+
+[node name="DeskA" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-900, -800)
+scale = Vector2(4, 4)
+texture = ExtResource("19_bench")
+
+[node name="DeskB" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-400, -950)
+scale = Vector2(-4, 4)
+texture = ExtResource("19_bench")
+
+[node name="DeskC" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(500, -820)
+scale = Vector2(4, 4)
+texture = ExtResource("19_bench")
+
+[node name="DeskD" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(1100, -750)
+scale = Vector2(-4, 4)
+texture = ExtResource("19_bench")
+
+[node name="DeskE" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-100, -700)
+rotation = 1.5708
+scale = Vector2(4, 4)
+texture = ExtResource("19_bench")
+
+[node name="OfficeVentA" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-1200, -1100)
+scale = Vector2(4.2, 4.2)
+texture = ExtResource("42_air_vent")
+
+[node name="OfficeVentB" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(1200, -1100)
+scale = Vector2(-4.2, 4.2)
+texture = ExtResource("42_air_vent")
+
+[node name="PosterA" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-680, -1280)
+scale = Vector2(4.3, 4.3)
+texture = ExtResource("38_posters")
+
+[node name="PosterB" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(700, -1280)
+scale = Vector2(-4.3, 4.3)
+texture = ExtResource("38_posters")
+
+[node name="OfficeBrick" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-1600, -1180)
+scale = Vector2(5, 5)
+texture = ExtResource("7_gray_brick")
+
+[node name="OfficeBrickRight" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(1620, -1180)
+scale = Vector2(-5, 5)
+texture = ExtResource("7_gray_brick")
+
+[node name="OfficeDestroyedWallA" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-250, -1060)
+scale = Vector2(5, 5)
+texture = ExtResource("10_wall_break")
+
+[node name="OfficeWindowNW" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(-1780, -900)
+scale = Vector2(4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="OfficeWindowNE" type="Sprite2D" parent="MapDecor/NorthOffices"]
+position = Vector2(1780, -900)
+scale = Vector2(-4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="CentralCorriderDecor" type="Node2D" parent="MapDecor"]
+
+[node name="CorridorBarrelA" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(-680, 80)
+scale = Vector2(4, 4)
+texture = ExtResource("17_barrel")
+
+[node name="CorridorBarrelB" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(-740, 130)
+scale = Vector2(4, 4)
+texture = ExtResource("17_barrel")
+
+[node name="CorridorMetalPlates" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(300, 200)
+scale = Vector2(5, 5)
+texture = ExtResource("8_metal_plates")
+
+[node name="CorridorDebris" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(-1100, -80)
+scale = Vector2(5, 5)
+texture = ExtResource("10_wall_break")
+
+[node name="CorridorLadder" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(1300, -280)
+scale = Vector2(4.2, 4.2)
+texture = ExtResource("43_ladder")
+
+[node name="CorridorPosterLeft" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(-1700, 240)
+scale = Vector2(4, 4)
+texture = ExtResource("38_posters")
+
+[node name="CorridorWindowWestTop" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(-1780, -250)
+scale = Vector2(4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="CorridorWindowWestBot" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(-1780, 250)
+scale = Vector2(4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="CorridorWindowEastTop" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(1780, -250)
+scale = Vector2(-4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="CorridorWindowEastBot" type="Sprite2D" parent="MapDecor/CentralCorriderDecor"]
+position = Vector2(1780, 250)
+scale = Vector2(-4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="SouthStorage" type="Node2D" parent="MapDecor"]
+
+[node name="PalletA" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(-880, 750)
+scale = Vector2(4, 4)
+texture = ExtResource("18_pallet")
+
+[node name="PalletB" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(-820, 820)
+scale = Vector2(-4, 4)
+texture = ExtResource("18_pallet")
+
+[node name="PalletC" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(750, 840)
+scale = Vector2(4, 4)
+texture = ExtResource("18_pallet")
+
+[node name="StorageBarrelA" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(480, 700)
+scale = Vector2(4, 4)
+texture = ExtResource("17_barrel")
+
+[node name="StorageBarrelB" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(540, 760)
+scale = Vector2(4, 4)
+texture = ExtResource("17_barrel")
+
+[node name="StorageBarrelC" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(-200, 880)
+scale = Vector2(4, 4)
+texture = ExtResource("17_barrel")
+
+[node name="StorageBrickLeft" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(-1600, 900)
+scale = Vector2(5, 5)
+texture = ExtResource("7_gray_brick")
+
+[node name="StorageBrickRight" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(1600, 900)
+scale = Vector2(-5, 5)
+texture = ExtResource("7_gray_brick")
+
+[node name="StorageDestroyedWall" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(200, 1200)
+scale = Vector2(5, 5)
+texture = ExtResource("10_wall_break")
+
+[node name="StorageVent" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(-500, 1280)
+scale = Vector2(4, 4)
+texture = ExtResource("42_air_vent")
+
+[node name="StorageWindowSW" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(-1780, 900)
+scale = Vector2(4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="StorageWindowSE" type="Sprite2D" parent="MapDecor/SouthStorage"]
+position = Vector2(1780, 900)
+scale = Vector2(-4, 4)
+texture = ExtResource("40_window_boarded")
+
+[node name="ZombieSpawnZones" type="Node2D" parent="."]
+
+[node name="NorthStairwell" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(0, -1210)
+
+[node name="StairDoor" type="Sprite2D" parent="ZombieSpawnZones/NorthStairwell"]
+scale = Vector2(5, 5)
+texture = ExtResource("12_door_metal")
+
+[node name="StairDoorAjar" type="Sprite2D" parent="ZombieSpawnZones/NorthStairwell"]
+position = Vector2(68, 22)
+scale = Vector2(4.5, 4.5)
+texture = ExtResource("13_door_ajar")
+
+[node name="NorthSpawnA" type="Marker2D" parent="ZombieSpawnZones/NorthStairwell"]
+position = Vector2(0, 110)
+
+[node name="NorthSpawnB" type="Marker2D" parent="ZombieSpawnZones/NorthStairwell"]
+position = Vector2(100, 90)
+
+[node name="SouthStairwell" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(-240, 1200)
+
+[node name="SouthStairDoor" type="Sprite2D" parent="ZombieSpawnZones/SouthStairwell"]
+scale = Vector2(5, 5)
+texture = ExtResource("12_door_metal")
+
+[node name="SouthSpawnA" type="Marker2D" parent="ZombieSpawnZones/SouthStairwell"]
+position = Vector2(0, -110)
+
+[node name="SouthSpawnB" type="Marker2D" parent="ZombieSpawnZones/SouthStairwell"]
+position = Vector2(100, -90)
+
+[node name="WestWindowBreach" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(-1790, -600)
+
+[node name="WestBreachCorner" type="Sprite2D" parent="ZombieSpawnZones/WestWindowBreach"]
+scale = Vector2(6, 6)
+texture = ExtResource("11_wall_corner")
+
+[node name="WestBreachDoor" type="Sprite2D" parent="ZombieSpawnZones/WestWindowBreach"]
+position = Vector2(54, 20)
+scale = Vector2(5, 5)
+texture = ExtResource("13_door_ajar")
+
+[node name="WestSpawnA" type="Marker2D" parent="ZombieSpawnZones/WestWindowBreach"]
+position = Vector2(130, 30)
+
+[node name="WestSpawnB" type="Marker2D" parent="ZombieSpawnZones/WestWindowBreach"]
+position = Vector2(120, 120)
+
+[node name="EastElevatorShaft" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(1780, 110)
+
+[node name="EastElevatorDoor" type="Sprite2D" parent="ZombieSpawnZones/EastElevatorShaft"]
+scale = Vector2(5, 5)
+texture = ExtResource("12_door_metal")
+
+[node name="EastElevatorWall" type="Sprite2D" parent="ZombieSpawnZones/EastElevatorShaft"]
+position = Vector2(-110, -30)
+scale = Vector2(4.8, 4.8)
+texture = ExtResource("9_wall_lie")
+
+[node name="EastSpawnA" type="Marker2D" parent="ZombieSpawnZones/EastElevatorShaft"]
+position = Vector2(-80, 90)
+
+[node name="EastSpawnB" type="Marker2D" parent="ZombieSpawnZones/EastElevatorShaft"]
+position = Vector2(-80, -80)
+
+[node name="NWSkylight" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(-1080, -880)
+
+[node name="NWRoofHole" type="Sprite2D" parent="ZombieSpawnZones/NWSkylight"]
+scale = Vector2(4.6, 4.6)
+texture = ExtResource("41_roof_hole")
+
+[node name="NWLadder" type="Sprite2D" parent="ZombieSpawnZones/NWSkylight"]
+position = Vector2(72, -46)
+scale = Vector2(4.1, 4.1)
+texture = ExtResource("43_ladder")
+
+[node name="NWSpawnA" type="Marker2D" parent="ZombieSpawnZones/NWSkylight"]
+position = Vector2(-10, 80)
+
+[node name="NWSpawnB" type="Marker2D" parent="ZombieSpawnZones/NWSkylight"]
+position = Vector2(72, 64)
+
+[node name="SEHatch" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(1100, 960)
+
+[node name="SEOpenHatch" type="Sprite2D" parent="ZombieSpawnZones/SEHatch"]
+scale = Vector2(4.4, 4.4)
+texture = ExtResource("14_hatch_open")
+
+[node name="SEManhole" type="Sprite2D" parent="ZombieSpawnZones/SEHatch"]
+position = Vector2(-72, 16)
+scale = Vector2(4.2, 4.2)
+texture = ExtResource("16_manhole")
+
+[node name="SESpawnA" type="Marker2D" parent="ZombieSpawnZones/SEHatch"]
+position = Vector2(-8, 88)
+
+[node name="SESpawnB" type="Marker2D" parent="ZombieSpawnZones/SEHatch"]
+position = Vector2(-90, 64)
+
+[node name="CentralRoofVent" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(620, -180)
+
+[node name="CentralRoofHole" type="Sprite2D" parent="ZombieSpawnZones/CentralRoofVent"]
+scale = Vector2(4.6, 4.6)
+texture = ExtResource("41_roof_hole")
+
+[node name="CentralLadder" type="Sprite2D" parent="ZombieSpawnZones/CentralRoofVent"]
+position = Vector2(68, -48)
+scale = Vector2(4.1, 4.1)
+texture = ExtResource("43_ladder")
+
+[node name="CentralSpawnA" type="Marker2D" parent="ZombieSpawnZones/CentralRoofVent"]
+position = Vector2(-10, 78)
+
+[node name="CentralSpawnB" type="Marker2D" parent="ZombieSpawnZones/CentralRoofVent"]
+position = Vector2(74, 62)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="RemotePlayers" type="Node2D" parent="."]
+
+[node name="Bullets" type="Node2D" parent="."]
+
+[node name="MapEffects" type="Node2D" parent="."]
+script = ExtResource("48_map_fx")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("1_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(1.27, 1.27)
+limit_left = -2050
+limit_top = -1450
+limit_right = 2050
+limit_bottom = 1450
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("2_gm")
+zombie_scene = ExtResource("3_zombie")
+
+[node name="SessionSync" type="Node" parent="."]
+script = ExtResource("6_session_sync")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="WaveLabel" type="Label" parent="UI"]
+visible = false
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 320.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "Vague 1"
+
+[node name="EnemiesLabel" type="Label" parent="UI"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -220.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Ennemis: 0"
+horizontal_alignment = 2
+
+[node name="HPLabel" type="Label" parent="UI"]
+visible = false
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -44.0
+offset_right = 220.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(0.35, 1, 0.35, 1)
+theme_override_font_sizes/font_size = 20
+text = "PV: 100"
+
+[node name="LevelLabel" type="Label" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 42.0
+offset_right = -10.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Niveau 2 — Etage"
+horizontal_alignment = 2
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("49_hud")
+
+[node name="PauseLayer" type="CanvasLayer" parent="."]
+process_mode = 3
+layer = 2
+script = ExtResource("4_pause_layer")
+
+[node name="PauseMenu" parent="PauseLayer" instance=ExtResource("5_pause_menu")]
+visible = false

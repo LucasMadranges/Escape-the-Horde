@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://b8cvsh0p1234"]
 
+[ext_resource type="Script" uid="uid://dsl7uu8ws3dbs" path="res://scripts/network/session_sync.gd" id="100_session_sync"]
 [ext_resource type="Script" path="res://scripts/shop.gd" id="1_shop"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="99_hud"]
 [ext_resource type="Script" path="res://scripts/shop_item.gd" id="2_shopitem"]
 [ext_resource type="Script" path="res://scripts/player_2d.gd" id="3_player"]
 [ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Pistol.png" id="4_pistol"]
@@ -348,3 +350,11 @@ text = "Approche une arme et appuie sur E"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
 theme_override_font_sizes/font_size = 13
+
+[node name="RemotePlayers" type="Node2D" parent="."]
+
+[node name="SessionSync" type="Node" parent="."]
+script = ExtResource("100_session_sync")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("99_hud")
