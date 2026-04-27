@@ -2,7 +2,10 @@ extends Node
 
 @export var zombie_scene: PackedScene
 
-const SPAWN_RADIUS := 600.0
+const SPAWN_RADIUS := 850.0
+const SPAWN_ZONE_JITTER := 90.0
+const MIN_ZONE_DISTANCE_FROM_PLAYER := 340.0
+const PREFERRED_FAR_MARKERS := 5
 const BASE_ENEMIES := 5
 const ZOMBIE_SYNC_INTERVAL := 0.08
 const ZOMBIE_REGISTRY_SCRIPT := preload("res://scripts/game/zombies/zombie_registry.gd")
@@ -17,8 +20,11 @@ var realtime_client: Node
 var is_host := true
 var zombie_sync_timer := 0.0
 var zombie_registry: RefCounted
+var spawn_markers: Array[Marker2D] = []
+var last_spawn_marker: Marker2D
 
 @onready var enemies_node: Node2D = get_parent().get_node("Enemies")
+@onready var spawn_zones_root: Node = get_parent().get_node_or_null("ZombieSpawnZones")
 @onready var session_sync: Node = get_parent().get_node_or_null("SessionSync")
 @onready var wave_label: Label = get_parent().get_node("UI/WaveLabel")
 @onready var enemies_label: Label = get_parent().get_node("UI/EnemiesLabel")
@@ -26,6 +32,8 @@ var zombie_registry: RefCounted
 
 
 func _ready() -> void:
+	_cache_spawn_markers()
+
 	zombie_registry = ZOMBIE_REGISTRY_SCRIPT.new()
 	zombie_registry.setup(
 		zombie_scene,
@@ -108,12 +116,68 @@ func _spawn_zombie() -> void:
 	var player := get_tree().get_first_node_in_group("player") as Node2D
 	if not is_instance_valid(player):
 		return
-	var angle := randf() * TAU
-	var spawn_pos: Vector2 = player.global_position + Vector2(cos(angle), sin(angle)) * SPAWN_RADIUS
+	var spawn_pos := _pick_spawn_position(player)
 	var zombie_id := _generate_zombie_id()
 	zombie_registry.spawn_at(spawn_pos, zombie_id)
 	if realtime_client and realtime_client.has_method("send_zombie_spawn"):
 		realtime_client.send_zombie_spawn(spawn_pos, zombie_id)
+
+
+func _cache_spawn_markers() -> void:
+	spawn_markers.clear()
+	if spawn_zones_root == null:
+		return
+	_collect_spawn_markers(spawn_zones_root)
+
+
+func _collect_spawn_markers(node: Node) -> void:
+	for child in node.get_children():
+		if child is Marker2D:
+			spawn_markers.append(child as Marker2D)
+		_collect_spawn_markers(child)
+
+
+func _pick_spawn_position(player: Node2D) -> Vector2:
+	if spawn_markers.is_empty():
+		var angle := randf() * TAU
+		return player.global_position + Vector2(cos(angle), sin(angle)) * SPAWN_RADIUS
+
+	var valid_markers: Array[Marker2D] = []
+	for marker in spawn_markers:
+		if not is_instance_valid(marker):
+			continue
+		if marker.global_position.distance_to(player.global_position) >= MIN_ZONE_DISTANCE_FROM_PLAYER:
+			valid_markers.append(marker)
+
+	var pool: Array[Marker2D] = []
+	if valid_markers.is_empty():
+		pool = spawn_markers
+	else:
+		pool = valid_markers
+
+	if pool.is_empty():
+		var fallback_angle := randf() * TAU
+		return player.global_position + Vector2(cos(fallback_angle), sin(fallback_angle)) * SPAWN_RADIUS
+
+	pool.sort_custom(func(a: Marker2D, b: Marker2D) -> bool:
+		return a.global_position.distance_squared_to(player.global_position) > b.global_position.distance_squared_to(player.global_position)
+	)
+
+	var preferred_count := mini(PREFERRED_FAR_MARKERS, pool.size())
+	var preferred_pool: Array[Marker2D] = []
+	for i in range(preferred_count):
+		var candidate: Marker2D = pool[i]
+		if candidate != last_spawn_marker or preferred_count == 1:
+			preferred_pool.append(candidate)
+
+	if preferred_pool.is_empty():
+		preferred_pool = pool
+
+	var picked: Marker2D = preferred_pool[randi() % preferred_pool.size()]
+	last_spawn_marker = picked
+	var jitter_dir := Vector2.RIGHT.rotated(randf() * TAU)
+	var jitter := jitter_dir * randf_range(24.0, SPAWN_ZONE_JITTER)
+	return picked.global_position + jitter
 
 
 func _on_game_state_updated(_state: Dictionary) -> void:

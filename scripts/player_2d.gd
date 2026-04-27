@@ -3,7 +3,7 @@ extends CharacterBody2D
 const SPEED := 220.0
 const MAX_HEALTH := 100
 const SPRITE_SCALE := Vector2(4.0, 4.0)
-const ARENA_HALF := Vector2(1100.0, 800.0)
+const ARENA_HALF := Vector2(1900.0, 1350.0)
 const PLAYER_STATUS_CONTROLLER_SCRIPT := preload("res://scripts/game/player/player_status_controller.gd")
 const FIELD_OF_VIEW_SCRIPT := preload("res://scripts/field_of_view.gd")
 const FOV_OVERLAY_SCRIPT := preload("res://scripts/fov_overlay.gd")

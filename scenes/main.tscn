@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dr7qpj6gf5b8v"]
+[gd_scene load_steps=48 format=3 uid="uid://dr7qpj6gf5b8v"]
 
 [ext_resource type="Script" path="res://scripts/player_2d.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/game_manager.gd" id="2_gm"]
@@ -6,6 +6,48 @@
 [ext_resource type="Script" path="res://scripts/pause_layer.gd" id="4_pause_layer"]
 [ext_resource type="PackedScene" path="res://scenes/pause_menu.tscn" id="5_pause_menu"]
 [ext_resource type="Script" path="res://scripts/network/session_sync.gd" id="6_session_sync"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Gray-brick.png" id="7_gray_brick"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Metal-Plates.png" id="8_metal_plates"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Brick-wall_1_Lying.png" id="9_wall_lie"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Destroyed-wall_not-corner.png" id="10_wall_break"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Destroyed-wall_corner.png" id="11_wall_corner"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Door_4_Metal.png" id="12_door_metal"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Door_2_Ajar_Beige.png" id="13_door_ajar"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Hatch_1_Open.png" id="14_hatch_open"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Hatch_1_Closed.png" id="15_hatch_closed"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Manhole.png" id="16_manhole"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Barrel_rust_red_1.png" id="17_barrel"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pallet_1.png" id="18_pallet"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Bench_4_side_Overgrown_Dark-Green.png" id="19_bench"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Street-Light_1_Side.png" id="20_streetlight"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Container/Container_7_Red_Horizontal.png" id="21_container_red"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Container/Container_3_Gray_Horizontal.png" id="22_container_gray"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Vending-machine_Blue_Overgrown_Dark-Green.png" id="23_vending"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Garbage-Bin_4.png" id="24_garbage"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Tire_2_Grass_Dark-Green.png" id="25_tire"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Stop-sign_Side_4_Overgrown_Dark-Green.png" id="26_stop_sign"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Vehicles/Rust/Car_8_Rust_Bus/Car_8_Rust_Yellow_Bus.png" id="27_bus_rust"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Vehicles/Normal/Car_7_Truck/Car_7_Gray_Truck.png" id="28_truck"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Vehicles/Rust/Car_6_Rust_Scrap/Car_6_Rust_Red_Scrap.png" id="29_scrap_car"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Vehicles/Rust/Car_4_Rust/Car_4_Rust_Dark-Blue.png" id="30_rust_car"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Vehicles/Normal/Car_9_Motorcycle/Car_9_Red_Motorcycle_Side.png" id="31_bike"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Nature/Dark-Green/Tree_5_Big_Dark-Green.png" id="32_tree_big"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Nature/Dark-Green/Tree_8_Birch_Dark-Green.png" id="33_tree_birch"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Nature/Dark-Green/Bush_2_Dark-Green.png" id="34_bush"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Nature/Dark-Green/Rocks/Rock-grass_Dark-Green.png" id="35_rock"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildable/Reinforced/Reinforced_wooden-wall_Horizontal.png" id="36_reinforced_wall_h"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildable/Reinforced/Reinforced_wooden-wall_Vertical.png" id="37_reinforced_wall_v"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/layered-posters_2_For-ground-and-walls.png" id="38_posters"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Enterance_Dark-Green.png" id="39_entrance"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Windows/Window_11_Boarded-up_gray.png" id="40_window_boarded"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Roof-hole_2_Red.png" id="41_roof_hole"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Air-vent_2_rusty.png" id="42_air_vent"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Ladder_Balcony_Metal_1_Rusty.png" id="43_ladder"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Traffic-cone.png" id="44_traffic_cone"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildable/Wooden/Wooden-wall_Gate_Horizontal.png" id="45_wood_gate"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Hydrant_1_yellow.png" id="46_hydrant"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Trash-bag_2.png" id="47_trash_bag"]
+[ext_resource type="Script" path="res://scripts/map_effects.gd" id="48_map_fx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 6.0
@@ -13,17 +55,458 @@ radius = 6.0
 [node name="Game" type="Node2D"]
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.05, 0.055, 0.1, 1)
+color = Color(0.075, 0.08, 0.11, 1)
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.11, 0.12, 0.15, 1)
-polygon = PackedVector2Array(-1200, -900, 1200, -900, 1200, 900, -1200, 900)
+color = Color(0.102, 0.132, 0.115, 1)
+polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, 1450, -2050, 1450)
+
+[node name="MainRoadHorizontal" type="Polygon2D" parent="."]
+color = Color(0.15, 0.15, 0.17, 1)
+polygon = PackedVector2Array(-2050, -210, 2050, -210, 2050, 210, -2050, 210)
+
+[node name="MainRoadVertical" type="Polygon2D" parent="."]
+color = Color(0.15, 0.15, 0.17, 1)
+polygon = PackedVector2Array(-250, -1450, 250, -1450, 250, 1450, -250, 1450)
+
+[node name="UpperIndustrialStrip" type="Polygon2D" parent="."]
+color = Color(0.095, 0.1, 0.115, 1)
+polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, -980, -2050, -980)
+
+[node name="LowerYard" type="Polygon2D" parent="."]
+color = Color(0.106, 0.12, 0.102, 1)
+polygon = PackedVector2Array(-2050, 870, 2050, 870, 2050, 1450, -2050, 1450)
+
+[node name="NorthFogBand" type="Polygon2D" parent="."]
+color = Color(0.07, 0.07, 0.09, 0.45)
+polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, -700, -2050, -860)
+
+[node name="SouthFogBand" type="Polygon2D" parent="."]
+color = Color(0.06, 0.08, 0.07, 0.35)
+polygon = PackedVector2Array(-2050, 750, 2050, 920, 2050, 1450, -2050, 1450)
+
+[node name="HazardStripe" type="Polygon2D" parent="."]
+color = Color(0.73, 0.61, 0.18, 0.5)
+polygon = PackedVector2Array(-650, -300, 650, -300, 650, -230, -650, -230)
+
+[node name="LaneLineHorizontal" type="Polygon2D" parent="."]
+color = Color(0.86, 0.82, 0.58, 0.8)
+polygon = PackedVector2Array(-1930, -14, 1930, -14, 1930, 14, -1930, 14)
+
+[node name="LaneLineVertical" type="Polygon2D" parent="."]
+color = Color(0.86, 0.82, 0.58, 0.8)
+polygon = PackedVector2Array(-14, -1320, 14, -1320, 14, 1320, -14, 1320)
+
+[node name="LaneDashWestA" type="Polygon2D" parent="."]
+color = Color(0.86, 0.82, 0.58, 0.82)
+polygon = PackedVector2Array(-1680, -32, -1380, -32, -1380, 32, -1680, 32)
+
+[node name="LaneDashWestB" type="Polygon2D" parent="."]
+color = Color(0.86, 0.82, 0.58, 0.82)
+polygon = PackedVector2Array(-1080, -32, -780, -32, -780, 32, -1080, 32)
+
+[node name="LaneDashEastA" type="Polygon2D" parent="."]
+color = Color(0.86, 0.82, 0.58, 0.82)
+polygon = PackedVector2Array(760, -32, 1060, -32, 1060, 32, 760, 32)
+
+[node name="LaneDashEastB" type="Polygon2D" parent="."]
+color = Color(0.86, 0.82, 0.58, 0.82)
+polygon = PackedVector2Array(1360, -32, 1660, -32, 1660, 32, 1360, 32)
+
+[node name="MapDecor" type="Node2D" parent="."]
+
+[node name="CentralBench" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-120, 330)
+texture = ExtResource("19_bench")
+scale = Vector2(4.0, 4.0)
+
+[node name="CentralPallet" type="Sprite2D" parent="MapDecor"]
+position = Vector2(125, 340)
+texture = ExtResource("18_pallet")
+scale = Vector2(4.0, 4.0)
+
+[node name="CentralVending" type="Sprite2D" parent="MapDecor"]
+position = Vector2(220, 56)
+texture = ExtResource("23_vending")
+scale = Vector2(4.0, 4.0)
+
+[node name="CenterBarrelA" type="Sprite2D" parent="MapDecor"]
+position = Vector2(330, 375)
+texture = ExtResource("17_barrel")
+scale = Vector2(4.0, 4.0)
+
+[node name="CenterBarrelB" type="Sprite2D" parent="MapDecor"]
+position = Vector2(380, 330)
+texture = ExtResource("17_barrel")
+scale = Vector2(4.0, 4.0)
+
+[node name="UpperLeftStreetLight" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-760, -326)
+texture = ExtResource("20_streetlight")
+scale = Vector2(4.0, 4.0)
+
+[node name="UpperRightStreetLight" type="Sprite2D" parent="MapDecor"]
+position = Vector2(760, -326)
+texture = ExtResource("20_streetlight")
+scale = Vector2(-4.0, 4.0)
+
+[node name="LowerLeftStreetLight" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-760, 328)
+texture = ExtResource("20_streetlight")
+scale = Vector2(4.0, 4.0)
+
+[node name="LowerRightStreetLight" type="Sprite2D" parent="MapDecor"]
+position = Vector2(760, 328)
+texture = ExtResource("20_streetlight")
+scale = Vector2(-4.0, 4.0)
+
+[node name="NorthWallLeft" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-1180, -1120)
+texture = ExtResource("9_wall_lie")
+scale = Vector2(6.0, 6.0)
+
+[node name="NorthWallRight" type="Sprite2D" parent="MapDecor"]
+position = Vector2(1180, -1120)
+texture = ExtResource("9_wall_lie")
+scale = Vector2(-6.0, 6.0)
+
+[node name="NorthDebris" type="Sprite2D" parent="MapDecor"]
+position = Vector2(370, -1115)
+texture = ExtResource("10_wall_break")
+scale = Vector2(5.0, 5.0)
+
+[node name="EastContainer" type="Sprite2D" parent="MapDecor"]
+position = Vector2(1570, 160)
+texture = ExtResource("21_container_red")
+scale = Vector2(4.8, 4.8)
+
+[node name="EastContainerStack" type="Sprite2D" parent="MapDecor"]
+position = Vector2(1570, -60)
+texture = ExtResource("22_container_gray")
+scale = Vector2(4.8, 4.8)
+
+[node name="WestContainer" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-1560, 230)
+texture = ExtResource("22_container_gray")
+scale = Vector2(-4.8, 4.8)
+
+[node name="WestGarbage" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-1440, 380)
+texture = ExtResource("24_garbage")
+scale = Vector2(4.0, 4.0)
+
+[node name="SouthYardTireA" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-520, 1120)
+texture = ExtResource("25_tire")
+scale = Vector2(4.0, 4.0)
+
+[node name="SouthYardTireB" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-430, 1080)
+texture = ExtResource("25_tire")
+scale = Vector2(4.0, 4.0)
+
+[node name="SouthYardStopSign" type="Sprite2D" parent="MapDecor"]
+position = Vector2(780, 1080)
+texture = ExtResource("26_stop_sign")
+scale = Vector2(4.0, 4.0)
+
+[node name="SouthPlates" type="Sprite2D" parent="MapDecor"]
+position = Vector2(940, 1230)
+texture = ExtResource("8_metal_plates")
+scale = Vector2(5.0, 5.0)
+
+[node name="NorthBricks" type="Sprite2D" parent="MapDecor"]
+position = Vector2(-620, -1180)
+texture = ExtResource("7_gray_brick")
+scale = Vector2(5.0, 5.0)
+
+[node name="CheckpointSetpiece" type="Node2D" parent="MapDecor"]
+
+[node name="CheckpointBus" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(280, -680)
+rotation = -0.09
+texture = ExtResource("27_bus_rust")
+scale = Vector2(4.2, 4.2)
+
+[node name="CheckpointTruck" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(-410, -730)
+rotation = 0.08
+texture = ExtResource("28_truck")
+scale = Vector2(4.2, 4.2)
+
+[node name="CheckpointGate" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(-10, -862)
+texture = ExtResource("45_wood_gate")
+scale = Vector2(4.8, 4.8)
+
+[node name="CheckpointWallLeft" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(-560, -900)
+texture = ExtResource("36_reinforced_wall_h")
+scale = Vector2(5.0, 5.0)
+
+[node name="CheckpointWallRight" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(560, -900)
+texture = ExtResource("36_reinforced_wall_h")
+scale = Vector2(-5.0, 5.0)
+
+[node name="CheckpointConeA" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(-120, -590)
+texture = ExtResource("44_traffic_cone")
+scale = Vector2(4.0, 4.0)
+
+[node name="CheckpointConeB" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(36, -610)
+texture = ExtResource("44_traffic_cone")
+scale = Vector2(4.0, 4.0)
+
+[node name="CheckpointPoster" type="Sprite2D" parent="MapDecor/CheckpointSetpiece"]
+position = Vector2(640, -860)
+texture = ExtResource("38_posters")
+scale = Vector2(4.3, 4.3)
+
+[node name="VehicleGraveyard" type="Node2D" parent="MapDecor"]
+
+[node name="ScrapCarMain" type="Sprite2D" parent="MapDecor/VehicleGraveyard"]
+position = Vector2(-1430, 640)
+rotation = 0.26
+texture = ExtResource("29_scrap_car")
+scale = Vector2(4.0, 4.0)
+
+[node name="RustCarSide" type="Sprite2D" parent="MapDecor/VehicleGraveyard"]
+position = Vector2(-1630, 540)
+rotation = -0.11
+texture = ExtResource("30_rust_car")
+scale = Vector2(4.0, 4.0)
+
+[node name="MotorcycleWreck" type="Sprite2D" parent="MapDecor/VehicleGraveyard"]
+position = Vector2(-1320, 725)
+rotation = 0.34
+texture = ExtResource("31_bike")
+scale = Vector2(4.0, 4.0)
+
+[node name="VehicleHydrant" type="Sprite2D" parent="MapDecor/VehicleGraveyard"]
+position = Vector2(-1200, 640)
+texture = ExtResource("46_hydrant")
+scale = Vector2(4.0, 4.0)
+
+[node name="VehicleTrashBag" type="Sprite2D" parent="MapDecor/VehicleGraveyard"]
+position = Vector2(-1530, 760)
+texture = ExtResource("47_trash_bag")
+scale = Vector2(4.0, 4.0)
+
+[node name="OvergrownPark" type="Node2D" parent="MapDecor"]
+
+[node name="ParkTreeBigA" type="Sprite2D" parent="MapDecor/OvergrownPark"]
+position = Vector2(1330, 980)
+texture = ExtResource("32_tree_big")
+scale = Vector2(4.0, 4.0)
+
+[node name="ParkTreeBigB" type="Sprite2D" parent="MapDecor/OvergrownPark"]
+position = Vector2(1690, 1120)
+texture = ExtResource("32_tree_big")
+scale = Vector2(-3.6, 3.6)
+
+[node name="ParkBirch" type="Sprite2D" parent="MapDecor/OvergrownPark"]
+position = Vector2(1540, 920)
+texture = ExtResource("33_tree_birch")
+scale = Vector2(4.0, 4.0)
+
+[node name="ParkBushA" type="Sprite2D" parent="MapDecor/OvergrownPark"]
+position = Vector2(1460, 1160)
+texture = ExtResource("34_bush")
+scale = Vector2(4.0, 4.0)
+
+[node name="ParkBushB" type="Sprite2D" parent="MapDecor/OvergrownPark"]
+position = Vector2(1220, 1060)
+texture = ExtResource("34_bush")
+scale = Vector2(3.8, 3.8)
+
+[node name="ParkRock" type="Sprite2D" parent="MapDecor/OvergrownPark"]
+position = Vector2(1120, 980)
+texture = ExtResource("35_rock")
+scale = Vector2(4.2, 4.2)
+
+[node name="IndustrialFacade" type="Node2D" parent="MapDecor"]
+
+[node name="FacadeEntrance" type="Sprite2D" parent="MapDecor/IndustrialFacade"]
+position = Vector2(1620, -1090)
+texture = ExtResource("39_entrance")
+scale = Vector2(4.4, 4.4)
+
+[node name="FacadeWindowA" type="Sprite2D" parent="MapDecor/IndustrialFacade"]
+position = Vector2(1450, -1180)
+texture = ExtResource("40_window_boarded")
+scale = Vector2(4.0, 4.0)
+
+[node name="FacadeWindowB" type="Sprite2D" parent="MapDecor/IndustrialFacade"]
+position = Vector2(1740, -1180)
+texture = ExtResource("40_window_boarded")
+scale = Vector2(4.0, 4.0)
+
+[node name="FacadeVent" type="Sprite2D" parent="MapDecor/IndustrialFacade"]
+position = Vector2(1330, -1050)
+texture = ExtResource("42_air_vent")
+scale = Vector2(4.1, 4.1)
+
+[node name="FacadeLadder" type="Sprite2D" parent="MapDecor/IndustrialFacade"]
+position = Vector2(1850, -980)
+texture = ExtResource("43_ladder")
+scale = Vector2(4.2, 4.2)
+
+[node name="ZombieSpawnZones" type="Node2D" parent="."]
+
+[node name="NorthGate" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(0, -1210)
+
+[node name="GateWall" type="Sprite2D" parent="ZombieSpawnZones/NorthGate"]
+texture = ExtResource("9_wall_lie")
+scale = Vector2(7.0, 7.0)
+
+[node name="GateDoor" type="Sprite2D" parent="ZombieSpawnZones/NorthGate"]
+position = Vector2(0, 36)
+texture = ExtResource("12_door_metal")
+scale = Vector2(5.0, 5.0)
+
+[node name="GateSpawn" type="Marker2D" parent="ZombieSpawnZones/NorthGate"]
+position = Vector2(0, 106)
+
+[node name="GateSpawnFlank" type="Marker2D" parent="ZombieSpawnZones/NorthGate"]
+position = Vector2(126, 88)
+
+[node name="WestBreach" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(-1780, -140)
+
+[node name="BreachCorner" type="Sprite2D" parent="ZombieSpawnZones/WestBreach"]
+texture = ExtResource("11_wall_corner")
+scale = Vector2(6.0, 6.0)
+
+[node name="BreachDoor" type="Sprite2D" parent="ZombieSpawnZones/WestBreach"]
+position = Vector2(44, 16)
+texture = ExtResource("13_door_ajar")
+scale = Vector2(5.0, 5.0)
+
+[node name="BreachSpawn" type="Marker2D" parent="ZombieSpawnZones/WestBreach"]
+position = Vector2(130, 28)
+
+[node name="BreachSpawnLow" type="Marker2D" parent="ZombieSpawnZones/WestBreach"]
+position = Vector2(120, 118)
+
+[node name="EastLoading" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(1770, 120)
+
+[node name="LoadingDoor" type="Sprite2D" parent="ZombieSpawnZones/EastLoading"]
+texture = ExtResource("12_door_metal")
+scale = Vector2(5.0, 5.0)
+
+[node name="LoadingContainer" type="Sprite2D" parent="ZombieSpawnZones/EastLoading"]
+position = Vector2(-124, -22)
+texture = ExtResource("21_container_red")
+scale = Vector2(4.6, 4.6)
+
+[node name="LoadingSpawn" type="Marker2D" parent="ZombieSpawnZones/EastLoading"]
+position = Vector2(-72, 84)
+
+[node name="LoadingSpawnTop" type="Marker2D" parent="ZombieSpawnZones/EastLoading"]
+position = Vector2(-84, -74)
+
+[node name="SouthSewer" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(1180, 1160)
+
+[node name="SewerHatch" type="Sprite2D" parent="ZombieSpawnZones/SouthSewer"]
+texture = ExtResource("14_hatch_open")
+scale = Vector2(4.4, 4.4)
+
+[node name="SewerManhole" type="Sprite2D" parent="ZombieSpawnZones/SouthSewer"]
+position = Vector2(-70, 14)
+texture = ExtResource("16_manhole")
+scale = Vector2(4.2, 4.2)
+
+[node name="SewerSpawn" type="Marker2D" parent="ZombieSpawnZones/SouthSewer"]
+position = Vector2(-8, 84)
+
+[node name="SewerSpawnAlt" type="Marker2D" parent="ZombieSpawnZones/SouthSewer"]
+position = Vector2(-104, 64)
+
+[node name="SouthWestHatch" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(-1240, 1110)
+
+[node name="SWClosedHatch" type="Sprite2D" parent="ZombieSpawnZones/SouthWestHatch"]
+texture = ExtResource("15_hatch_closed")
+scale = Vector2(4.4, 4.4)
+
+[node name="SWManhole" type="Sprite2D" parent="ZombieSpawnZones/SouthWestHatch"]
+position = Vector2(82, 16)
+texture = ExtResource("16_manhole")
+scale = Vector2(4.2, 4.2)
+
+[node name="SWSpawn" type="Marker2D" parent="ZombieSpawnZones/SouthWestHatch"]
+position = Vector2(6, 90)
+
+[node name="SWSpawnAlt" type="Marker2D" parent="ZombieSpawnZones/SouthWestHatch"]
+position = Vector2(102, 66)
+
+[node name="NorthEastServiceGate" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(1560, -1060)
+
+[node name="ServiceGateDoor" type="Sprite2D" parent="ZombieSpawnZones/NorthEastServiceGate"]
+texture = ExtResource("12_door_metal")
+scale = Vector2(4.8, 4.8)
+
+[node name="ServiceGateWall" type="Sprite2D" parent="ZombieSpawnZones/NorthEastServiceGate"]
+position = Vector2(-118, -28)
+texture = ExtResource("37_reinforced_wall_v")
+scale = Vector2(4.8, 4.8)
+
+[node name="ServiceGateSpawnA" type="Marker2D" parent="ZombieSpawnZones/NorthEastServiceGate"]
+position = Vector2(-14, 104)
+
+[node name="ServiceGateSpawnB" type="Marker2D" parent="ZombieSpawnZones/NorthEastServiceGate"]
+position = Vector2(80, 80)
+
+[node name="CentralMetroPit" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(620, -160)
+
+[node name="MetroHole" type="Sprite2D" parent="ZombieSpawnZones/CentralMetroPit"]
+texture = ExtResource("41_roof_hole")
+scale = Vector2(4.6, 4.6)
+
+[node name="MetroLadder" type="Sprite2D" parent="ZombieSpawnZones/CentralMetroPit"]
+position = Vector2(68, -48)
+texture = ExtResource("43_ladder")
+scale = Vector2(4.1, 4.1)
+
+[node name="MetroSpawnA" type="Marker2D" parent="ZombieSpawnZones/CentralMetroPit"]
+position = Vector2(-10, 76)
+
+[node name="MetroSpawnB" type="Marker2D" parent="ZombieSpawnZones/CentralMetroPit"]
+position = Vector2(74, 62)
+
+[node name="ParkTunnel" type="Node2D" parent="ZombieSpawnZones"]
+position = Vector2(-1700, 1020)
+
+[node name="ParkTunnelDoor" type="Sprite2D" parent="ZombieSpawnZones/ParkTunnel"]
+texture = ExtResource("13_door_ajar")
+scale = Vector2(4.8, 4.8)
+
+[node name="ParkTunnelBush" type="Sprite2D" parent="ZombieSpawnZones/ParkTunnel"]
+position = Vector2(70, 24)
+texture = ExtResource("34_bush")
+scale = Vector2(4.0, 4.0)
+
+[node name="ParkTunnelSpawnA" type="Marker2D" parent="ZombieSpawnZones/ParkTunnel"]
+position = Vector2(8, 84)
+
+[node name="ParkTunnelSpawnB" type="Marker2D" parent="ZombieSpawnZones/ParkTunnel"]
+position = Vector2(94, 66)
 
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="RemotePlayers" type="Node2D" parent="."]
 
 [node name="Bullets" type="Node2D" parent="."]
+
+[node name="MapEffects" type="Node2D" parent="."]
+script = ExtResource("48_map_fx")
 
 [node name="Player" type="CharacterBody2D" parent="."]
 script = ExtResource("1_player")
@@ -34,7 +517,13 @@ script = ExtResource("1_player")
 shape = SubResource("CircleShape2D_player")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-zoom = Vector2(1.5, 1.5)
+zoom = Vector2(1.27, 1.27)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+limit_left = -2050
+limit_top = -1450
+limit_right = 2050
+limit_bottom = 1450
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("2_gm")
