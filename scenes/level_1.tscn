@@ -1,0 +1,850 @@
+[gd_scene format=3 uid="uid://dcegl7le5fssh"]
+
+[ext_resource type="Texture2D" uid="uid://dmv6rwboku7h4" path="res://assets/Objects/Vehicles/Rust/Car_1_Rust/Car_1_Rust_Red.png" id="1_car1rust"]
+[ext_resource type="Texture2D" uid="uid://ucrkwnfjmkqm" path="res://assets/Objects/Vehicles/Rust/Car_4_Rust/Car_4_Rust_Yellow.png" id="2_car4rust"]
+[ext_resource type="Texture2D" uid="uid://qoeb41naybva" path="res://assets/Objects/Vehicles/Rust/Car_6_Rust_Scrap/Car_6_Rust_Red_Scrap.png" id="3_carscrap"]
+[ext_resource type="Texture2D" uid="uid://cxavmh1rx3mgf" path="res://assets/Objects/Vehicles/Overgrown/Car_1_Overgrown/Green/Car_1_Overgrown_Green_Blue.png" id="4_carovergrown"]
+[ext_resource type="Texture2D" uid="uid://benhww3jlopdk" path="res://assets/Objects/Container/Container_3_Gray_Horizontal.png" id="5_cont_h"]
+[ext_resource type="Texture2D" uid="uid://cu6psj4jad363" path="res://assets/Objects/Container/Container_5_Red_Vertical.png" id="6_cont_v"]
+[ext_resource type="Texture2D" uid="uid://bfsvoiia7oqls" path="res://assets/Objects/Nature/Bleak-Yellow/Bush_1_Bleak-Yellow.png" id="7_bush1"]
+[ext_resource type="Texture2D" uid="uid://buwiquohldv4k" path="res://assets/Objects/Nature/Bleak-Yellow/Bush_2_Bleak-Yellow.png" id="8_bush2"]
+[ext_resource type="Texture2D" uid="uid://nynsqw1tpfm0" path="res://assets/Objects/Nature/Bleak-Yellow/Grass_1_Bleak-Yellow.png" id="9_grass1"]
+[ext_resource type="Texture2D" uid="uid://fkvve2kvw20o" path="res://assets/Objects/Nature/Bleak-Yellow/Grass_3_Bleak-Yellow.png" id="10_grass3"]
+[ext_resource type="Texture2D" uid="uid://cc5kss8qsqs8t" path="res://assets/Objects/Nature/Bleak-Yellow/Tree_3_Normal_Bleak-Yellow.png" id="11_tree3"]
+[ext_resource type="Texture2D" uid="uid://dxdbbfu0t6hqa" path="res://assets/Objects/Buildings/Enterance_Green.png" id="12_entrance"]
+[ext_resource type="Texture2D" uid="uid://hdsxftx6teax" path="res://assets/Objects/Buildings/Destroyed-wall_corner.png" id="13_destwall_c"]
+[ext_resource type="Texture2D" uid="uid://ckrfjrdpywihd" path="res://assets/Objects/Buildings/Destroyed-wall_not-corner.png" id="14_destwall_nc"]
+[ext_resource type="Texture2D" uid="uid://by16xnkblpim5" path="res://assets/Objects/Buildings/Brick-wall_1_Lying.png" id="15_brick1"]
+[ext_resource type="Texture2D" uid="uid://c6mn5c2kj0kul" path="res://assets/Objects/Buildings/Brick-wall_2_Lying.png" id="16_brick2"]
+[ext_resource type="Texture2D" uid="uid://cjyvwvyqkmo4h" path="res://assets/Objects/Buildings/Door_2_Ajar_Beige.png" id="17_door_ajar"]
+[ext_resource type="Texture2D" uid="uid://ctcre4fstr2pq" path="res://assets/Objects/Buildings/Door_5_Rusty_Metal.png" id="18_door_rusty"]
+[ext_resource type="Texture2D" uid="uid://dttooocswn0dv" path="res://assets/Objects/Windows/Window_1_broken_wood.png" id="19_win_brok_wood"]
+[ext_resource type="Texture2D" uid="uid://c7kuv7kwmqmrc" path="res://assets/Objects/Windows/Window_7_broken_gray.png" id="20_win_brok_gray"]
+[ext_resource type="Texture2D" uid="uid://tkod6b1f5jfv" path="res://assets/Objects/Windows/Window_13_Broken_Beige.png" id="21_win_brok_beige"]
+[ext_resource type="Texture2D" uid="uid://c1ay5q81tcj4a" path="res://assets/Objects/Buildings/Roof-hole_1_Gray.png" id="22_roofhole1"]
+[ext_resource type="Texture2D" uid="uid://ckukrrosvpcku" path="res://assets/Objects/Buildings/Roof-hole_2_Red.png" id="23_roofhole2"]
+[ext_resource type="Texture2D" uid="uid://dcnng6lfuiayr" path="res://assets/Objects/Buildings/Air-vent_2_rusty.png" id="24_airvent"]
+[ext_resource type="Texture2D" uid="uid://lux7ynlu88ap" path="res://assets/Objects/Buildings/Hatch_1_Open.png" id="25_hatch"]
+[ext_resource type="Texture2D" uid="uid://bd2w3sofsjrp2" path="res://assets/Objects/Buildings/layered-posters_1_For-ground-and-walls.png" id="26_poster"]
+[ext_resource type="Texture2D" uid="uid://dt2v3ykpj7lbu" path="res://assets/Objects/Pickable/Ammo-crate_Green.png" id="27_ammo"]
+[ext_resource type="Texture2D" uid="uid://dfgm7q33ce733" path="res://assets/Objects/Pickable/Bandage.png" id="28_bandage"]
+
+[sub_resource type="RectangleShape2D" id="Sh_FrontWall"]
+size = Vector2(20, 630)
+
+[sub_resource type="RectangleShape2D" id="Sh_TallWall"]
+size = Vector2(20, 1500)
+
+[sub_resource type="RectangleShape2D" id="Sh_HorizLong"]
+size = Vector2(1020, 20)
+
+[sub_resource type="RectangleShape2D" id="Sh_LobbyHoriz"]
+size = Vector2(320, 16)
+
+[sub_resource type="RectangleShape2D" id="Sh_LobbyVert"]
+size = Vector2(16, 400)
+
+[sub_resource type="RectangleShape2D" id="Sh_CN_Left"]
+size = Vector2(230, 16)
+
+[sub_resource type="RectangleShape2D" id="Sh_CN_Mid"]
+size = Vector2(150, 16)
+
+[sub_resource type="RectangleShape2D" id="Sh_CN_Right"]
+size = Vector2(120, 16)
+
+[sub_resource type="RectangleShape2D" id="Sh_CS_Left"]
+size = Vector2(210, 16)
+
+[sub_resource type="RectangleShape2D" id="Sh_CS_Right"]
+size = Vector2(140, 16)
+
+[sub_resource type="RectangleShape2D" id="Sh_UDA_T"]
+size = Vector2(16, 470)
+
+[sub_resource type="RectangleShape2D" id="Sh_UDA_B"]
+size = Vector2(16, 80)
+
+[sub_resource type="RectangleShape2D" id="Sh_UDB_T"]
+size = Vector2(16, 330)
+
+[sub_resource type="RectangleShape2D" id="Sh_UDB_B"]
+size = Vector2(16, 220)
+
+[sub_resource type="RectangleShape2D" id="Sh_LDA_T"]
+size = Vector2(16, 210)
+
+[sub_resource type="RectangleShape2D" id="Sh_LDA_B"]
+size = Vector2(16, 340)
+
+[sub_resource type="RectangleShape2D" id="Sh_LDB_T"]
+size = Vector2(16, 350)
+
+[sub_resource type="RectangleShape2D" id="Sh_LDB_B"]
+size = Vector2(16, 200)
+
+[sub_resource type="RectangleShape2D" id="Sh_Car"]
+size = Vector2(28, 14)
+
+[sub_resource type="RectangleShape2D" id="Sh_CarScrap"]
+
+[sub_resource type="RectangleShape2D" id="Sh_ContH"]
+size = Vector2(40, 18)
+
+[sub_resource type="RectangleShape2D" id="Sh_ContV"]
+size = Vector2(18, 40)
+
+[sub_resource type="RectangleShape2D" id="Sh_Tree"]
+size = Vector2(8, 8)
+
+[sub_resource type="RectangleShape2D" id="Sh_DestrWall"]
+size = Vector2(16, 8)
+
+[sub_resource type="RectangleShape2D" id="Sh_Brick"]
+size = Vector2(24, 8)
+
+[node name="Level1" type="Node2D" unique_id=112956910]
+
+[node name="Floors" type="Node2D" parent="." unique_id=712405736]
+
+[node name="CourtyardGround" type="Polygon2D" parent="Floors" unique_id=295085490]
+color = Color(0.09, 0.095, 0.1, 1)
+polygon = PackedVector2Array(-1100, -750, -100, -750, -100, 750, -1100, 750)
+
+[node name="BuildingFloor" type="Polygon2D" parent="Floors" unique_id=1298344857]
+color = Color(0.15, 0.14, 0.13, 1)
+polygon = PackedVector2Array(-100, -750, 900, -750, 900, 750, -100, 750)
+
+[node name="UpperRoomsFloor" type="Polygon2D" parent="Floors" unique_id=1750542134]
+color = Color(0.12, 0.115, 0.105, 1)
+polygon = PackedVector2Array(200, -750, 900, -750, 900, -100, 200, -100)
+
+[node name="LowerRoomsFloor" type="Polygon2D" parent="Floors" unique_id=134443830]
+color = Color(0.12, 0.115, 0.105, 1)
+polygon = PackedVector2Array(200, 100, 900, 100, 900, 750, 200, 750)
+
+[node name="LobbyFloor" type="Polygon2D" parent="Floors" unique_id=678617565]
+color = Color(0.19, 0.175, 0.155, 1)
+polygon = PackedVector2Array(-95, -295, 195, -295, 195, 295, -95, 295)
+
+[node name="CorridorFloor" type="Polygon2D" parent="Floors" unique_id=319311554]
+color = Color(0.17, 0.16, 0.145, 1)
+polygon = PackedVector2Array(195, -100, 900, -100, 900, 100, 195, 100)
+
+[node name="Walls" type="Node2D" parent="." unique_id=1339519779]
+
+[node name="WallFrontN" type="StaticBody2D" parent="Walls" unique_id=323736380]
+position = Vector2(-100, -435)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/WallFrontN" unique_id=192277917]
+shape = SubResource("Sh_FrontWall")
+
+[node name="Vis" type="Polygon2D" parent="Walls/WallFrontN" unique_id=552495941]
+color = Color(0.3, 0.26, 0.22, 1)
+polygon = PackedVector2Array(-10, -315, 10, -315, 10, 315, -10, 315)
+
+[node name="WallFrontS" type="StaticBody2D" parent="Walls" unique_id=1109315563]
+position = Vector2(-100, 435)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/WallFrontS" unique_id=1745438862]
+shape = SubResource("Sh_FrontWall")
+
+[node name="Vis" type="Polygon2D" parent="Walls/WallFrontS" unique_id=1250643144]
+color = Color(0.3, 0.26, 0.22, 1)
+polygon = PackedVector2Array(-10, -315, 10, -315, 10, 315, -10, 315)
+
+[node name="WallBack" type="StaticBody2D" parent="Walls" unique_id=1117600111]
+position = Vector2(900, 0)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/WallBack" unique_id=914078456]
+shape = SubResource("Sh_TallWall")
+
+[node name="Vis" type="Polygon2D" parent="Walls/WallBack" unique_id=1892698960]
+color = Color(0.3, 0.26, 0.22, 1)
+polygon = PackedVector2Array(-10, -750, 10, -750, 10, 750, -10, 750)
+
+[node name="WallTop" type="StaticBody2D" parent="Walls" unique_id=918364747]
+position = Vector2(400, -750)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/WallTop" unique_id=1772249769]
+shape = SubResource("Sh_HorizLong")
+
+[node name="Vis" type="Polygon2D" parent="Walls/WallTop" unique_id=2126963701]
+color = Color(0.3, 0.26, 0.22, 1)
+polygon = PackedVector2Array(-510, -10, 510, -10, 510, 10, -510, 10)
+
+[node name="WallBot" type="StaticBody2D" parent="Walls" unique_id=922774005]
+position = Vector2(400, 750)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/WallBot" unique_id=230220224]
+shape = SubResource("Sh_HorizLong")
+
+[node name="Vis" type="Polygon2D" parent="Walls/WallBot" unique_id=564742430]
+color = Color(0.3, 0.26, 0.22, 1)
+polygon = PackedVector2Array(-510, -10, 510, -10, 510, 10, -510, 10)
+
+[node name="LobbyTop" type="StaticBody2D" parent="Walls" unique_id=1373079178]
+position = Vector2(50, -300)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LobbyTop" unique_id=1178169160]
+shape = SubResource("Sh_LobbyHoriz")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LobbyTop" unique_id=1627758385]
+color = Color(0.28, 0.24, 0.2, 1)
+polygon = PackedVector2Array(-160, -8, 160, -8, 160, 8, -160, 8)
+
+[node name="LobbyBot" type="StaticBody2D" parent="Walls" unique_id=792086637]
+position = Vector2(50, 300)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LobbyBot" unique_id=459708358]
+shape = SubResource("Sh_LobbyHoriz")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LobbyBot" unique_id=1931637317]
+color = Color(0.28, 0.24, 0.2, 1)
+polygon = PackedVector2Array(-160, -8, 160, -8, 160, 8, -160, 8)
+
+[node name="LobbyRightN" type="StaticBody2D" parent="Walls" unique_id=775651598]
+position = Vector2(200, -200)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LobbyRightN" unique_id=2026974842]
+shape = SubResource("Sh_LobbyVert")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LobbyRightN" unique_id=1218219271]
+color = Color(0.28, 0.24, 0.2, 1)
+polygon = PackedVector2Array(-8, -200, 8, -200, 8, 200, -8, 200)
+
+[node name="LobbyRightS" type="StaticBody2D" parent="Walls" unique_id=1656784778]
+position = Vector2(200, 200)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LobbyRightS" unique_id=1242252711]
+shape = SubResource("Sh_LobbyVert")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LobbyRightS" unique_id=344396544]
+color = Color(0.28, 0.24, 0.2, 1)
+polygon = PackedVector2Array(-8, -200, 8, -200, 8, 200, -8, 200)
+
+[node name="CorridorNorthL" type="StaticBody2D" parent="Walls" unique_id=551856544]
+position = Vector2(315, -100)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CorridorNorthL" unique_id=45092125]
+shape = SubResource("Sh_CN_Left")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CorridorNorthL" unique_id=1574215170]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-115, -8, 115, -8, 115, 8, -115, 8)
+
+[node name="CorridorNorthM" type="StaticBody2D" parent="Walls" unique_id=15896671]
+position = Vector2(605, -100)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CorridorNorthM" unique_id=728499555]
+shape = SubResource("Sh_CN_Mid")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CorridorNorthM" unique_id=641355877]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-75, -8, 75, -8, 75, 8, -75, 8)
+
+[node name="CorridorNorthR" type="StaticBody2D" parent="Walls" unique_id=382220116]
+position = Vector2(840, -100)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CorridorNorthR" unique_id=102910291]
+shape = SubResource("Sh_CN_Right")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CorridorNorthR" unique_id=1539926095]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-60, -8, 60, -8, 60, 8, -60, 8)
+
+[node name="CorridorSouthL" type="StaticBody2D" parent="Walls" unique_id=742935588]
+position = Vector2(305, 100)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CorridorSouthL" unique_id=1635664970]
+shape = SubResource("Sh_CS_Left")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CorridorSouthL" unique_id=82860163]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-105, -8, 105, -8, 105, 8, -105, 8)
+
+[node name="CorridorSouthM" type="StaticBody2D" parent="Walls" unique_id=1131561497]
+position = Vector2(585, 100)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CorridorSouthM" unique_id=1439311684]
+shape = SubResource("Sh_CN_Mid")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CorridorSouthM" unique_id=104593532]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-75, -8, 75, -8, 75, 8, -75, 8)
+
+[node name="CorridorSouthR" type="StaticBody2D" parent="Walls" unique_id=2011210776]
+position = Vector2(830, 100)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CorridorSouthR" unique_id=2081957803]
+shape = SubResource("Sh_CS_Right")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CorridorSouthR" unique_id=819398987]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-70, -8, 70, -8, 70, 8, -70, 8)
+
+[node name="UpperDivA_T" type="StaticBody2D" parent="Walls" unique_id=466312506]
+position = Vector2(450, -515)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/UpperDivA_T" unique_id=1264928965]
+shape = SubResource("Sh_UDA_T")
+
+[node name="Vis" type="Polygon2D" parent="Walls/UpperDivA_T" unique_id=883340341]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -235, 8, -235, 8, 235, -8, 235)
+
+[node name="UpperDivA_B" type="StaticBody2D" parent="Walls" unique_id=811053009]
+position = Vector2(450, -140)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/UpperDivA_B" unique_id=2076554735]
+shape = SubResource("Sh_UDA_B")
+
+[node name="Vis" type="Polygon2D" parent="Walls/UpperDivA_B" unique_id=25674167]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -40, 8, -40, 8, 40, -8, 40)
+
+[node name="UpperDivB_T" type="StaticBody2D" parent="Walls" unique_id=609398956]
+position = Vector2(700, -585)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/UpperDivB_T" unique_id=521889731]
+shape = SubResource("Sh_UDB_T")
+
+[node name="Vis" type="Polygon2D" parent="Walls/UpperDivB_T" unique_id=1172697227]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -165, 8, -165, 8, 165, -8, 165)
+
+[node name="UpperDivB_B" type="StaticBody2D" parent="Walls" unique_id=961084084]
+position = Vector2(700, -210)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/UpperDivB_B" unique_id=476279647]
+shape = SubResource("Sh_UDB_B")
+
+[node name="Vis" type="Polygon2D" parent="Walls/UpperDivB_B" unique_id=2115618054]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -110, 8, -110, 8, 110, -8, 110)
+
+[node name="LowerDivA_T" type="StaticBody2D" parent="Walls" unique_id=1870813062]
+position = Vector2(450, 205)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LowerDivA_T" unique_id=698654605]
+shape = SubResource("Sh_LDA_T")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LowerDivA_T" unique_id=429811493]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -105, 8, -105, 8, 105, -8, 105)
+
+[node name="LowerDivA_B" type="StaticBody2D" parent="Walls" unique_id=890688335]
+position = Vector2(450, 580)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LowerDivA_B" unique_id=2096982389]
+shape = SubResource("Sh_LDA_B")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LowerDivA_B" unique_id=645914588]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -170, 8, -170, 8, 170, -8, 170)
+
+[node name="LowerDivB_T" type="StaticBody2D" parent="Walls" unique_id=1371240740]
+position = Vector2(700, 275)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LowerDivB_T" unique_id=2038165297]
+shape = SubResource("Sh_LDB_T")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LowerDivB_T" unique_id=491123227]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -175, 8, -175, 8, 175, -8, 175)
+
+[node name="LowerDivB_B" type="StaticBody2D" parent="Walls" unique_id=755122786]
+position = Vector2(700, 650)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/LowerDivB_B" unique_id=15544187]
+shape = SubResource("Sh_LDB_B")
+
+[node name="Vis" type="Polygon2D" parent="Walls/LowerDivB_B" unique_id=1153132300]
+color = Color(0.27, 0.23, 0.19, 1)
+polygon = PackedVector2Array(-8, -100, 8, -100, 8, 100, -8, 100)
+
+[node name="CourtyardLeft" type="StaticBody2D" parent="Walls" unique_id=1068912274]
+position = Vector2(-1100, 0)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CourtyardLeft" unique_id=410093412]
+shape = SubResource("Sh_TallWall")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CourtyardLeft" unique_id=219283488]
+color = Color(0.32, 0.28, 0.22, 1)
+polygon = PackedVector2Array(-10, -750, 10, -750, 10, 750, -10, 750)
+
+[node name="CourtyardTop" type="StaticBody2D" parent="Walls" unique_id=2073052736]
+position = Vector2(-600, -750)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CourtyardTop" unique_id=735171205]
+shape = SubResource("Sh_HorizLong")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CourtyardTop" unique_id=856023893]
+color = Color(0.32, 0.28, 0.22, 1)
+polygon = PackedVector2Array(-510, -10, 510, -10, 510, 10, -510, 10)
+
+[node name="CourtyardBot" type="StaticBody2D" parent="Walls" unique_id=1001462500]
+position = Vector2(-600, 750)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Col" type="CollisionShape2D" parent="Walls/CourtyardBot" unique_id=1642558979]
+shape = SubResource("Sh_HorizLong")
+
+[node name="Vis" type="Polygon2D" parent="Walls/CourtyardBot" unique_id=952744855]
+color = Color(0.32, 0.28, 0.22, 1)
+polygon = PackedVector2Array(-510, -10, 510, -10, 510, 10, -510, 10)
+
+[node name="Props" type="Node2D" parent="." unique_id=1277113898]
+
+[node name="Vehicles" type="Node2D" parent="Props" unique_id=37564432]
+
+[node name="Car1Rust" type="StaticBody2D" parent="Props/Vehicles" unique_id=1945929740]
+position = Vector2(-800, -280)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Vehicles/Car1Rust" unique_id=1784630161]
+texture = ExtResource("1_car1rust")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Vehicles/Car1Rust" unique_id=1685627479]
+shape = SubResource("Sh_Car")
+
+[node name="Car4Rust" type="StaticBody2D" parent="Props/Vehicles" unique_id=24849558]
+position = Vector2(-530, 330)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Vehicles/Car4Rust" unique_id=700167814]
+texture = ExtResource("2_car4rust")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Vehicles/Car4Rust" unique_id=845509754]
+shape = SubResource("Sh_Car")
+
+[node name="CarScrap" type="StaticBody2D" parent="Props/Vehicles" unique_id=1455027663]
+position = Vector2(-1020, 160)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Vehicles/CarScrap" unique_id=1210752394]
+texture = ExtResource("3_carscrap")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Vehicles/CarScrap" unique_id=664770701]
+shape = SubResource("Sh_CarScrap")
+
+[node name="CarOvergrown" type="StaticBody2D" parent="Props/Vehicles" unique_id=2085582494]
+position = Vector2(-660, -450)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Vehicles/CarOvergrown" unique_id=1580864290]
+texture = ExtResource("4_carovergrown")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Vehicles/CarOvergrown" unique_id=882272628]
+shape = SubResource("Sh_Car")
+
+[node name="Containers" type="Node2D" parent="Props" unique_id=701409856]
+
+[node name="ContainerH" type="StaticBody2D" parent="Props/Containers" unique_id=1393297833]
+position = Vector2(-320, -230)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Containers/ContainerH" unique_id=702515453]
+texture = ExtResource("5_cont_h")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Containers/ContainerH" unique_id=670472688]
+position = Vector2(0, -0.25)
+shape = SubResource("Sh_ContH")
+
+[node name="ContainerV" type="StaticBody2D" parent="Props/Containers" unique_id=198401022]
+position = Vector2(-950, 380)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Containers/ContainerV" unique_id=1586348259]
+texture = ExtResource("6_cont_v")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Containers/ContainerV" unique_id=1471600005]
+shape = SubResource("Sh_ContV")
+
+[node name="ContainerH2" type="StaticBody2D" parent="Props/Containers" unique_id=930239763]
+position = Vector2(640, 0)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Containers/ContainerH2" unique_id=379898054]
+texture = ExtResource("5_cont_h")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Containers/ContainerH2" unique_id=333438124]
+shape = SubResource("Sh_ContH")
+
+[node name="Nature" type="Node2D" parent="Props" unique_id=272208607]
+
+[node name="Tree1" type="StaticBody2D" parent="Props/Nature" unique_id=1390081061]
+position = Vector2(-1000, -530)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/Nature/Tree1" unique_id=1220357599]
+texture = ExtResource("11_tree3")
+
+[node name="Col" type="CollisionShape2D" parent="Props/Nature/Tree1" unique_id=589633996]
+shape = SubResource("Sh_Tree")
+
+[node name="Bush1a" type="Sprite2D" parent="Props/Nature" unique_id=1468540695]
+position = Vector2(-1060, 250)
+scale = Vector2(4, 4)
+texture = ExtResource("7_bush1")
+
+[node name="Bush1b" type="Sprite2D" parent="Props/Nature" unique_id=1603772243]
+position = Vector2(-440, 610)
+scale = Vector2(4, 4)
+texture = ExtResource("7_bush1")
+
+[node name="Bush1c" type="Sprite2D" parent="Props/Nature" unique_id=1123817675]
+position = Vector2(-750, -680)
+scale = Vector2(4, 4)
+texture = ExtResource("7_bush1")
+
+[node name="Bush2a" type="Sprite2D" parent="Props/Nature" unique_id=1971844309]
+position = Vector2(-370, -660)
+scale = Vector2(4, 4)
+texture = ExtResource("8_bush2")
+
+[node name="Bush2b" type="Sprite2D" parent="Props/Nature" unique_id=1018975763]
+position = Vector2(-180, 710)
+scale = Vector2(4, 4)
+texture = ExtResource("8_bush2")
+
+[node name="Bush2c" type="Sprite2D" parent="Props/Nature" unique_id=1751013971]
+position = Vector2(-850, 600)
+scale = Vector2(4, 4)
+texture = ExtResource("8_bush2")
+
+[node name="Grass1a" type="Sprite2D" parent="Props/Nature" unique_id=1112150570]
+position = Vector2(-760, 70)
+scale = Vector2(4, 4)
+texture = ExtResource("9_grass1")
+
+[node name="Grass1b" type="Sprite2D" parent="Props/Nature" unique_id=1099285321]
+position = Vector2(-610, -130)
+scale = Vector2(4, 4)
+texture = ExtResource("9_grass1")
+
+[node name="Grass1c" type="Sprite2D" parent="Props/Nature" unique_id=1569322142]
+position = Vector2(-480, 490)
+scale = Vector2(4, 4)
+texture = ExtResource("9_grass1")
+
+[node name="Grass1d" type="Sprite2D" parent="Props/Nature" unique_id=546240433]
+position = Vector2(-230, 350)
+scale = Vector2(4, 4)
+texture = ExtResource("9_grass1")
+
+[node name="Grass3a" type="Sprite2D" parent="Props/Nature" unique_id=215285254]
+position = Vector2(-860, 370)
+scale = Vector2(4, 4)
+texture = ExtResource("10_grass3")
+
+[node name="Grass3b" type="Sprite2D" parent="Props/Nature" unique_id=2015850040]
+position = Vector2(-240, -340)
+scale = Vector2(4, 4)
+texture = ExtResource("10_grass3")
+
+[node name="Grass3c" type="Sprite2D" parent="Props/Nature" unique_id=1827184317]
+position = Vector2(-1080, -210)
+scale = Vector2(4, 4)
+texture = ExtResource("10_grass3")
+
+[node name="Grass3d" type="Sprite2D" parent="Props/Nature" unique_id=2141932299]
+position = Vector2(-580, 700)
+scale = Vector2(4, 4)
+texture = ExtResource("10_grass3")
+
+[node name="BuildingProps" type="Node2D" parent="Props" unique_id=1373014815]
+
+[node name="Entrance" type="Sprite2D" parent="Props/BuildingProps" unique_id=912568667]
+position = Vector2(-100, 0)
+scale = Vector2(4, 4)
+texture = ExtResource("12_entrance")
+
+[node name="DoorMainEntry" type="Sprite2D" parent="Props/BuildingProps" unique_id=175204750]
+position = Vector2(-96, 0)
+scale = Vector2(4, 4)
+texture = ExtResource("17_door_ajar")
+
+[node name="DoorNorth1" type="Sprite2D" parent="Props/BuildingProps" unique_id=1391369687]
+position = Vector2(480, -100)
+scale = Vector2(4, 4)
+texture = ExtResource("18_door_rusty")
+
+[node name="DoorNorth2" type="Sprite2D" parent="Props/BuildingProps" unique_id=1428407948]
+position = Vector2(730, -100)
+scale = Vector2(4, 4)
+texture = ExtResource("18_door_rusty")
+
+[node name="DoorSouth1" type="Sprite2D" parent="Props/BuildingProps" unique_id=1960613959]
+position = Vector2(460, 100)
+scale = Vector2(4, 4)
+texture = ExtResource("18_door_rusty")
+
+[node name="DoorSouth2" type="Sprite2D" parent="Props/BuildingProps" unique_id=2116320762]
+position = Vector2(710, 100)
+scale = Vector2(4, 4)
+texture = ExtResource("18_door_rusty")
+
+[node name="DoorDivA_Up" type="Sprite2D" parent="Props/BuildingProps" unique_id=1302367083]
+position = Vector2(450, -230)
+scale = Vector2(4, 4)
+texture = ExtResource("17_door_ajar")
+
+[node name="DoorDivA_Down" type="Sprite2D" parent="Props/BuildingProps" unique_id=111615726]
+position = Vector2(450, 360)
+scale = Vector2(4, 4)
+texture = ExtResource("17_door_ajar")
+
+[node name="WindowFront1" type="Sprite2D" parent="Props/BuildingProps" unique_id=1620770537]
+position = Vector2(-100, -510)
+scale = Vector2(4, 4)
+texture = ExtResource("19_win_brok_wood")
+
+[node name="WindowFront2" type="Sprite2D" parent="Props/BuildingProps" unique_id=759207112]
+position = Vector2(-100, -180)
+scale = Vector2(4, 4)
+texture = ExtResource("20_win_brok_gray")
+
+[node name="WindowFront3" type="Sprite2D" parent="Props/BuildingProps" unique_id=259525486]
+position = Vector2(-100, 180)
+scale = Vector2(4, 4)
+texture = ExtResource("20_win_brok_gray")
+
+[node name="WindowFront4" type="Sprite2D" parent="Props/BuildingProps" unique_id=1797540321]
+position = Vector2(-100, 510)
+scale = Vector2(4, 4)
+texture = ExtResource("19_win_brok_wood")
+
+[node name="WindowTopA" type="Sprite2D" parent="Props/BuildingProps" unique_id=1532113646]
+position = Vector2(330, -750)
+scale = Vector2(4, 4)
+texture = ExtResource("21_win_brok_beige")
+
+[node name="WindowTopB" type="Sprite2D" parent="Props/BuildingProps" unique_id=824054607]
+position = Vector2(620, -750)
+scale = Vector2(4, 4)
+texture = ExtResource("21_win_brok_beige")
+
+[node name="WindowTopC" type="Sprite2D" parent="Props/BuildingProps" unique_id=1565749322]
+position = Vector2(850, -750)
+scale = Vector2(4, 4)
+texture = ExtResource("21_win_brok_beige")
+
+[node name="WindowBotA" type="Sprite2D" parent="Props/BuildingProps" unique_id=465677645]
+position = Vector2(330, 750)
+scale = Vector2(4, 4)
+texture = ExtResource("21_win_brok_beige")
+
+[node name="WindowBotB" type="Sprite2D" parent="Props/BuildingProps" unique_id=796099579]
+position = Vector2(850, 750)
+scale = Vector2(4, 4)
+texture = ExtResource("21_win_brok_beige")
+
+[node name="DestroyedWall1" type="StaticBody2D" parent="Props/BuildingProps" unique_id=1245520117]
+position = Vector2(380, -260)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/DestroyedWall1" unique_id=1670347126]
+texture = ExtResource("13_destwall_c")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/DestroyedWall1" unique_id=1031231059]
+shape = SubResource("Sh_DestrWall")
+
+[node name="DestroyedWall2" type="StaticBody2D" parent="Props/BuildingProps" unique_id=1427263233]
+position = Vector2(560, -180)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/DestroyedWall2" unique_id=1761045877]
+texture = ExtResource("14_destwall_nc")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/DestroyedWall2" unique_id=2003810961]
+shape = SubResource("Sh_DestrWall")
+
+[node name="DestroyedWall3" type="StaticBody2D" parent="Props/BuildingProps" unique_id=1948037956]
+position = Vector2(540, 280)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/DestroyedWall3" unique_id=1121916966]
+texture = ExtResource("13_destwall_c")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/DestroyedWall3" unique_id=1617899983]
+shape = SubResource("Sh_DestrWall")
+
+[node name="BrickLying1" type="StaticBody2D" parent="Props/BuildingProps" unique_id=238212526]
+position = Vector2(330, -400)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/BrickLying1" unique_id=954569984]
+texture = ExtResource("15_brick1")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/BrickLying1" unique_id=1488772539]
+shape = SubResource("Sh_Brick")
+
+[node name="BrickLying2" type="StaticBody2D" parent="Props/BuildingProps" unique_id=208168401]
+position = Vector2(630, -320)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/BrickLying2" unique_id=407053455]
+texture = ExtResource("16_brick2")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/BrickLying2" unique_id=64278018]
+shape = SubResource("Sh_Brick")
+
+[node name="BrickLying3" type="StaticBody2D" parent="Props/BuildingProps" unique_id=1827665679]
+position = Vector2(310, 380)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/BrickLying3" unique_id=1054073556]
+texture = ExtResource("15_brick1")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/BrickLying3" unique_id=1126733186]
+shape = SubResource("Sh_Brick")
+
+[node name="BrickLying4" type="StaticBody2D" parent="Props/BuildingProps" unique_id=777144591]
+position = Vector2(760, 420)
+scale = Vector2(4, 4)
+collision_layer = 3
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="Props/BuildingProps/BrickLying4" unique_id=54069420]
+texture = ExtResource("16_brick2")
+
+[node name="Col" type="CollisionShape2D" parent="Props/BuildingProps/BrickLying4" unique_id=1129370070]
+shape = SubResource("Sh_Brick")
+
+[node name="RoofHole1" type="Sprite2D" parent="Props/BuildingProps" unique_id=203594499]
+position = Vector2(300, -480)
+scale = Vector2(4, 4)
+texture = ExtResource("22_roofhole1")
+
+[node name="RoofHole2" type="Sprite2D" parent="Props/BuildingProps" unique_id=685150529]
+position = Vector2(790, -600)
+scale = Vector2(4, 4)
+texture = ExtResource("23_roofhole2")
+
+[node name="RoofHole3" type="Sprite2D" parent="Props/BuildingProps" unique_id=1558249843]
+position = Vector2(580, 520)
+scale = Vector2(4, 4)
+texture = ExtResource("22_roofhole1")
+
+[node name="AirVent" type="Sprite2D" parent="Props/BuildingProps" unique_id=1811584645]
+position = Vector2(820, -620)
+scale = Vector2(4, 4)
+texture = ExtResource("24_airvent")
+
+[node name="Hatch" type="Sprite2D" parent="Props/BuildingProps" unique_id=1686591348]
+position = Vector2(860, 160)
+scale = Vector2(4, 4)
+texture = ExtResource("25_hatch")
+
+[node name="Poster1" type="Sprite2D" parent="Props/BuildingProps" unique_id=1706399974]
+position = Vector2(70, -296)
+scale = Vector2(4, 4)
+texture = ExtResource("26_poster")
+
+[node name="Poster2" type="Sprite2D" parent="Props/BuildingProps" unique_id=43869299]
+position = Vector2(400, -748)
+scale = Vector2(4, 4)
+texture = ExtResource("26_poster")
+
+[node name="AmmoBox1" type="Sprite2D" parent="Props/BuildingProps" unique_id=922753181]
+position = Vector2(270, -550)
+scale = Vector2(4, 4)
+texture = ExtResource("27_ammo")
+
+[node name="AmmoBox2" type="Sprite2D" parent="Props/BuildingProps" unique_id=1791475055]
+position = Vector2(820, 600)
+scale = Vector2(4, 4)
+texture = ExtResource("27_ammo")
+
+[node name="Bandage1" type="Sprite2D" parent="Props/BuildingProps" unique_id=812361443]
+position = Vector2(110, 90)
+scale = Vector2(4, 4)
+texture = ExtResource("28_bandage")
+
+[node name="Bandage2" type="Sprite2D" parent="Props/BuildingProps" unique_id=96347148]
+position = Vector2(580, -630)
+scale = Vector2(4, 4)
+texture = ExtResource("28_bandage")
+
+[node name="PlayerStart" type="Marker2D" parent="." unique_id=1978809887]
+position = Vector2(-400, 0)

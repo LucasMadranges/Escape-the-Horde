@@ -1,0 +1,350 @@
+[gd_scene load_steps=22 format=3 uid="uid://b8cvsh0p1234"]
+
+[ext_resource type="Script" path="res://scripts/shop.gd" id="1_shop"]
+[ext_resource type="Script" path="res://scripts/shop_item.gd" id="2_shopitem"]
+[ext_resource type="Script" path="res://scripts/player_2d.gd" id="3_player"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Pistol.png" id="4_pistol"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Shotgun.png" id="5_shotgun"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Gun.png" id="6_gun"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Ammo-crate_Green.png" id="7_ammo_g"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Ammo-crate_Red.png" id="8_ammo_r"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pickable/Ammo-crate_Blue.png" id="9_ammo_b"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Cardboard_1.png" id="10_card1"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Cardboard_2.png" id="11_card2"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Barrel_rust_red_1.png" id="12_barrel"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Buildings/Door_5_Rusty_Metal.png" id="13_door"]
+[ext_resource type="Texture2D" path="res://assets/Objects/Pallet_1.png" id="14_pallet"]
+
+[sub_resource type="RectangleShape2D" id="Sh_WallHoriz"]
+size = Vector2(880, 24)
+
+[sub_resource type="RectangleShape2D" id="Sh_WallLeft"]
+size = Vector2(24, 600)
+
+[sub_resource type="RectangleShape2D" id="Sh_WallRightTop"]
+size = Vector2(24, 240)
+
+[sub_resource type="RectangleShape2D" id="Sh_WallRightBot"]
+size = Vector2(24, 220)
+
+[sub_resource type="RectangleShape2D" id="Sh_Station"]
+size = Vector2(180, 100)
+
+[sub_resource type="RectangleShape2D" id="Sh_Exit"]
+size = Vector2(30, 140)
+
+[sub_resource type="CircleShape2D" id="Sh_Player"]
+radius = 20.0
+
+[node name="Shop" type="Node2D"]
+script = ExtResource("1_shop")
+
+[node name="Floor" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 880, 0, 880, 600, 0, 600)
+color = Color(0.36, 0.30, 0.24, 1)
+
+[node name="FloorStain1" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(60, 300, 200, 290, 220, 360, 75, 370)
+color = Color(0.28, 0.23, 0.18, 1)
+
+[node name="FloorCrack" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(350, 390, 356, 390, 490, 450, 484, 450)
+color = Color(0.22, 0.18, 0.14, 1)
+
+[node name="FloorStain2" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(600, 470, 720, 460, 730, 510, 608, 518)
+color = Color(0.30, 0.25, 0.20, 1)
+
+[node name="Walls" type="Node2D" parent="."]
+
+[node name="WallTop" type="StaticBody2D" parent="Walls"]
+position = Vector2(440, 12)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallTop"]
+shape = SubResource("Sh_WallHoriz")
+
+[node name="Visual" type="Polygon2D" parent="Walls/WallTop"]
+polygon = PackedVector2Array(-440, -12, 440, -12, 440, 12, -440, 12)
+color = Color(0.18, 0.14, 0.10, 1)
+
+[node name="WallBottom" type="StaticBody2D" parent="Walls"]
+position = Vector2(440, 588)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallBottom"]
+shape = SubResource("Sh_WallHoriz")
+
+[node name="Visual" type="Polygon2D" parent="Walls/WallBottom"]
+polygon = PackedVector2Array(-440, -12, 440, -12, 440, 12, -440, 12)
+color = Color(0.18, 0.14, 0.10, 1)
+
+[node name="WallLeft" type="StaticBody2D" parent="Walls"]
+position = Vector2(12, 300)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallLeft"]
+shape = SubResource("Sh_WallLeft")
+
+[node name="Visual" type="Polygon2D" parent="Walls/WallLeft"]
+polygon = PackedVector2Array(-12, -300, 12, -300, 12, 300, -12, 300)
+color = Color(0.18, 0.14, 0.10, 1)
+
+[node name="WallRightTop" type="StaticBody2D" parent="Walls"]
+position = Vector2(868, 120)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallRightTop"]
+shape = SubResource("Sh_WallRightTop")
+
+[node name="Visual" type="Polygon2D" parent="Walls/WallRightTop"]
+polygon = PackedVector2Array(-12, -120, 12, -120, 12, 120, -12, 120)
+color = Color(0.18, 0.14, 0.10, 1)
+
+[node name="WallRightBot" type="StaticBody2D" parent="Walls"]
+position = Vector2(868, 490)
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallRightBot"]
+shape = SubResource("Sh_WallRightBot")
+
+[node name="Visual" type="Polygon2D" parent="Walls/WallRightBot"]
+polygon = PackedVector2Array(-12, -110, 12, -110, 12, 110, -12, 110)
+color = Color(0.18, 0.14, 0.10, 1)
+
+[node name="BackWallDecor" type="Node2D" parent="."]
+
+[node name="ShelfRail" type="Polygon2D" parent="BackWallDecor"]
+polygon = PackedVector2Array(30, 48, 850, 48, 850, 62, 30, 62)
+color = Color(0.28, 0.20, 0.12, 1)
+
+[node name="Support1" type="Polygon2D" parent="BackWallDecor"]
+polygon = PackedVector2Array(298, 48, 312, 48, 312, 165, 298, 165)
+color = Color(0.22, 0.16, 0.10, 1)
+
+[node name="Support2" type="Polygon2D" parent="BackWallDecor"]
+polygon = PackedVector2Array(563, 48, 577, 48, 577, 165, 563, 165)
+color = Color(0.22, 0.16, 0.10, 1)
+
+[node name="WallPatch1" type="Polygon2D" parent="BackWallDecor"]
+polygon = PackedVector2Array(30, 24, 160, 24, 160, 48, 30, 48)
+color = Color(0.25, 0.19, 0.13, 1)
+
+[node name="WallPatch2" type="Polygon2D" parent="BackWallDecor"]
+polygon = PackedVector2Array(680, 24, 848, 24, 848, 48, 680, 48)
+color = Color(0.25, 0.19, 0.13, 1)
+
+[node name="ShopItems" type="Node2D" parent="."]
+
+[node name="Pistol" type="Area2D" parent="ShopItems"]
+position = Vector2(175, 130)
+script = ExtResource("2_shopitem")
+weapon_name = "Pistolet"
+price = 50
+weapon_id = "pistol"
+weapon_slot = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShopItems/Pistol"]
+shape = SubResource("Sh_Station")
+
+[node name="CounterSurface" type="Polygon2D" parent="ShopItems/Pistol"]
+polygon = PackedVector2Array(-88, -12, 88, -12, 88, 18, -88, 18)
+color = Color(0.32, 0.24, 0.14, 1)
+
+[node name="CounterEdge" type="Polygon2D" parent="ShopItems/Pistol"]
+polygon = PackedVector2Array(-88, -16, 88, -16, 88, -10, -88, -10)
+color = Color(0.52, 0.40, 0.24, 1)
+
+[node name="Weapon" type="Sprite2D" parent="ShopItems/Pistol"]
+position = Vector2(-22, -32)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("4_pistol")
+
+[node name="Ammo" type="Sprite2D" parent="ShopItems/Pistol"]
+position = Vector2(48, -22)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("7_ammo_g")
+
+[node name="NameLabel" type="Label" parent="ShopItems/Pistol"]
+position = Vector2(-88, 20)
+size = Vector2(176, 18)
+text = "PISTOLET — 50 $"
+horizontal_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="ShopItems/Pistol"]
+position = Vector2(-88, -62)
+size = Vector2(176, 18)
+text = "[E] Acheter — 50 $"
+horizontal_alignment = 1
+visible = false
+
+[node name="Shotgun" type="Area2D" parent="ShopItems"]
+position = Vector2(440, 130)
+script = ExtResource("2_shopitem")
+weapon_name = "Fusil a pompe"
+price = 100
+weapon_id = "shotgun"
+weapon_slot = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShopItems/Shotgun"]
+shape = SubResource("Sh_Station")
+
+[node name="CounterSurface" type="Polygon2D" parent="ShopItems/Shotgun"]
+polygon = PackedVector2Array(-88, -12, 88, -12, 88, 18, -88, 18)
+color = Color(0.32, 0.24, 0.14, 1)
+
+[node name="CounterEdge" type="Polygon2D" parent="ShopItems/Shotgun"]
+polygon = PackedVector2Array(-88, -16, 88, -16, 88, -10, -88, -10)
+color = Color(0.52, 0.40, 0.24, 1)
+
+[node name="Weapon" type="Sprite2D" parent="ShopItems/Shotgun"]
+position = Vector2(-22, -32)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("5_shotgun")
+
+[node name="Ammo" type="Sprite2D" parent="ShopItems/Shotgun"]
+position = Vector2(48, -22)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("8_ammo_r")
+
+[node name="NameLabel" type="Label" parent="ShopItems/Shotgun"]
+position = Vector2(-88, 20)
+size = Vector2(176, 18)
+text = "FUSIL A POMPE — 100 $"
+horizontal_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="ShopItems/Shotgun"]
+position = Vector2(-88, -62)
+size = Vector2(176, 18)
+text = "[E] Acheter — 100 $"
+horizontal_alignment = 1
+visible = false
+
+[node name="Rifle" type="Area2D" parent="ShopItems"]
+position = Vector2(705, 130)
+script = ExtResource("2_shopitem")
+weapon_name = "Fusil d'assaut"
+price = 150
+weapon_id = "rifle"
+weapon_slot = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShopItems/Rifle"]
+shape = SubResource("Sh_Station")
+
+[node name="CounterSurface" type="Polygon2D" parent="ShopItems/Rifle"]
+polygon = PackedVector2Array(-88, -12, 88, -12, 88, 18, -88, 18)
+color = Color(0.32, 0.24, 0.14, 1)
+
+[node name="CounterEdge" type="Polygon2D" parent="ShopItems/Rifle"]
+polygon = PackedVector2Array(-88, -16, 88, -16, 88, -10, -88, -10)
+color = Color(0.52, 0.40, 0.24, 1)
+
+[node name="Weapon" type="Sprite2D" parent="ShopItems/Rifle"]
+position = Vector2(-22, -32)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("6_gun")
+
+[node name="Ammo" type="Sprite2D" parent="ShopItems/Rifle"]
+position = Vector2(48, -22)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("9_ammo_b")
+
+[node name="NameLabel" type="Label" parent="ShopItems/Rifle"]
+position = Vector2(-88, 20)
+size = Vector2(176, 18)
+text = "FUSIL D'ASSAUT — 150 $"
+horizontal_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="ShopItems/Rifle"]
+position = Vector2(-88, -62)
+size = Vector2(176, 18)
+text = "[E] Acheter — 150 $"
+horizontal_alignment = 1
+visible = false
+
+[node name="Props" type="Node2D" parent="."]
+
+[node name="Pallet" type="Sprite2D" parent="Props"]
+position = Vector2(440, 390)
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("14_pallet")
+
+[node name="Cardboard1" type="Sprite2D" parent="Props"]
+position = Vector2(55, 490)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("10_card1")
+
+[node name="Cardboard2" type="Sprite2D" parent="Props"]
+position = Vector2(82, 530)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("11_card2")
+
+[node name="Barrel1" type="Sprite2D" parent="Props"]
+position = Vector2(818, 548)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("12_barrel")
+
+[node name="Barrel2" type="Sprite2D" parent="Props"]
+position = Vector2(844, 558)
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("12_barrel")
+
+[node name="ExitDoor" type="Area2D" parent="."]
+position = Vector2(857, 310)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitDoor"]
+shape = SubResource("Sh_Exit")
+
+[node name="DoorSprite" type="Sprite2D" parent="ExitDoor"]
+scale = Vector2(1.4, 1.4)
+texture = ExtResource("13_door")
+
+[node name="ExitLabel" type="Label" parent="ExitDoor"]
+position = Vector2(-62, -90)
+size = Vector2(124, 18)
+text = "Niveau suivant"
+horizontal_alignment = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(120, 480)
+groups = ["player"]
+script = ExtResource("3_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("Sh_Player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(1.5, 1.5)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MoneyLabel" type="Label" parent="UI"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 280.0
+offset_bottom = 36.0
+text = "Argent : 0 $"
+theme_override_colors/font_color = Color(1.0, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="TitleLabel" type="Label" parent="UI"]
+offset_left = 290.0
+offset_top = 10.0
+offset_right = 590.0
+offset_bottom = 36.0
+text = "— ARMURERIE —"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.9, 0.7, 0.3, 1)
+theme_override_font_sizes/font_size = 20
+
+[node name="HintLabel" type="Label" parent="UI"]
+offset_left = 290.0
+offset_top = 36.0
+offset_right = 590.0
+offset_bottom = 56.0
+text = "Approche une arme et appuie sur E"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 13
