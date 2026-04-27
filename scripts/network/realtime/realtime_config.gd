@@ -1,8 +1,8 @@
 extends RefCounted
 
-const WS_URL := "ws://127.0.0.1:3000/ws/game"
-const GAMES_API_URL := "http://127.0.0.1:3000/api/games"
-const SESSIONS_API_URL := "http://127.0.0.1:3000/api/sessions"
+const WS_URL := "wss://api.mxv.me/ws/game"
+const GAMES_API_URL := "https://api.mxv.me/api/games"
+const SESSIONS_API_URL := "https://api.mxv.me/api/sessions"
 
 const EVENT_CONNECTED := "game:connected"
 const EVENT_PLAYED := "game:played"
