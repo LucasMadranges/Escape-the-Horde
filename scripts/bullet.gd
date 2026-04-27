@@ -1,10 +1,10 @@
 extends Area2D
 
-const SPEED := 480.0
-const DAMAGE := 25
 const LIFETIME := 3.0
 
 var direction := Vector2.RIGHT
+var speed := 480.0
+var damage := 25
 var _lifetime := LIFETIME
 
 
@@ -15,7 +15,7 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	position += direction * SPEED * delta
+	position += direction * speed * delta
 	_lifetime -= delta
 	if _lifetime <= 0.0:
 		queue_free()
@@ -28,5 +28,5 @@ func _draw() -> void:
 
 func _on_body_hit(body: Node2D) -> void:
 	if body.is_in_group("zombies"):
-		body.take_damage(DAMAGE)
+		body.take_damage(damage)
 		queue_free()

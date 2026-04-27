@@ -8,12 +8,21 @@ const PLAYER_STATUS_CONTROLLER_SCRIPT := preload("res://scripts/game/player/play
 const FIELD_OF_VIEW_SCRIPT := preload("res://scripts/field_of_view.gd")
 const FOV_OVERLAY_SCRIPT := preload("res://scripts/fov_overlay.gd")
 
+const WEAPON_CONFIG := {
+	"pistol":  {"fire_rate": 0.55, "damage": 25, "bullet_speed": 480.0, "spread": 0.00, "pellets": 1},
+	"shotgun": {"fire_rate": 1.10, "damage": 18, "bullet_speed": 380.0, "spread": 0.28, "pellets": 6},
+	"rifle":   {"fire_rate": 0.12, "damage": 35, "bullet_speed": 700.0, "spread": 0.04, "pellets": 1},
+}
+
 var health := MAX_HEALTH
 var life_state_name := "alive"
 var bullet_scene := preload("res://scenes/bullet.tscn")
 var status_controller: Node
 var field_of_view: Node2D
 var _fov_canvas_layer: CanvasLayer
+var _shoot_timer: float = 0.0
+var _hud_layer: CanvasLayer
+var _hud_slots: Array = []
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
@@ -33,7 +42,6 @@ func _ready() -> void:
 	if status_controller.has_method("setup"):
 		status_controller.setup(self, camera, MAX_HEALTH)
 
-	# Initialiser le système de champ de vision (détection + tir automatique)
 	field_of_view = FIELD_OF_VIEW_SCRIPT.new()
 	field_of_view.name = "FieldOfView"
 	field_of_view.fov_angle = 90.0
@@ -59,6 +67,8 @@ func _ready() -> void:
 		func(origin: Vector2, arc: PackedVector2Array) -> void:
 			fov_overlay.on_visibility_polygon_updated(origin, arc)
 	)
+
+	_setup_weapon_hud()
 
 
 func _setup_light() -> void:
@@ -116,6 +126,7 @@ func _physics_process(delta: float) -> void:
 			status_controller.physics_update(delta)
 		return
 
+	_shoot_timer = maxf(_shoot_timer - delta, 0.0)
 	var dir := _get_input()
 	velocity = dir * SPEED
 	move_and_slide()
@@ -126,6 +137,7 @@ func _physics_process(delta: float) -> void:
 func _process(delta: float) -> void:
 	if status_controller and status_controller.has_method("process_update"):
 		status_controller.process_update(delta)
+	_refresh_weapon_hud()
 
 
 func _get_input() -> Vector2:
@@ -147,24 +159,96 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event is InputEventMouseButton:
 		var mbe := event as InputEventMouseButton
-		if mbe.button_index == MOUSE_BUTTON_LEFT and mbe.pressed:
-			_shoot()
+		if not mbe.pressed:
+			return
+		match mbe.button_index:
+			MOUSE_BUTTON_LEFT:
+				if _shoot_timer <= 0.0:
+					_shoot()
+			MOUSE_BUTTON_WHEEL_UP:
+				_switch_slot((GameData.active_slot + 1) % 2)
+			MOUSE_BUTTON_WHEEL_DOWN:
+				_switch_slot((GameData.active_slot - 1 + 2) % 2)
+
+	elif event is InputEventKey and event.pressed and not event.echo:
+		match event.physical_keycode:
+			KEY_1: _switch_slot(0)
+			KEY_2: _switch_slot(1)
 
 
 func _shoot() -> void:
 	var mouse_world := get_global_mouse_position()
-	_shoot_at((mouse_world - global_position).normalized())
+	var base_dir: Vector2 = (mouse_world - global_position).normalized()
+	var cfg: Dictionary = WEAPON_CONFIG.get(GameData.active_weapon, WEAPON_CONFIG["pistol"])
+	_shoot_timer = cfg.fire_rate
+	for _i in cfg.pellets:
+		_shoot_at(base_dir.rotated(randf_range(-cfg.spread, cfg.spread)))
 
 
 func _shoot_at(direction: Vector2) -> void:
+	var cfg: Dictionary = WEAPON_CONFIG.get(GameData.active_weapon, WEAPON_CONFIG["pistol"])
 	var b := bullet_scene.instantiate()
 	b.direction = direction
+	b.speed = cfg.bullet_speed
+	b.damage = cfg.damage
 	b.global_position = global_position
 	var root := get_parent()
 	if root.has_node("Bullets"):
 		root.get_node("Bullets").add_child(b)
 	else:
 		root.add_child(b)
+
+
+func _switch_slot(slot: int) -> void:
+	if GameData.weapon_slots[slot] == "":
+		return
+	GameData.active_slot = slot
+	GameData.active_weapon = GameData.weapon_slots[slot]
+
+
+func _setup_weapon_hud() -> void:
+	_hud_layer = CanvasLayer.new()
+	_hud_layer.layer = 11
+	add_child(_hud_layer)
+	for i in 2:
+		var bg := ColorRect.new()
+		bg.color = Color(0, 0, 0, 0.45)
+		bg.anchor_top = 1.0
+		bg.anchor_bottom = 1.0
+		bg.offset_left = 10.0
+		bg.offset_right = 200.0
+		bg.offset_top = -62.0 + i * 32.0
+		bg.offset_bottom = bg.offset_top + 28.0
+		_hud_layer.add_child(bg)
+
+		var lbl := Label.new()
+		lbl.anchor_top = 1.0
+		lbl.anchor_bottom = 1.0
+		lbl.offset_left = 12.0
+		lbl.offset_right = 198.0
+		lbl.offset_top = -61.0 + i * 32.0
+		lbl.offset_bottom = lbl.offset_top + 26.0
+		lbl.add_theme_font_size_override("font_size", 14)
+		lbl.add_theme_constant_override("outline_size", 2)
+		lbl.add_theme_color_override("font_outline_color", Color.BLACK)
+		_hud_layer.add_child(lbl)
+		_hud_slots.append(lbl)
+	_refresh_weapon_hud()
+
+
+func _refresh_weapon_hud() -> void:
+	if _hud_slots.size() < 2:
+		return
+	const NAMES := {"pistol": "Pistolet", "shotgun": "Fusil a pompe", "rifle": "Fusil d'assaut"}
+	for i in 2:
+		var w: String = GameData.weapon_slots[i]
+		var wname: String = NAMES.get(w, "-") if w != "" else "-"
+		var active := i == GameData.active_slot
+		_hud_slots[i].text = ("► " if active else "  ") + "[%d] %s" % [i + 1, wname]
+		_hud_slots[i].add_theme_color_override(
+			"font_color",
+			Color(1.0, 0.88, 0.2) if active else Color(0.6, 0.6, 0.6)
+		)
 
 
 func _update_animation(move_dir: Vector2) -> void:

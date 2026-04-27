@@ -35,6 +35,9 @@ func _ready() -> void:
 	$UI/CenterContainer/VBox/QuitButton.pressed.connect(func(): get_tree().quit())
 	settings_panel.back_pressed.connect(func(): settings_panel.hide())
 	settings_panel.hide()
+	$UI/CenterContainer/VBox/TestShopButton.pressed.connect(
+		func(): get_tree().change_scene_to_file("res://scenes/shop.tscn")
+	)
 
 
 func _on_played(_game_state: Dictionary) -> void:

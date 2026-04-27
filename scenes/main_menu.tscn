@@ -68,5 +68,11 @@ stretch_mode = 0
 texture_normal = ExtResource("7_quit_n")
 texture_pressed = ExtResource("8_quit_p")
 
+[node name="TestShopButton" type="Button" parent="UI/CenterContainer/VBox"]
+custom_minimum_size = Vector2(304, 48)
+text = "[TEST] Armurerie"
+theme_override_colors/font_color = Color(1.0, 0.6, 0.1, 1)
+theme_override_font_sizes/font_size = 18
+
 [node name="SettingsPanel" parent="UI" instance=ExtResource("2_settings")]
 visible = false
