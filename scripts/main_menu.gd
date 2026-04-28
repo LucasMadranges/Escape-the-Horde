@@ -44,14 +44,6 @@ func _ready() -> void:
 	$UI/CenterContainer/VBox/QuitButton.pressed.connect(func(): get_tree().quit())
 	settings_panel.back_pressed.connect(func(): settings_panel.hide())
 	settings_panel.hide()
-	$UI/CenterContainer/VBox/TestShopButton.pressed.connect(
-		func(): get_tree().change_scene_to_file("res://scenes/shop.tscn")
-	)
-	$UI/CenterContainer/VBox/TestLevel2Button.pressed.connect(
-		func():
-			GameData.current_level = 2
-			get_tree().change_scene_to_file("res://scenes/level_2.tscn")
-	)
 
 
 func _apply_username() -> void:

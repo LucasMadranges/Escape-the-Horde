@@ -6,16 +6,20 @@ const SPAWN_RADIUS := 850.0
 const SPAWN_ZONE_JITTER := 90.0
 const MIN_ZONE_DISTANCE_FROM_PLAYER := 340.0
 const PREFERRED_FAR_MARKERS := 5
-const BASE_ENEMIES := 5
 const ZOMBIE_SYNC_INTERVAL := 0.08
 const ZOMBIE_REGISTRY_SCRIPT := preload("res://scripts/game/zombies/zombie_registry.gd")
+const MAX_WAVES := 5
+const ZOMBIES_PER_WAVE: Array[int] = [10, 15, 20, 25, 30]
+const SPAWN_INTERVAL_START := 2.0
+const SPAWN_INTERVAL_MIN := 0.25
+const SPAWN_INTERVAL_DECAY := 0.88
 
 var wave := 1
 var enemies_per_wave: int
 var enemies_spawned := 0
 var spawn_timer := 0.0
-var spawn_interval := 1.8
 var wave_active := false
+var _wave_transitioning := false
 var realtime_client: Node
 var is_host := true
 var zombie_sync_timer := 0.0
@@ -68,17 +72,23 @@ func _ready() -> void:
 		if typeof(cached_state) == TYPE_DICTIONARY:
 			_on_game_state_updated(cached_state)
 
-	enemies_per_wave = BASE_ENEMIES
 	_announce_wave()
 
 
 func _announce_wave() -> void:
-	wave_label.text = "Vague %d" % wave
+	wave_label.text = "Vague %d / %d" % [wave, MAX_WAVES]
 	wave_active = false
 	await get_tree().create_timer(2.5).timeout
+	enemies_per_wave = _zombies_for_wave(wave)
+	_wave_transitioning = false
 	wave_active = true
 	enemies_spawned = 0
-	spawn_timer = 0.5
+	spawn_timer = SPAWN_INTERVAL_START
+
+
+func _zombies_for_wave(w: int) -> int:
+	var player_count: int = maxi(1, _get_player_states().size())
+	return ZOMBIES_PER_WAVE[w - 1] * player_count
 
 
 func _go_to_shop() -> void:
@@ -95,6 +105,7 @@ func _on_scene_change_received(payload: Dictionary) -> void:
 		if _shop_triggered:
 			return
 		_shop_triggered = true
+		GameData.wave_reached = wave
 		GameData.current_level += 1
 		get_tree().change_scene_to_file("res://scenes/shop.tscn")
 
@@ -110,14 +121,20 @@ func _process(delta: float) -> void:
 
 	var alive := enemies_node.get_child_count()
 
-	if not _shop_triggered:
-		if alive > 0:
-			_enemies_ever_spawned = true
-		elif _enemies_ever_spawned:
+	if alive > 0:
+		_enemies_ever_spawned = true
+
+	if is_host and _enemies_ever_spawned and alive == 0 and not _wave_transitioning and not _shop_triggered:
+		_wave_transitioning = true
+		if wave >= MAX_WAVES:
 			_shop_triggered = true
 			GameData.wave_reached = wave
 			enemies_label.text = "Ennemis: 0"
 			_go_to_shop()
+		else:
+			wave += 1
+			_enemies_ever_spawned = false
+			_announce_wave()
 
 	if not wave_active:
 		return
@@ -132,7 +149,7 @@ func _process(delta: float) -> void:
 		if spawn_timer <= 0.0:
 			_spawn_zombie()
 			enemies_spawned += 1
-			spawn_timer = spawn_interval
+			spawn_timer = maxf(SPAWN_INTERVAL_MIN, SPAWN_INTERVAL_START * pow(SPAWN_INTERVAL_DECAY, enemies_spawned))
 	elif alive == 0:
 		wave_active = false
 

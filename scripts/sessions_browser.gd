@@ -68,7 +68,7 @@ func _setup_filters() -> void:
 	status_filter.selected = 0
 
 	min_players_filter.min_value = 0
-	min_players_filter.max_value = 8
+	min_players_filter.max_value = 20
 	min_players_filter.step = 1
 	min_players_filter.value = 1
 
