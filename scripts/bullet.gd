@@ -5,12 +5,17 @@ const LIFETIME := 3.0
 var direction := Vector2.RIGHT
 var speed := 480.0
 var damage := 25
+var is_remote := false
 var _lifetime := LIFETIME
 
 
 func _ready() -> void:
-	collision_layer = 8
-	collision_mask = 2  # detect zombies
+	if is_remote:
+		collision_layer = 0
+		collision_mask = 0
+	else:
+		collision_layer = 8
+		collision_mask = 2
 	body_entered.connect(_on_body_hit)
 
 

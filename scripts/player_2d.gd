@@ -21,6 +21,7 @@ var status_controller: Node
 var field_of_view: Node2D
 var _fov_canvas_layer: CanvasLayer
 var _shoot_timer: float = 0.0
+var _realtime: Node
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var camera: Camera2D = $Camera2D
@@ -60,6 +61,8 @@ func _ready() -> void:
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rect.material = fov_overlay.get_shader_material()
 	_fov_canvas_layer.add_child(rect)
+
+	_realtime = get_tree().root.get_node_or_null("RealtimeClient")
 
 	fov_overlay.set_fov_params(field_of_view.fov_angle)
 
@@ -195,6 +198,15 @@ func _shoot_at(direction: Vector2) -> void:
 		root.get_node("Bullets").add_child(b)
 	else:
 		root.add_child(b)
+	if _realtime and _realtime.has_method("send_bullet_fire"):
+		_realtime.send_bullet_fire(global_position, direction, cfg.bullet_speed, cfg.damage)
+
+
+## Tire avec tous les pellets et le spread de l'arme active (utilisé par l'auto-aim FOV)
+func _shoot_weapon_at(aim_dir: Vector2) -> void:
+	var cfg: Dictionary = WEAPON_CONFIG.get(GameData.active_weapon, WEAPON_CONFIG["pistol"])
+	for _i in cfg.pellets:
+		_shoot_at(aim_dir.rotated(randf_range(-cfg.spread, cfg.spread)))
 
 
 func _switch_slot(slot: int) -> void:

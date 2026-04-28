@@ -182,13 +182,13 @@ func _try_shoot() -> void:
 	_shoot_timer = shoot_cooldown
 
 
-## Tire en direction de la cible
+## Tire en direction de la cible avec tous les pellets et spread de l'arme active
 func _shoot_at_target(target: Node2D) -> void:
-	if not _player.has_method("_shoot_at"):
-		push_error("FieldOfView: le joueur n'a pas de méthode _shoot_at")
-		return
 	var direction := (target.global_position - _player.global_position).normalized()
-	_player._shoot_at(direction)
+	if _player.has_method("_shoot_weapon_at"):
+		_player._shoot_weapon_at(direction)
+	elif _player.has_method("_shoot_at"):
+		_player._shoot_at(direction)
 
 
 ## Retourne la cible actuelle

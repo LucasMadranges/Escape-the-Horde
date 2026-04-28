@@ -23,6 +23,7 @@ signal player_dead_received(payload: Dictionary)
 signal scene_change_received(payload: Dictionary)
 signal extraction_update_received(payload: Dictionary)
 signal extraction_launch_received
+signal bullet_fire_received(payload: Dictionary)
 signal realtime_error(message: String)
 
 var ws := WebSocketPeer.new()
@@ -311,6 +312,23 @@ func _on_extraction_update_event(data: Dictionary) -> void:
 
 func _on_extraction_launch_event(_data: Dictionary) -> void:
 	extraction_launch_received.emit()
+
+func send_bullet_fire(pos: Vector2, dir: Vector2, spd: float, dmg: float) -> void:
+	if not _can_send(true):
+		return
+	_send_event("game:bullet_fire", {
+		"x": pos.x,
+		"y": pos.y,
+		"dx": dir.x,
+		"dy": dir.y,
+		"speed": spd,
+		"damage": dmg,
+	})
+
+
+func _on_bullet_fire_event(data: Dictionary) -> void:
+	bullet_fire_received.emit(data)
+
 
 func send_extraction_enter(total_players: int) -> void:
 	if not _can_send(true):

@@ -43,5 +43,7 @@ static func dispatch(client: Node, event_name: String, data: Variant) -> void:
 			client._on_extraction_update_event(data)
 		"game:extraction_launch":
 			client._on_extraction_launch_event(data)
+		"game:bullet_fire":
+			client._on_bullet_fire_event(data)
 		_:
 			pass

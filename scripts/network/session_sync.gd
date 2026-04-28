@@ -3,6 +3,7 @@ extends Node
 const SYNC_INTERVAL := 0.06
 const PLAYER_CONDITION_STORE_SCRIPT := preload("res://scripts/network/players/player_condition_store.gd")
 const REMOTE_PLAYER_VISUALS_SCRIPT := preload("res://scripts/network/remote_players/remote_player_visuals.gd")
+const BULLET_SCENE := preload("res://scenes/bullet.tscn")
 const STATUS_ALIVE := "alive"
 
 var realtime_client: Node
@@ -42,6 +43,8 @@ func _ready() -> void:
 		realtime_client.player_revived_received.connect(_on_player_revived_received)
 	if realtime_client.has_signal("player_dead_received") and not realtime_client.player_dead_received.is_connected(_on_player_dead_received):
 		realtime_client.player_dead_received.connect(_on_player_dead_received)
+	if realtime_client.has_signal("bullet_fire_received") and not realtime_client.bullet_fire_received.is_connected(_on_bullet_fire_received):
+		realtime_client.bullet_fire_received.connect(_on_bullet_fire_received)
 
 	var cached_state: Variant = realtime_client.get("last_game_state")
 	if typeof(cached_state) == TYPE_DICTIONARY:
@@ -172,6 +175,25 @@ func _on_player_revived_received(payload: Dictionary) -> void:
 func _on_player_dead_received(payload: Dictionary) -> void:
 	condition_store.on_player_dead(payload)
 	_update_remote_status_visuals()
+
+
+func _on_bullet_fire_received(payload: Dictionary) -> void:
+	var shooter_id := str(payload.get("playerId", ""))
+	if shooter_id == local_player_id:
+		return
+
+	var b := BULLET_SCENE.instantiate()
+	b.direction = Vector2(float(payload.get("dx", 0.0)), float(payload.get("dy", 0.0)))
+	b.speed = float(payload.get("speed", 480.0))
+	b.damage = 0
+	b.is_remote = true
+	b.global_position = Vector2(float(payload.get("x", 0.0)), float(payload.get("y", 0.0)))
+
+	var root := get_parent()
+	if root.has_node("Bullets"):
+		root.get_node("Bullets").add_child(b)
+	else:
+		root.add_child(b)
 
 func _update_remote_status_visuals() -> void:
 	remote_visuals.update_status_visuals()
