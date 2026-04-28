@@ -19,14 +19,14 @@ func has(player_id: String) -> bool:
 	return remote_nodes.has(player_id)
 
 
-func ensure_player(player_id: String, username: String) -> void:
+func ensure_player(player_id: String, username: String, player_scale: Vector2 = Vector2(4.0, 4.0)) -> void:
 	if remote_nodes.has(player_id):
 		var existing_label: Label = remote_nodes[player_id].get_node_or_null("Name")
 		if existing_label:
 			existing_label.text = username
 		return
 
-	var holder := REMOTE_PLAYER_FACTORY_SCRIPT.create(player_id, username)
+	var holder := REMOTE_PLAYER_FACTORY_SCRIPT.create(player_id, username, player_scale)
 	remote_players_root.add_child(holder)
 	remote_nodes[player_id] = holder
 

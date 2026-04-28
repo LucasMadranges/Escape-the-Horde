@@ -98,7 +98,7 @@ func _on_game_state_updated(game_state: Dictionary) -> void:
 		if has_status:
 			status = str(player_data.get("status", status))
 		alive_ids[player_id] = true
-		remote_visuals.ensure_player(player_id, username)
+		remote_visuals.ensure_player(player_id, username, _get_local_player_scale())
 		if has_status:
 			condition_store.set_status_from_game_state(player_id, status)
 
@@ -129,7 +129,7 @@ func _on_player_sync_received(payload: Dictionary) -> void:
 		return
 
 	var sync_username := _display_name(str(payload.get("username", player_id)), player_id)
-	remote_visuals.ensure_player(player_id, sync_username)
+	remote_visuals.ensure_player(player_id, sync_username, _get_local_player_scale())
 	if not remote_visuals.has(player_id):
 		return
 
@@ -240,6 +240,13 @@ func get_revive_state(player_id: String) -> Dictionary:
 
 func get_alive_remote_nodes() -> Array:
 	return remote_visuals.get_alive_remote_nodes()
+
+
+func _get_local_player_scale() -> Vector2:
+	var local_player := get_parent().get_node_or_null("Player")
+	if local_player:
+		return local_player.scale
+	return Vector2(4.0, 4.0)
 
 
 func _display_name(raw: String, player_id: String) -> String:

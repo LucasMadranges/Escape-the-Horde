@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED := 100.0
+const SPEED := 50.0
 const SPRITE_SCALE := Vector2(1.0, 1.0)
 const ARENA_HALF := Vector2(1100.0, 800.0)
 

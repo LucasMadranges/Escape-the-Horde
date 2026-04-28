@@ -64,7 +64,7 @@ func _setup_atmosphere() -> void:
 	var glow := PointLight2D.new()
 	glow.texture = _make_glow_texture(256)
 	glow.texture_scale = 12.0
-	glow.energy = 0.3
+	glow.energy = 0.5
 	glow.color = Color(1.0, 0.32, 0.08)
 	glow.position = Vector2(0, 500)
 	add_child(glow)

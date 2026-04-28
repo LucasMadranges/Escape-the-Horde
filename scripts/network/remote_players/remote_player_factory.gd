@@ -2,10 +2,10 @@ class_name RemotePlayerFactory
 extends RefCounted
 
 
-static func create(player_id: String, username: String) -> CharacterBody2D:
+static func create(player_id: String, username: String, player_scale: Vector2 = Vector2(4.0, 4.0)) -> CharacterBody2D:
 	var holder := CharacterBody2D.new()
 	holder.name = "Remote_%s" % player_id
-	holder.scale = Vector2(4.0, 4.0)
+	holder.scale = player_scale
 
 	var sprite := AnimatedSprite2D.new()
 	sprite.name = "AnimatedSprite2D"
