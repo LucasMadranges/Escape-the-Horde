@@ -64,12 +64,15 @@ void fragment() {
 		return;
 	}
 
-	// Zone intermédiaire : transparente (jeu normal visible)
-	float mid_clear = smoothstep(0.18, 0.45, t);
+	// Teinte chaude ambiante dans tout le cône (effet faisceau visible)
+	float beam_glow = (1.0 - t * 0.85) * (1.0 - angle_t * 0.7) * 0.28;
+	if (beam_glow > 0.005) {
+		COLOR = vec4(1.0, 0.88, 0.55, beam_glow);
+		return;
+	}
 
 	// Bord du cône : assombrissement progressif + falloff angulaire
-	float edge_shadow = smoothstep(0.45, 1.0, t) * (0.4 + angle_t * 0.3) * overlay_alpha;
-
-	float alpha = mix(0.0, edge_shadow, mid_clear);
-	COLOR = vec4(0.0, 0.0, 0.0, alpha);
+	float edge_start = 0.65;
+	float edge_shadow = smoothstep(edge_start, 1.0, t) * (0.5 + angle_t * 0.35) * overlay_alpha;
+	COLOR = vec4(0.0, 0.0, 0.0, edge_shadow);
 }
