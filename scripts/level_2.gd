@@ -1,7 +1,20 @@
 extends Node2D
 
+const ARENA_BOUNDS_LAYER := 1
+
 func _ready() -> void:
 	_setup_atmosphere()
+	_connect_arena_bounds_to_player()
+
+func _connect_arena_bounds_to_player() -> void:
+	var arena_body := get_node_or_null("Area/StaticBody2D") as StaticBody2D
+	if arena_body:
+		arena_body.collision_layer = ARENA_BOUNDS_LAYER
+		arena_body.collision_mask = 0
+
+	var player := get_node_or_null("Player") as CharacterBody2D
+	if player:
+		player.collision_mask |= ARENA_BOUNDS_LAYER
 
 func _setup_atmosphere() -> void:
 	# Teinte vespérale : mauve-orangé chaud, comme l'heure dorée qui bascule dans la nuit

@@ -41,10 +41,12 @@
 [ext_resource type="Texture2D" uid="uid://dcnng6lfuiayr" path="res://assets/Objects/Buildings/Air-vent_2_rusty.png" id="42_air_vent"]
 [ext_resource type="Texture2D" uid="uid://cy3cdhfavh335" path="res://assets/Objects/Buildings/Ladder_Balcony_Metal_1_Rusty.png" id="43_ladder"]
 [ext_resource type="PackedScene" uid="uid://qxe3t8gm03s6" path="res://scenes/objets/car/car_2.tscn" id="43_osflp"]
-[ext_resource type="Script" uid="uid://brx8p7wxh8chs" path="res://scripts/map_effects.gd" id="48_map_fx"]
-[ext_resource type="Script" uid="uid://dpvda6x45xty" path="res://scripts/hud.gd" id="49_hud"]
-[ext_resource type="Script" uid="uid://dpvda6x45xty" path="res://scripts/level_2.gd" id="level_2_script"]
+[ext_resource type="Script" uid="uid://uup2fgvb2oap" path="res://scripts/level_2.gd" id="44_level_2"]
+[ext_resource type="Script" uid="uid://dpvda6x45xty" path="res://scripts/hud.gd" id="level_2_script"]
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_j2jmx"]
+vertices = PackedVector2Array(2017.0078, 695.9922, -1840.8828, 694, -1828.1484, -416.10938, 2018.9766, -428.96094)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_73m23"]
 texture = ExtResource("1_pc3at")
@@ -826,17 +828,21 @@ a = Vector2(2103, 90)
 b = Vector2(-1795, 90)
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_m6wqs"]
-a = Vector2(27, 1263)
-b = Vector2(31, -69)
+a = Vector2(27, 1179)
+b = Vector2(26, 28)
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_vfjea"]
-a = Vector2(1985, 97)
-b = Vector2(-2157, 100)
+a = Vector2(1898, 101)
+b = Vector2(-1993, 98)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 6.0
 
 [node name="Game" type="Node2D" unique_id=630106607]
+script = ExtResource("44_level_2")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=1434659042]
+navigation_polygon = SubResource("NavigationPolygon_j2jmx")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1107172736]
 
@@ -1092,50 +1098,53 @@ texture = ExtResource("40_window_boarded")
 position = Vector2(0, -1210)
 
 [node name="StairDoor" type="Sprite2D" parent="ZombieSpawnZones/NorthStairwell" unique_id=696969041]
+position = Vector2(202.99998, 815.49994)
 scale = Vector2(5, 5)
 texture = ExtResource("12_door_metal")
 
 [node name="StairDoorAjar" type="Sprite2D" parent="ZombieSpawnZones/NorthStairwell" unique_id=1245513603]
-position = Vector2(68, 22)
+position = Vector2(271, 837.5)
 scale = Vector2(4.5, 4.5)
 texture = ExtResource("13_door_ajar")
 
 [node name="NorthSpawnA" type="Marker2D" parent="ZombieSpawnZones/NorthStairwell" unique_id=2082240306]
-position = Vector2(0, 110)
+position = Vector2(203, 925.5)
 
 [node name="NorthSpawnB" type="Marker2D" parent="ZombieSpawnZones/NorthStairwell" unique_id=661251706]
-position = Vector2(100, 90)
+position = Vector2(303, 905.5)
 
 [node name="SouthStairwell" type="Node2D" parent="ZombieSpawnZones" unique_id=1210514766]
 position = Vector2(-240, 1200)
 
 [node name="SouthStairDoor" type="Sprite2D" parent="ZombieSpawnZones/SouthStairwell" unique_id=1413811614]
+position = Vector2(99.99999, -621.99994)
 scale = Vector2(5, 5)
 texture = ExtResource("12_door_metal")
 
 [node name="SouthSpawnA" type="Marker2D" parent="ZombieSpawnZones/SouthStairwell" unique_id=758977572]
-position = Vector2(0, -110)
+position = Vector2(100, -732)
 
 [node name="SouthSpawnB" type="Marker2D" parent="ZombieSpawnZones/SouthStairwell" unique_id=1563013601]
-position = Vector2(100, -90)
+position = Vector2(200, -712)
 
 [node name="WestWindowBreach" type="Node2D" parent="ZombieSpawnZones" unique_id=1880565308]
 position = Vector2(-1790, -600)
 
 [node name="WestBreachCorner" type="Sprite2D" parent="ZombieSpawnZones/WestWindowBreach" unique_id=1125249958]
+position = Vector2(55, 268.5)
 scale = Vector2(6, 6)
 texture = ExtResource("11_wall_corner")
 
 [node name="WestBreachDoor" type="Sprite2D" parent="ZombieSpawnZones/WestWindowBreach" unique_id=968346921]
-position = Vector2(54, 20)
+position = Vector2(109, 288.49997)
 scale = Vector2(5, 5)
 texture = ExtResource("13_door_ajar")
 
 [node name="WestSpawnA" type="Marker2D" parent="ZombieSpawnZones/WestWindowBreach" unique_id=436460786]
-position = Vector2(130, 30)
+position = Vector2(185, 298.5)
 
 [node name="WestSpawnB" type="Marker2D" parent="ZombieSpawnZones/WestWindowBreach" unique_id=1225254353]
-position = Vector2(120, 120)
+position = Vector2(175, 388.5)
 
 [node name="EastElevatorShaft" type="Node2D" parent="ZombieSpawnZones" unique_id=576364884]
 position = Vector2(1780, 110)
@@ -1159,37 +1168,39 @@ position = Vector2(-80, -80)
 position = Vector2(-1080, -880)
 
 [node name="NWRoofHole" type="Sprite2D" parent="ZombieSpawnZones/NWSkylight" unique_id=1364992022]
+position = Vector2(-27.199951, 554.7)
 scale = Vector2(4.6, 4.6)
 texture = ExtResource("41_roof_hole")
 
 [node name="NWLadder" type="Sprite2D" parent="ZombieSpawnZones/NWSkylight" unique_id=908191049]
-position = Vector2(72, -46)
+position = Vector2(44.80005, 508.7)
 scale = Vector2(4.1, 4.1)
 texture = ExtResource("43_ladder")
 
 [node name="NWSpawnA" type="Marker2D" parent="ZombieSpawnZones/NWSkylight" unique_id=956990882]
-position = Vector2(-10, 80)
+position = Vector2(-37.19995, 634.7)
 
 [node name="NWSpawnB" type="Marker2D" parent="ZombieSpawnZones/NWSkylight" unique_id=1948234682]
-position = Vector2(72, 64)
+position = Vector2(44.80005, 618.7)
 
 [node name="SEHatch" type="Node2D" parent="ZombieSpawnZones" unique_id=460920025]
 position = Vector2(1100, 960)
 
 [node name="SEOpenHatch" type="Sprite2D" parent="ZombieSpawnZones/SEHatch" unique_id=830805275]
+position = Vector2(-87.400024, -414.40002)
 scale = Vector2(4.4, 4.4)
 texture = ExtResource("14_hatch_open")
 
 [node name="SEManhole" type="Sprite2D" parent="ZombieSpawnZones/SEHatch" unique_id=1964408959]
-position = Vector2(-72, 16)
+position = Vector2(-159.40002, -398.4001)
 scale = Vector2(4.2, 4.2)
 texture = ExtResource("16_manhole")
 
 [node name="SESpawnA" type="Marker2D" parent="ZombieSpawnZones/SEHatch" unique_id=1371815965]
-position = Vector2(-8, 88)
+position = Vector2(-95.400024, -326.40002)
 
 [node name="SESpawnB" type="Marker2D" parent="ZombieSpawnZones/SEHatch" unique_id=807763950]
-position = Vector2(-90, 64)
+position = Vector2(-177.40002, -350.40002)
 
 [node name="CentralRoofVent" type="Node2D" parent="ZombieSpawnZones" unique_id=760890785]
 position = Vector2(620, -180)
@@ -1216,8 +1227,9 @@ position = Vector2(74, 62)
 [node name="Bullets" type="Node2D" parent="." unique_id=2146403280]
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=1684915322]
+collision_layer = 2
+collision_mask = 65535
 script = ExtResource("1_player")
-enable_light = false
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Player" unique_id=1114378793]
 
@@ -1293,7 +1305,7 @@ text = "Niveau 2 — Etage"
 horizontal_alignment = 2
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1686708114]
-script = ExtResource("49_hud")
+script = ExtResource("level_2_script")
 
 [node name="PauseLayer" type="CanvasLayer" parent="." unique_id=312783798]
 process_mode = 3
