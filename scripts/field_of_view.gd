@@ -197,6 +197,22 @@ func get_current_target() -> Node2D:
 
 
 func _draw() -> void:
+	if not _player or _visibility_arc.is_empty():
+		return
+
+	# Polygone en éventail avec gradient : centre lumineux → bords transparents
+	var fan := PackedVector2Array()
+	var colors := PackedColorArray()
+
+	fan.append(Vector2.ZERO)
+	colors.append(Color(1.0, 0.92, 0.65, 0.72))
+
+	for world_point in _visibility_arc:
+		fan.append(to_local(world_point))
+		colors.append(Color(1.0, 0.85, 0.5, 0.0))
+
+	draw_polygon(fan, colors)
+
 	if _current_target and is_instance_valid(_current_target):
 		_draw_target_indicator(_current_target)
 
