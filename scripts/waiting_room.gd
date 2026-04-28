@@ -9,6 +9,23 @@ const MENU_SCENE_PATH := "res://scenes/main_menu.tscn"
 @onready var players_list: VBoxContainer = $UI/Panel/Margin/VBox/PlayersPanel/PlayersScroll/PlayersList
 @onready var launch_button: Button = $UI/Panel/Margin/VBox/Footer/LaunchButton
 @onready var leave_button: Button = $UI/Panel/Margin/VBox/Footer/LeaveButton
+@onready var panel: PanelContainer = $UI/Panel
+@onready var players_panel: PanelContainer = $UI/Panel/Margin/VBox/PlayersPanel
+@onready var title_label: Label = $UI/Panel/Margin/VBox/Title
+
+const HEADER_TEXT_COLOR := Color(0.78, 0.84, 0.95)
+const TEXT_DIM := Color(0.72, 0.76, 0.86)
+const PANEL_BG := Color(0.06, 0.07, 0.11, 0.92)
+const PANEL_BORDER := Color(0.2, 0.22, 0.32, 0.8)
+const SUBPANEL_BG := Color(0.05, 0.06, 0.1, 0.9)
+const SUBPANEL_BORDER := Color(0.18, 0.2, 0.28, 0.8)
+const PRIMARY_BG := Color(0.12, 0.55, 0.42)
+const PRIMARY_BG_HOVER := Color(0.16, 0.62, 0.48)
+const PRIMARY_BG_PRESSED := Color(0.08, 0.45, 0.35)
+const PRIMARY_BG_DISABLED := Color(0.12, 0.14, 0.18)
+const DANGER_BG := Color(0.6, 0.2, 0.22)
+const DANGER_BG_HOVER := Color(0.7, 0.24, 0.26)
+const DANGER_BG_PRESSED := Color(0.48, 0.16, 0.18)
 
 var realtime_client: Node
 var switched_to_game := false
@@ -16,6 +33,7 @@ var switched_to_game := false
 
 func _ready() -> void:
 	_setup_atmosphere()
+	_setup_ui_style()
 	realtime_client = get_tree().root.get_node_or_null("RealtimeClient")
 	if realtime_client == null:
 		get_tree().change_scene_to_file(MENU_SCENE_PATH)
@@ -127,6 +145,7 @@ func _apply_state(game_state: Dictionary) -> void:
 		var row := Label.new()
 		row.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		row.text = "- %s%s" % [username, tags]
+		row.modulate = TEXT_DIM
 		players_list.add_child(row)
 
 	players_count_label.text = "Joueurs connectes: %d" % connected_count
@@ -163,3 +182,71 @@ func _on_leave_pressed() -> void:
 
 func _on_realtime_error(message: String) -> void:
 	room_status_label.text = "Erreur realtime: %s" % message
+
+
+func _setup_ui_style() -> void:
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = PANEL_BG
+	panel_style.border_color = PANEL_BORDER
+	panel_style.border_width_left = 1
+	panel_style.border_width_top = 1
+	panel_style.border_width_right = 1
+	panel_style.border_width_bottom = 1
+	panel_style.corner_radius_top_left = 14
+	panel_style.corner_radius_top_right = 14
+	panel_style.corner_radius_bottom_left = 14
+	panel_style.corner_radius_bottom_right = 14
+	panel.add_theme_stylebox_override("panel", panel_style)
+
+	var subpanel_style := StyleBoxFlat.new()
+	subpanel_style.bg_color = SUBPANEL_BG
+	subpanel_style.border_color = SUBPANEL_BORDER
+	subpanel_style.border_width_left = 1
+	subpanel_style.border_width_top = 1
+	subpanel_style.border_width_right = 1
+	subpanel_style.border_width_bottom = 1
+	subpanel_style.corner_radius_top_left = 10
+	subpanel_style.corner_radius_top_right = 10
+	subpanel_style.corner_radius_bottom_left = 10
+	subpanel_style.corner_radius_bottom_right = 10
+	players_panel.add_theme_stylebox_override("panel", subpanel_style)
+
+	title_label.modulate = HEADER_TEXT_COLOR
+	game_id_label.modulate = TEXT_DIM
+	room_status_label.modulate = TEXT_DIM
+	players_count_label.modulate = TEXT_DIM
+
+	launch_button.custom_minimum_size = Vector2(170, 36)
+	launch_button.add_theme_stylebox_override("normal", _make_button_style(PRIMARY_BG))
+	launch_button.add_theme_stylebox_override("hover", _make_button_style(PRIMARY_BG_HOVER))
+	launch_button.add_theme_stylebox_override("pressed", _make_button_style(PRIMARY_BG_PRESSED))
+	launch_button.add_theme_stylebox_override("disabled", _make_button_style(PRIMARY_BG_DISABLED))
+	launch_button.add_theme_color_override("font_color", Color(1, 1, 1))
+	launch_button.add_theme_color_override("font_color_disabled", Color(0.7, 0.74, 0.82))
+
+	leave_button.custom_minimum_size = Vector2(170, 36)
+	leave_button.add_theme_stylebox_override("normal", _make_button_style(DANGER_BG))
+	leave_button.add_theme_stylebox_override("hover", _make_button_style(DANGER_BG_HOVER))
+	leave_button.add_theme_stylebox_override("pressed", _make_button_style(DANGER_BG_PRESSED))
+	leave_button.add_theme_stylebox_override("disabled", _make_button_style(PRIMARY_BG_DISABLED))
+	leave_button.add_theme_color_override("font_color", Color(1, 1, 1))
+	leave_button.add_theme_color_override("font_color_disabled", Color(0.7, 0.74, 0.82))
+
+
+func _make_button_style(bg_color: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg_color
+	style.border_color = PANEL_BORDER
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.content_margin_left = 8
+	style.content_margin_right = 8
+	style.content_margin_top = 4
+	style.content_margin_bottom = 4
+	return style

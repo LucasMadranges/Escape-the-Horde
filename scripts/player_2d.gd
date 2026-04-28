@@ -8,6 +8,8 @@ const PLAYER_STATUS_CONTROLLER_SCRIPT := preload("res://scripts/game/player/play
 const FIELD_OF_VIEW_SCRIPT := preload("res://scripts/field_of_view.gd")
 const FOV_OVERLAY_SCRIPT := preload("res://scripts/fov_overlay.gd")
 
+@export var enable_light := true
+
 const WEAPON_CONFIG := {
 	"pistol":  {"fire_rate": 0.55, "damage": 25, "bullet_speed": 480.0, "spread": 0.00, "pellets": 1},
 	"shotgun": {"fire_rate": 1.10, "damage": 18, "bullet_speed": 380.0, "spread": 0.28, "pellets": 6},
@@ -33,7 +35,8 @@ func _ready() -> void:
 	collision_layer = 1
 	collision_mask = 2 | 8  # zombies (layer 2) + murs (layer 4)
 	_setup_animations()
-	_setup_light()
+	if enable_light:
+		_setup_light()
 
 	status_controller = PLAYER_STATUS_CONTROLLER_SCRIPT.new()
 	status_controller.name = "PlayerStatusController"

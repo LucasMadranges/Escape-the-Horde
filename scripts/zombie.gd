@@ -80,9 +80,6 @@ func _process_authoritative(delta: float) -> void:
 
 	# ← Remplace l'ancienne ligne "var to_player := target_position - global_position"
 	agent.set_target_position(target_position)
-
-	var next_debug: Vector2 = agent.get_next_path_position()
-	print("pos: ", global_position, " | next: ", next_debug, " | finished: ", agent.is_navigation_finished())
 	
 	var to_player := target_position - global_position  # Garde ça pour le range check
 	
