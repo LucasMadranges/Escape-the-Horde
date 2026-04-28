@@ -638,6 +638,33 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     };
   }
 
+  @SubscribeMessage('game:extraction_sync')
+  handleExtractionSync(
+    @MessageBody() rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): void {
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+    if (!presence) return;
+    const body = this.normalizePayload<{ countdown: number; inZone: number; total: number }>(rawBody);
+    this.broadcastToGame(presence.gameId, 'game:extraction_sync', {
+      countdown: body?.countdown ?? 0,
+      inZone: body?.inZone ?? 0,
+      total: body?.total ?? 1,
+    }, client);
+  }
+
+  @SubscribeMessage('game:extraction_launch')
+  handleExtractionLaunch(
+    @MessageBody() _rawBody: unknown,
+    @ConnectedSocket() client: WebSocket,
+  ): void {
+    const socketId = this.requireSocketId(client);
+    const presence = this.socketPresence.get(socketId);
+    if (!presence) return;
+    this.broadcastToGame(presence.gameId, 'game:extraction_launch', {}, client);
+  }
+
   private addSocketToGame(gameId: string, socket: WebSocket) {
     const set = this.socketsByGame.get(gameId) ?? new Set<WebSocket>();
     set.add(socket);

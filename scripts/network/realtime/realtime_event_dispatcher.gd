@@ -39,5 +39,9 @@ static func dispatch(client: Node, event_name: String, data: Variant) -> void:
 			client._on_player_dead_event(data)
 		"game:scene_change":
 			client._on_scene_change_event(data)
+		"game:extraction_sync":
+			client._on_extraction_sync_event(data)
+		"game:extraction_launch":
+			client._on_extraction_launch_event(data)
 		_:
 			pass
