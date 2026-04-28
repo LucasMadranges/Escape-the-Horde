@@ -313,7 +313,7 @@ func _on_extraction_update_event(data: Dictionary) -> void:
 func _on_extraction_launch_event(_data: Dictionary) -> void:
 	extraction_launch_received.emit()
 
-func send_bullet_fire(pos: Vector2, dir: Vector2, spd: float, dmg: float) -> void:
+func send_bullet_fire(pos: Vector2, dir: Vector2, spd: float, dmg: float, wtype: String = "pistol") -> void:
 	if not _can_send(true):
 		return
 	_send_event("game:bullet_fire", {
@@ -323,6 +323,7 @@ func send_bullet_fire(pos: Vector2, dir: Vector2, spd: float, dmg: float) -> voi
 		"dy": dir.y,
 		"speed": spd,
 		"damage": dmg,
+		"weaponType": wtype,
 	})
 
 

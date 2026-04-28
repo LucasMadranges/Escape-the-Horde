@@ -187,6 +187,7 @@ func _on_bullet_fire_received(payload: Dictionary) -> void:
 	b.speed = float(payload.get("speed", 480.0))
 	b.damage = 0
 	b.is_remote = true
+	b.weapon_type = str(payload.get("weaponType", "pistol"))
 	b.global_position = Vector2(float(payload.get("x", 0.0)), float(payload.get("y", 0.0)))
 
 	var root := get_parent()

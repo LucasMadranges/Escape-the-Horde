@@ -654,6 +654,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
       dy: number;
       speed: number;
       damage: number;
+      weaponType?: string;
     }>(rawBody);
     const socketId = this.requireSocketId(client);
     const presence = this.socketPresence.get(socketId);
@@ -670,6 +671,7 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
         dy: body.dy ?? 0,
         speed: body.speed ?? 480,
         damage: body.damage ?? 25,
+        weaponType: body.weaponType ?? 'pistol',
       },
       client,
     );

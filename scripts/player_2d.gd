@@ -192,6 +192,7 @@ func _shoot_at(direction: Vector2) -> void:
 	b.direction = direction
 	b.speed = cfg.bullet_speed
 	b.damage = cfg.damage
+	b.weapon_type = GameData.active_weapon
 	b.global_position = global_position
 	var root := get_parent()
 	if root.has_node("Bullets"):
@@ -199,7 +200,7 @@ func _shoot_at(direction: Vector2) -> void:
 	else:
 		root.add_child(b)
 	if _realtime and _realtime.has_method("send_bullet_fire"):
-		_realtime.send_bullet_fire(global_position, direction, cfg.bullet_speed, cfg.damage)
+		_realtime.send_bullet_fire(global_position, direction, cfg.bullet_speed, cfg.damage, GameData.active_weapon)
 
 
 ## Tire avec tous les pellets et le spread de l'arme active (utilisé par l'auto-aim FOV)
