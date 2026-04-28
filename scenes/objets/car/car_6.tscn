@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b5rv6y7j5gu83"]
+
+[ext_resource type="Texture2D" uid="uid://1qyq7xbiugdi" path="res://assets/Objects/Vehicles/Normal/Car_2_Upsidedown/Car_2_Orange_Upsidedown.png" id="2_7a8wf"]
+
+[node name="Car2" type="Node2D" unique_id=1935377871]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=861136638]
+collision_mask = 0
+
+[node name="Car2OrangeUpsidedown" type="Sprite2D" parent="StaticBody2D" unique_id=1182434772]
+position = Vector2(-0.95000076, 1.7722244)
+scale = Vector2(2.8333333, 2.8333335)
+texture = ExtResource("2_7a8wf")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=878426508]
+position = Vector2(-1.699997, 1.8555603)
+scale = Vector2(3.0694444, 3.0694447)
+polygon = PackedVector2Array(13.5, 0, 13.5, -15.3, 2.6000004, -18.5, -6.5, -18.5, -6.5, -17, -13.5, 1.3999996, -13.5, 17, -8.5, 18.5, 7.6000004, 18.5)

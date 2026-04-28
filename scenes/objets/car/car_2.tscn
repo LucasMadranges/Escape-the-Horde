@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://qxe3t8gm03s6"]
+
+[ext_resource type="Texture2D" uid="uid://dxuo1y7lp1fe6" path="res://assets/Objects/Vehicles/Normal/Car_1/Car_1_Red.png" id="1_e7fik"]
+
+[node name="Car2" type="Node2D" unique_id=1935377871]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=861136638]
+collision_mask = 0
+
+[node name="Car1Red" type="Sprite2D" parent="StaticBody2D" unique_id=401102475]
+position = Vector2(-1.7499981, 0.5700016)
+scale = Vector2(2.38, 2.3799999)
+texture = ExtResource("1_e7fik")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=262243841]
+position = Vector2(-2, 1.0400009)
+scale = Vector2(2.4, 2.4)
+polygon = PackedVector2Array(9.5, -18.5, -7, -18.5, -9, -17.5, -11.1, -17.5, -12.5, -11.7, -12.5, -3.5, -11.3, -3.5, -9.5, 17.7, -9.5, 18.5, 11.5, 18.5, 11.5, -3.5, 12.5, -3.5, 12.5, -10.4, 9.5, -16.9)

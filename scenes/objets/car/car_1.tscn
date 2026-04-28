@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://b312idosyosi2"]
+
+[ext_resource type="Texture2D" uid="uid://b832i8y1hncs3" path="res://assets/Objects/Vehicles/Rust/Car_8_Rust_Bus/Car_8_Rust_Yellow_Bus.png" id="1_53enb"]
+
+[node name="Car1" type="Node2D" unique_id=1719449417]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1351909470]
+collision_mask = 0
+
+[node name="CheckpointBus2" type="Sprite2D" parent="StaticBody2D" unique_id=971314097]
+position = Vector2(3.4921722, -5.840088)
+rotation = -0.09000002
+scale = Vector2(4.199999, 4.199999)
+texture = ExtResource("1_53enb")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=1791639347]
+position = Vector2(3.4921722, -5.840088)
+rotation = -0.09000002
+scale = Vector2(4.199999, 4.199999)
+polygon = PackedVector2Array(-29.5, -15.5, -30.5, -13, -30.5, 15.5, 30.5, 15.5, 30.5, -12.7, 28.5, -15.2)

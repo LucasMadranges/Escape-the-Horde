@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cyfjvr7g1kkum"]
+
+[ext_resource type="Texture2D" uid="uid://dcwsb67ai1usr" path="res://assets/Objects/Vehicles/Normal/Car_6_Scrap/Car_6_Blue_Scrap.png" id="1_fwlb0"]
+
+[node name="Car2" type="Node2D" unique_id=1935377871]
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=575443362]
+collision_mask = 0
+
+[node name="Car6BlueScrap" type="Sprite2D" parent="StaticBody2D2" unique_id=77004934]
+position = Vector2(7.6293945e-06, 3.8146973e-06)
+scale = Vector2(2.7499998, 2.75)
+texture = ExtResource("1_fwlb0")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D2" unique_id=1849281354]
+position = Vector2(2.2374992, 1.2499995)
+scale = Vector2(2.9218752, 2.9218748)
+polygon = PackedVector2Array(-19.5, 10, 19.5, 10, 19.5, -7.6, 8.700001, -10, -10.8, -10, -15.5, -7.1, -15.5, -6, -19.5, -6)

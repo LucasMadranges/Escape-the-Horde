@@ -12,18 +12,23 @@
 [ext_resource type="Texture2D" uid="uid://5d2ttnqhuetp" path="res://assets/Tiles/Wire-Fence/Wire-Fence_TileSet.png" id="5_t5ykj"]
 [ext_resource type="Script" uid="uid://dsl7uu8ws3dbs" path="res://scripts/network/session_sync.gd" id="6_session_sync"]
 [ext_resource type="Texture2D" uid="uid://d2ric3m5akt33" path="res://assets/Objects/Gray-brick.png" id="7_gray_brick"]
+[ext_resource type="Texture2D" uid="uid://cbwgwfmild13i" path="res://assets/Tiles/Roof_TileSet.png" id="7_y57op"]
 [ext_resource type="Texture2D" uid="uid://sqp81y36pkug" path="res://assets/Objects/Metal-Plates.png" id="8_metal_plates"]
+[ext_resource type="Texture2D" uid="uid://cuffowmdfdo3i" path="res://assets/Tiles/Garbage_TileSet.png" id="8_mlv25"]
+[ext_resource type="Texture2D" uid="uid://bdma83u3iysil" path="res://assets/Tiles/Grass_On-Top_TileSet.png" id="9_a82wo"]
 [ext_resource type="Texture2D" uid="uid://by16xnkblpim5" path="res://assets/Objects/Buildings/Brick-wall_1_Lying.png" id="9_wall_lie"]
+[ext_resource type="Texture2D" uid="uid://c1mqq2abrf82s" path="res://assets/Tiles/Gutter-And-Downspout.png" id="10_gdvew"]
 [ext_resource type="Texture2D" uid="uid://ckrfjrdpywihd" path="res://assets/Objects/Buildings/Destroyed-wall_not-corner.png" id="10_wall_break"]
+[ext_resource type="Texture2D" uid="uid://c4o275dw6n0bv" path="res://assets/Tiles/Iron-Fence_TileSet.png" id="11_kjtvk"]
 [ext_resource type="Texture2D" uid="uid://hdsxftx6teax" path="res://assets/Objects/Buildings/Destroyed-wall_corner.png" id="11_wall_corner"]
 [ext_resource type="Texture2D" uid="uid://wew82ldpdqug" path="res://assets/Objects/Buildings/Door_4_Metal.png" id="12_door_metal"]
+[ext_resource type="Texture2D" uid="uid://uet1yoiyebqw" path="res://assets/Objects/Vehicles/Normal/Car_1/Car_1_Blue.png" id="12_xrs0c"]
 [ext_resource type="Texture2D" uid="uid://cjyvwvyqkmo4h" path="res://assets/Objects/Buildings/Door_2_Ajar_Beige.png" id="13_door_ajar"]
 [ext_resource type="Texture2D" uid="uid://lux7ynlu88ap" path="res://assets/Objects/Buildings/Hatch_1_Open.png" id="14_hatch_open"]
 [ext_resource type="Texture2D" uid="uid://bld16avylce8o" path="res://assets/Objects/Buildings/Hatch_1_Closed.png" id="15_hatch_closed"]
 [ext_resource type="Texture2D" uid="uid://cb1dhl8qhftnm" path="res://assets/Objects/Manhole.png" id="16_manhole"]
 [ext_resource type="Texture2D" uid="uid://xas5gdh3m7xf" path="res://assets/Objects/Barrel_rust_red_1.png" id="17_barrel"]
 [ext_resource type="Texture2D" uid="uid://c6g32x5b35drf" path="res://assets/Objects/Pallet_1.png" id="18_pallet"]
-[ext_resource type="Texture2D" uid="uid://c7dirkw2t3pua" path="res://assets/Objects/Bench_4_side_Overgrown_Dark-Green.png" id="19_bench"]
 [ext_resource type="Texture2D" uid="uid://dublpqrwdtcpb" path="res://assets/Objects/Street-Light_1_Side.png" id="20_streetlight"]
 [ext_resource type="Texture2D" uid="uid://d1xr6alo1840q" path="res://assets/Objects/Container/Container_7_Red_Horizontal.png" id="21_container_red"]
 [ext_resource type="Texture2D" uid="uid://benhww3jlopdk" path="res://assets/Objects/Container/Container_3_Gray_Horizontal.png" id="22_container_gray"]
@@ -33,7 +38,6 @@
 [ext_resource type="Texture2D" uid="uid://c51br0jwysrey" path="res://assets/Objects/Stop-sign_Side_4_Overgrown_Dark-Green.png" id="26_stop_sign"]
 [ext_resource type="Texture2D" uid="uid://b832i8y1hncs3" path="res://assets/Objects/Vehicles/Rust/Car_8_Rust_Bus/Car_8_Rust_Yellow_Bus.png" id="27_bus_rust"]
 [ext_resource type="Texture2D" uid="uid://chi36ivhduk3k" path="res://assets/Objects/Vehicles/Normal/Car_7_Truck/Car_7_Gray_Truck.png" id="28_truck"]
-[ext_resource type="Texture2D" uid="uid://qoeb41naybva" path="res://assets/Objects/Vehicles/Rust/Car_6_Rust_Scrap/Car_6_Rust_Red_Scrap.png" id="29_scrap_car"]
 [ext_resource type="Texture2D" uid="uid://db1w0hl1de53h" path="res://assets/Objects/Vehicles/Rust/Car_4_Rust/Car_4_Rust_Dark-Blue.png" id="30_rust_car"]
 [ext_resource type="Texture2D" uid="uid://ctokhodnexo6h" path="res://assets/Objects/Vehicles/Normal/Car_9_Motorcycle/Car_9_Red_Motorcycle_Side.png" id="31_bike"]
 [ext_resource type="Texture2D" uid="uid://bwwvdaxovjn4b" path="res://assets/Objects/Nature/Dark-Green/Tree_5_Big_Dark-Green.png" id="32_tree_big"]
@@ -54,13 +58,15 @@
 [ext_resource type="Texture2D" uid="uid://dgl6mcereha74" path="res://assets/Objects/Trash-bag_2.png" id="47_trash_bag"]
 [ext_resource type="Script" uid="uid://brx8p7wxh8chs" path="res://scripts/map_effects.gd" id="48_map_fx"]
 [ext_resource type="Script" uid="uid://dpvda6x45xty" path="res://scripts/hud.gd" id="49_hud"]
-[ext_resource type="Texture2D" uid="uid://ci52kh5kck6qy" path="res://assets/Objects/Vehicles/Normal/Car_1/Car_1_Orange.png" id="52_ids8r"]
-[ext_resource type="Texture2D" uid="uid://bgu3slfkvmik3" path="res://assets/Objects/Vehicles/Overgrown/Car_5_Overgrown_Tractor/Green/Car_5_Overgrown_Green_Tractor_Up.png" id="53_1v6qk"]
-[ext_resource type="Texture2D" uid="uid://hqjtqydlt0dk" path="res://assets/Objects/Vehicles/Overgrown/Car_4_Overgrown/Bleak-Yellow/Car_4_Overgrown_Bleak-Yellow_Gray.png" id="54_augu2"]
-[ext_resource type="Texture2D" uid="uid://fh5055m38ico" path="res://assets/Objects/Vehicles/Overgrown/Car_1_Overgrown/Dark-Green/Car_1_Overgrown_Dark-Green_Yellow.png" id="55_tm6hj"]
-[ext_resource type="Texture2D" uid="uid://dr2vvtwtsbm0c" path="res://assets/Objects/Vehicles/Normal/Car_2_Upsidedown/Car_2_Red_Upsidedown.png" id="56_kf5aa"]
-[ext_resource type="Texture2D" uid="uid://n1b3lkuikli7" path="res://assets/Objects/Vehicles/Normal/Car_7_Truck/Car_7_Orange_Truck.png" id="57_t5ykj"]
 [ext_resource type="Script" uid="uid://c08tvxx8mogoa" path="res://scripts/main.gd" id="58_main_script"]
+[ext_resource type="PackedScene" uid="uid://qxe3t8gm03s6" path="res://scenes/objets/car/car_2.tscn" id="61_t5ykj"]
+[ext_resource type="PackedScene" uid="uid://bwqoaw36662h5" path="res://scenes/objets/car/car_3.tscn" id="62_e755i"]
+[ext_resource type="PackedScene" uid="uid://575wdef0sbqf" path="res://scenes/objets/car/car_4.tscn" id="63_ro3en"]
+[ext_resource type="PackedScene" uid="uid://cyfjvr7g1kkum" path="res://scenes/objets/car/car_5.tscn" id="64_od4ux"]
+[ext_resource type="PackedScene" uid="uid://b5rv6y7j5gu83" path="res://scenes/objets/car/car_6.tscn" id="65_xhfw6"]
+[ext_resource type="PackedScene" uid="uid://bfyas7uj0avv2" path="res://scenes/objets/car/car_7.tscn" id="66_1epgm"]
+[ext_resource type="PackedScene" uid="uid://cig8ssbcblyds" path="res://scenes/objets/car/car_8.tscn" id="67_152kg"]
+[ext_resource type="PackedScene" uid="uid://b312idosyosi2" path="res://scenes/objets/car/car_1.tscn" id="69_y57op"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dnhof"]
 texture = ExtResource("1_bu4jf")
@@ -919,10 +925,226 @@ texture = ExtResource("5_t5ykj")
 3:2/0 = 0
 4:2/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ksmap"]
+texture = ExtResource("7_y57op")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+5:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+13:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+12:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+15:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+12:3/0 = 0
+14:3/0 = 0
+15:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+8:4/0 = 0
+9:4/0 = 0
+10:4/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ygd8o"]
+texture = ExtResource("8_mlv25")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2s0kr"]
+texture = ExtResource("9_a82wo")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+7:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+0:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xaipn"]
+texture = ExtResource("10_gdvew")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+1:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+10:4/0 = 0
+11:4/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+8:5/0 = 0
+9:5/0 = 0
+10:5/0 = 0
+11:5/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+8:6/0 = 0
+9:6/0 = 0
+10:6/0 = 0
+11:6/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ndrjj"]
+texture = ExtResource("11_kjtvk")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ih3m7"]
+texture = ExtResource("12_xrs0c")
+texture_region_size = Vector2i(25, 37)
+0:0/0 = 0
+0:1/0 = 0
+
 [sub_resource type="TileSet" id="TileSet_kf5aa"]
 sources/0 = SubResource("TileSetAtlasSource_tm6hj")
 sources/1 = SubResource("TileSetAtlasSource_e755i")
 sources/2 = SubResource("TileSetAtlasSource_ro3en")
+sources/3 = SubResource("TileSetAtlasSource_ksmap")
+sources/4 = SubResource("TileSetAtlasSource_ygd8o")
+sources/5 = SubResource("TileSetAtlasSource_2s0kr")
+sources/6 = SubResource("TileSetAtlasSource_xaipn")
+sources/7 = SubResource("TileSetAtlasSource_ndrjj")
+sources/8 = SubResource("TileSetAtlasSource_ih3m7")
 
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_kf5aa"]
 a = Vector2(-117, -646)
@@ -979,43 +1201,7 @@ shape = SubResource("SegmentShape2D_e755i")
 position = Vector2(136, 593)
 shape = SubResource("SegmentShape2D_ro3en")
 
-[node name="UpperIndustrialStrip" type="Polygon2D" parent="." unique_id=355911354]
-color = Color(0.095, 0.1, 0.115, 1)
-polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, -980, -2050, -980)
-
-[node name="LowerYard" type="Polygon2D" parent="." unique_id=828548349]
-color = Color(0.106, 0.12, 0.102, 1)
-polygon = PackedVector2Array(-2050, 870, 2050, 870, 2050, 1450, -2050, 1450)
-
-[node name="NorthFogBand" type="Polygon2D" parent="." unique_id=1395736235]
-color = Color(0.07, 0.07, 0.09, 0.45)
-polygon = PackedVector2Array(-2050, -1450, 2050, -1450, 2050, -700, -2050, -860)
-
-[node name="SouthFogBand" type="Polygon2D" parent="." unique_id=2102413096]
-color = Color(0.06, 0.08, 0.07, 0.35)
-polygon = PackedVector2Array(-2050, 750, 2050, 920, 2050, 1450, -2050, 1450)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1836530267]
-collision_mask = 0
-
-[node name="CheckpointBus2" type="Sprite2D" parent="StaticBody2D" unique_id=190998917]
-position = Vector2(-658.00006, -209)
-rotation = -0.09000002
-scale = Vector2(4.199999, 4.199999)
-texture = ExtResource("27_bus_rust")
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=191763991]
-position = Vector2(-658.00006, -209)
-rotation = -0.09000002
-scale = Vector2(4.199999, 4.199999)
-polygon = PackedVector2Array(-29.5, -15.5, -30.5, -13, -30.5, 15.5, 30.5, 15.5, 30.5, -12.7, 28.5, -15.2)
-
 [node name="MapDecor" type="Node2D" parent="." unique_id=1615145523]
-
-[node name="CentralBench" type="Sprite2D" parent="MapDecor" unique_id=750119170]
-position = Vector2(292, 496)
-scale = Vector2(4, 4)
-texture = ExtResource("19_bench")
 
 [node name="CentralPallet" type="Sprite2D" parent="MapDecor" unique_id=2092912863]
 position = Vector2(296, 431)
@@ -1073,18 +1259,13 @@ scale = Vector2(5, 5)
 texture = ExtResource("10_wall_break")
 
 [node name="EastContainer" type="Sprite2D" parent="MapDecor" unique_id=388210099]
-position = Vector2(1668, 270)
+position = Vector2(2127, 235)
 scale = Vector2(4.8, 4.8)
 texture = ExtResource("21_container_red")
 
 [node name="EastContainerStack" type="Sprite2D" parent="MapDecor" unique_id=764781976]
-position = Vector2(1863, 174)
+position = Vector2(2121, 306)
 scale = Vector2(4.8, 4.8)
-texture = ExtResource("22_container_gray")
-
-[node name="WestContainer" type="Sprite2D" parent="MapDecor" unique_id=380338202]
-position = Vector2(-1560, 230)
-scale = Vector2(-4.8, 4.8)
 texture = ExtResource("22_container_gray")
 
 [node name="WestGarbage" type="Sprite2D" parent="MapDecor" unique_id=1393729281]
@@ -1131,14 +1312,8 @@ rotation = 0.08
 scale = Vector2(4.2, 4.2)
 texture = ExtResource("28_truck")
 
-[node name="CheckpointTruck2" type="Sprite2D" parent="MapDecor/CheckpointSetpiece" unique_id=662720392]
-position = Vector2(-1364, 130)
-rotation = 0.08
-scale = Vector2(4.2, 4.2)
-texture = ExtResource("28_truck")
-
 [node name="CheckpointTruck3" type="Sprite2D" parent="MapDecor/CheckpointSetpiece" unique_id=818805663]
-position = Vector2(-110, 614)
+position = Vector2(-84, 826.00006)
 rotation = 0.08
 scale = Vector2(4.2, 4.2)
 texture = ExtResource("28_truck")
@@ -1189,18 +1364,6 @@ scale = Vector2(4.3, 4.3)
 texture = ExtResource("38_posters")
 
 [node name="VehicleGraveyard" type="Node2D" parent="MapDecor" unique_id=1986816639]
-
-[node name="ScrapCarMain" type="Sprite2D" parent="MapDecor/VehicleGraveyard" unique_id=1688977788]
-position = Vector2(-1041, -11.000122)
-rotation = 0.26
-scale = Vector2(4, 4)
-texture = ExtResource("29_scrap_car")
-
-[node name="ScrapCarMain2" type="Sprite2D" parent="MapDecor/VehicleGraveyard" unique_id=1221048711]
-position = Vector2(-604.99994, 240.00002)
-rotation = 0.26
-scale = Vector2(4, 4)
-texture = ExtResource("29_scrap_car")
 
 [node name="RustCarSide" type="Sprite2D" parent="MapDecor/VehicleGraveyard" unique_id=742791878]
 position = Vector2(-1359.9999, 527.99994)
@@ -1258,7 +1421,7 @@ scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
 [node name="ParkTreeBigA95" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1142366908]
-position = Vector2(2027, 465)
+position = Vector2(2018, 538)
 scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
@@ -1319,6 +1482,16 @@ texture = ExtResource("32_tree_big")
 
 [node name="ParkTreeBigA8" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=954172975]
 position = Vector2(474, 710)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigA105" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=656951139]
+position = Vector2(407, 829)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigA106" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=511599076]
+position = Vector2(407, 829)
 scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
@@ -1414,6 +1587,51 @@ texture = ExtResource("32_tree_big")
 
 [node name="ParkTreeBigB49" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=945095027]
 position = Vector2(596, 749)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB56" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=2131124707]
+position = Vector2(571, 871.00006)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB57" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=281206025]
+position = Vector2(733, 847)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB58" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=312735099]
+position = Vector2(911, 852)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB59" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1899373743]
+position = Vector2(1084, 855)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB60" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=443117635]
+position = Vector2(1263, 858.00006)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB61" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=2041321388]
+position = Vector2(1415, 859)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB62" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=215391858]
+position = Vector2(1665, 864.00006)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB63" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1099778644]
+position = Vector2(1826.0001, 852)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB64" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=10021622]
+position = Vector2(1984.0001, 860)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
 
@@ -1897,13 +2115,28 @@ position = Vector2(-1782, 723)
 scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
+[node name="ParkTreeBigA102" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1832535734]
+position = Vector2(-1782, 886)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
 [node name="ParkTreeBigA62" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1277889929]
 position = Vector2(-1950, 737)
 scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
+[node name="ParkTreeBigA101" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=2067908179]
+position = Vector2(-1951, 882)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
 [node name="ParkTreeBigA67" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=411732662]
 position = Vector2(-2106, 769)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigA100" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=2014853528]
+position = Vector2(-2103, 892)
 scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
@@ -1942,7 +2175,22 @@ position = Vector2(-556, 593.4)
 scale = Vector2(4, 4)
 texture = ExtResource("32_tree_big")
 
+[node name="ParkTreeBigA103" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=508726346]
+position = Vector2(-402, 558)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigA104" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=485486573]
+position = Vector2(-259, 557)
+scale = Vector2(4, 4)
+texture = ExtResource("32_tree_big")
+
 [node name="ParkTreeBigB22" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1646447550]
+position = Vector2(-594.9999, 380.40002)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB55" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1965219481]
 position = Vector2(-594.9999, 380.40002)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
@@ -1972,8 +2220,18 @@ position = Vector2(-1229, 731)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
 
+[node name="ParkTreeBigB52" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1242018973]
+position = Vector2(-1258.0001, 883.00006)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
 [node name="ParkTreeBigB30" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=437522461]
 position = Vector2(-1057.0001, 726.00006)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB53" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=395060280]
+position = Vector2(-1084, 865)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
 
@@ -1987,6 +2245,11 @@ position = Vector2(-861, 748)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
 
+[node name="ParkTreeBigB54" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1215340642]
+position = Vector2(-912, 871)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
 [node name="ParkTreeBigB27" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1469340922]
 position = Vector2(-1460, 621.4)
 scale = Vector2(-3.6, 3.6)
@@ -1994,6 +2257,11 @@ texture = ExtResource("32_tree_big")
 
 [node name="ParkTreeBigB33" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1669348236]
 position = Vector2(-1428, 730)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
+[node name="ParkTreeBigB51" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1850228874]
+position = Vector2(-1438, 896)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
 
@@ -2007,8 +2275,53 @@ position = Vector2(-1598, 744)
 scale = Vector2(-3.6, 3.6)
 texture = ExtResource("32_tree_big")
 
+[node name="ParkTreeBigB50" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=459510925]
+position = Vector2(-1606, 888)
+scale = Vector2(-3.6, 3.6)
+texture = ExtResource("32_tree_big")
+
 [node name="ParkBirch4" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1484426253]
 position = Vector2(-684, 798.4)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch8" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=992304155]
+position = Vector2(-570, 798)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch9" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1972567336]
+position = Vector2(-441, 798)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch10" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1111255231]
+position = Vector2(-219, 803)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch11" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=157761641]
+position = Vector2(-320, 809)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch5" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1708244596]
+position = Vector2(-759, 885)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch6" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1436816842]
+position = Vector2(-661, 884)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch7" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1614408021]
+position = Vector2(-537, 880)
+scale = Vector2(4, 4)
+texture = ExtResource("33_tree_birch")
+
+[node name="ParkBirch12" type="Sprite2D" parent="MapDecor/OvergrownPark" unique_id=1165840298]
+position = Vector2(-428, 875)
 scale = Vector2(4, 4)
 texture = ExtResource("33_tree_birch")
 
@@ -2059,41 +2372,6 @@ position = Vector2(-1908, 4.7683716e-07)
 scale = Vector2(5.8125, 5.8125)
 texture = ExtResource("16_manhole")
 
-[node name="Car1Orange" type="Sprite2D" parent="MapDecor" unique_id=750471888]
-position = Vector2(188, 362)
-scale = Vector2(2.58, 2.58)
-texture = ExtResource("52_ids8r")
-
-[node name="Car1Orange2" type="Sprite2D" parent="MapDecor" unique_id=201457885]
-position = Vector2(-385, 131.99997)
-scale = Vector2(2.58, 2.58)
-texture = ExtResource("52_ids8r")
-
-[node name="Car5OvergrownGreenTractorUp" type="Sprite2D" parent="MapDecor" unique_id=2015245290]
-position = Vector2(-363, -254)
-scale = Vector2(4.611111, 4.611111)
-texture = ExtResource("53_1v6qk")
-
-[node name="Car4OvergrownBleakYellowGray" type="Sprite2D" parent="MapDecor" unique_id=827289489]
-position = Vector2(899, -266)
-scale = Vector2(5.363636, 5.3636365)
-texture = ExtResource("54_augu2")
-
-[node name="Car1OvergrownDarkGreenYellow" type="Sprite2D" parent="MapDecor" unique_id=1898506280]
-position = Vector2(588.0002, 166)
-scale = Vector2(3.66, 3.6600003)
-texture = ExtResource("55_tm6hj")
-
-[node name="Car2RedUpsidedown" type="Sprite2D" parent="MapDecor" unique_id=1980268769]
-position = Vector2(753, 249)
-scale = Vector2(3.3148148, 3.3148148)
-texture = ExtResource("56_kf5aa")
-
-[node name="Car7OrangeTruck" type="Sprite2D" parent="MapDecor" unique_id=2011726793]
-position = Vector2(1375, 200)
-scale = Vector2(2.8448277, 2.8448277)
-texture = ExtResource("57_t5ykj")
-
 [node name="ZombieSpawnZones" type="Node2D" parent="." unique_id=1683434695]
 
 [node name="NorthGate" type="Node2D" parent="ZombieSpawnZones" unique_id=1801306743]
@@ -2141,7 +2419,7 @@ scale = Vector2(5, 5)
 texture = ExtResource("12_door_metal")
 
 [node name="LoadingContainer" type="Sprite2D" parent="ZombieSpawnZones/EastLoading" unique_id=111119619]
-position = Vector2(96, 149)
+position = Vector2(624, 400)
 scale = Vector2(4.6, 4.6)
 texture = ExtResource("21_container_red")
 
@@ -2345,3 +2623,81 @@ script = ExtResource("4_pause_layer")
 
 [node name="PauseMenu" parent="PauseLayer" unique_id=1330254113 instance=ExtResource("5_pause_menu")]
 visible = false
+
+[node name="Car1" parent="." unique_id=1719449417 instance=ExtResource("69_y57op")]
+position = Vector2(-669, -139)
+
+[node name="Car2" parent="." unique_id=1935377871 instance=ExtResource("61_t5ykj")]
+position = Vector2(483, 169)
+
+[node name="Car3" parent="." unique_id=1642192723 instance=ExtResource("61_t5ykj")]
+position = Vector2(-292, -308)
+
+[node name="Car4" parent="." unique_id=1939563795 instance=ExtResource("61_t5ykj")]
+position = Vector2(772, -273)
+
+[node name="Car5" parent="." unique_id=1942689946 instance=ExtResource("62_e755i")]
+position = Vector2(-429, 159)
+
+[node name="Car6" parent="." unique_id=607990588 instance=ExtResource("62_e755i")]
+position = Vector2(-1399, -48)
+
+[node name="Car7" parent="." unique_id=328408523 instance=ExtResource("62_e755i")]
+position = Vector2(-1123, 268)
+
+[node name="Car8" parent="." unique_id=182683475 instance=ExtResource("63_ro3en")]
+position = Vector2(1351, 36)
+
+[node name="Car9" parent="." unique_id=1111289228 instance=ExtResource("63_ro3en")]
+position = Vector2(1101, -247)
+
+[node name="Car10" parent="." unique_id=550671540 instance=ExtResource("63_ro3en")]
+position = Vector2(756, 262)
+
+[node name="Car11" parent="." unique_id=1388246176 instance=ExtResource("63_ro3en")]
+position = Vector2(-1139, -203)
+
+[node name="Car12" parent="." unique_id=530443284 instance=ExtResource("64_od4ux")]
+position = Vector2(324, -29)
+
+[node name="Car13" parent="." unique_id=393818040 instance=ExtResource("64_od4ux")]
+position = Vector2(-413, -11)
+
+[node name="Car14" parent="." unique_id=1788919456 instance=ExtResource("64_od4ux")]
+position = Vector2(10, -226)
+
+[node name="Car15" parent="." unique_id=1433498994 instance=ExtResource("64_od4ux")]
+position = Vector2(176, 594)
+
+[node name="Car16" parent="." unique_id=1931720550 instance=ExtResource("64_od4ux")]
+position = Vector2(1364, 261)
+
+[node name="Car17" parent="." unique_id=95133862 instance=ExtResource("64_od4ux")]
+position = Vector2(-1824, 257)
+
+[node name="Car18" parent="." unique_id=38338809 instance=ExtResource("65_xhfw6")]
+position = Vector2(-1668, -275)
+
+[node name="Car19" parent="." unique_id=1319484264 instance=ExtResource("65_xhfw6")]
+position = Vector2(-893, 206)
+
+[node name="Car20" parent="." unique_id=2009134957 instance=ExtResource("65_xhfw6")]
+position = Vector2(939, 257)
+
+[node name="Car21" parent="." unique_id=1414106715 instance=ExtResource("66_1epgm")]
+position = Vector2(1581, 329)
+
+[node name="Car22" parent="." unique_id=71021338 instance=ExtResource("66_1epgm")]
+position = Vector2(2009, -316)
+
+[node name="Car23" parent="." unique_id=1956323241 instance=ExtResource("66_1epgm")]
+position = Vector2(-639, -396)
+
+[node name="Car24" parent="." unique_id=1759968974 instance=ExtResource("67_152kg")]
+position = Vector2(-1513, 292)
+
+[node name="Car25" parent="." unique_id=575690948 instance=ExtResource("67_152kg")]
+position = Vector2(157, -437)
+
+[node name="Car26" parent="." unique_id=703697989 instance=ExtResource("67_152kg")]
+position = Vector2(987, 313)

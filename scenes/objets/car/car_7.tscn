@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bfyas7uj0avv2"]
+
+[ext_resource type="Texture2D" uid="uid://cbu4eau6rbugf" path="res://assets/Objects/Vehicles/Overgrown/Car_1_Overgrown/Dark-Green/Car_1_Overgrown_Dark-Green_Green.png" id="1_8jty0"]
+
+[node name="Car2" type="Node2D" unique_id=1935377871]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=861136638]
+collision_mask = 0
+
+[node name="Car1OvergrownDarkGreenGreen" type="Sprite2D" parent="StaticBody2D" unique_id=1826375760]
+position = Vector2(-1.8750038, 6.5999985)
+scale = Vector2(3.42, 3.42)
+texture = ExtResource("1_8jty0")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=813416792]
+position = Vector2(-0.124996185, 6.200001)
+scale = Vector2(3.69375, 3.69375)
+polygon = PackedVector2Array(11.5, -16.3, 2.6000004, -20, -7.3, -20, -9.5, -17, -11.1, -17, -12.5, -11.2, -12.5, -3, -11.7, -3, -12.5, 4.5, -12.5, 17.7, -7.9, 20, 9.299999, 20, 12.5, 2.7999992, 12.5, -9.2, 11.5, -9.5)

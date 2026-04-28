@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bwqoaw36662h5"]
+
+[ext_resource type="Texture2D" uid="uid://dqlg0w3d7ahi2" path="res://assets/Objects/Vehicles/Normal/Car_9_Motorcycle/Car_9_Green_Motorcycle_Side.png" id="1_bcrct"]
+
+[node name="Car2" type="Node2D" unique_id=1935377871]
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=837650038]
+collision_mask = 0
+
+[node name="Car9GreenMotorcycleSide" type="Sprite2D" parent="StaticBody2D2" unique_id=828197757]
+position = Vector2(22.28125, 14.5)
+scale = Vector2(2.9375, 2.9375)
+texture = ExtResource("1_bcrct")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D2" unique_id=772290111]
+position = Vector2(21, 14.999998)
+scale = Vector2(3.15625, 3.15625)
+polygon = PackedVector2Array(2.1999998, -5, -1.3999996, -8, -6.5, -8, -8.3, -6, -11.5, -6, -11.5, 8, -4, 8, -3, 7.6000004, -1.8000002, 8, 9.5, 8, 11.5, 2.1999998, 11.5, -3.5, 10.5, -4.1, 10.5, -6.6, 4.3999996, -5)
