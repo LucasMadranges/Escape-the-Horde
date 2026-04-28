@@ -21,7 +21,7 @@ signal player_revive_canceled_received(payload: Dictionary)
 signal player_revived_received(payload: Dictionary)
 signal player_dead_received(payload: Dictionary)
 signal scene_change_received(payload: Dictionary)
-signal extraction_sync_received(payload: Dictionary)
+signal extraction_update_received(payload: Dictionary)
 signal extraction_launch_received
 signal realtime_error(message: String)
 
@@ -306,25 +306,21 @@ func send_scene_change(target: String) -> void:
 func _on_scene_change_event(data: Dictionary) -> void:
 	scene_change_received.emit(data)
 
-func _on_extraction_sync_event(data: Dictionary) -> void:
-	extraction_sync_received.emit(data)
+func _on_extraction_update_event(data: Dictionary) -> void:
+	extraction_update_received.emit(data)
 
 func _on_extraction_launch_event(_data: Dictionary) -> void:
 	extraction_launch_received.emit()
 
-func send_extraction_sync(countdown: float, in_zone: int, total: int) -> void:
+func send_extraction_enter(total_players: int) -> void:
 	if not _can_send(true):
 		return
-	_send_event("game:extraction_sync", {
-		"countdown": countdown,
-		"inZone": in_zone,
-		"total": total,
-	})
+	_send_event("game:extraction_enter", {"totalPlayers": total_players})
 
-func send_extraction_launch() -> void:
+func send_extraction_exit(total_players: int) -> void:
 	if not _can_send(true):
 		return
-	_send_event("game:extraction_launch", {})
+	_send_event("game:extraction_exit", {"totalPlayers": total_players})
 
 
 func launch_game() -> void:

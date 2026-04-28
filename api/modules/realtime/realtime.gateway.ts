@@ -12,6 +12,7 @@ import { Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { Server, WebSocket } from 'ws';
 
+import { ExtractionService } from './extraction.service';
 import { RealtimeService } from './realtime.service';
 import { SocketPresence } from './interface/socket.interface';
 import {
@@ -33,7 +34,10 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
   private readonly socketPresence = new Map<string, SocketPresence>();
   private readonly socketsByGame = new Map<string, Set<WebSocket>>();
 
-  constructor(private readonly realtimeService: RealtimeService) {}
+  constructor(
+    private readonly realtimeService: RealtimeService,
+    private readonly extractionService: ExtractionService,
+  ) {}
 
   handleConnection(client: WebSocket) {
     const socketId = randomUUID();
@@ -638,31 +642,49 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
     };
   }
 
-  @SubscribeMessage('game:extraction_sync')
-  handleExtractionSync(
+  @SubscribeMessage('game:extraction_enter')
+  handleExtractionEnter(
     @MessageBody() rawBody: unknown,
     @ConnectedSocket() client: WebSocket,
   ): void {
     const socketId = this.requireSocketId(client);
     const presence = this.socketPresence.get(socketId);
     if (!presence) return;
-    const body = this.normalizePayload<{ countdown: number; inZone: number; total: number }>(rawBody);
-    this.broadcastToGame(presence.gameId, 'game:extraction_sync', {
-      countdown: body?.countdown ?? 0,
-      inZone: body?.inZone ?? 0,
-      total: body?.total ?? 1,
-    }, client);
+    const body = this.normalizePayload<{ totalPlayers: number }>(rawBody);
+    const totalPlayers = body?.totalPlayers ?? 1;
+
+    this.extractionService.enter(
+      presence.gameId,
+      presence.playerId,
+      totalPlayers,
+      (countdown, inZone, total) => {
+        this.broadcastToGame(presence.gameId, 'game:extraction_update', { countdown, inZone, total });
+      },
+      () => {
+        this.broadcastToGame(presence.gameId, 'game:extraction_launch', {});
+      },
+    );
   }
 
-  @SubscribeMessage('game:extraction_launch')
-  handleExtractionLaunch(
-    @MessageBody() _rawBody: unknown,
+  @SubscribeMessage('game:extraction_exit')
+  handleExtractionExit(
+    @MessageBody() rawBody: unknown,
     @ConnectedSocket() client: WebSocket,
   ): void {
     const socketId = this.requireSocketId(client);
     const presence = this.socketPresence.get(socketId);
     if (!presence) return;
-    this.broadcastToGame(presence.gameId, 'game:extraction_launch', {}, client);
+    const body = this.normalizePayload<{ totalPlayers: number }>(rawBody);
+    const totalPlayers = body?.totalPlayers ?? 1;
+
+    this.extractionService.exit(
+      presence.gameId,
+      presence.playerId,
+      totalPlayers,
+      (countdown, inZone, total) => {
+        this.broadcastToGame(presence.gameId, 'game:extraction_update', { countdown, inZone, total });
+      },
+    );
   }
 
   private addSocketToGame(gameId: string, socket: WebSocket) {
