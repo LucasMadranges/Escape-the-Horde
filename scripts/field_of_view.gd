@@ -196,33 +196,7 @@ func get_current_target() -> Node2D:
 	return _current_target
 
 
-## Visualise le champ de vision avec effet lampe de poche blanc chaud
 func _draw() -> void:
-	if not _player or _visibility_arc.is_empty():
-		return
-
-	# Polygone en éventail en espace local (to_local corrige le scale 4x du joueur)
-	var fan := PackedVector2Array()
-	fan.append(Vector2.ZERO)
-	for world_point in _visibility_arc:
-		fan.append(to_local(world_point))
-	fan.append(Vector2.ZERO)
-
-	# Gradient blanc chaud → orange sur 4 couches
-	var color_center := Color(1.0, 0.85, 0.4)
-	var color_edge := Color(0.8, 0.5, 0.2)
-	for i in range(4):
-		var t := float(i) / 3.0
-		var col := color_center.lerp(color_edge, t)
-		col.a = 0.35 * (1.0 - t * 0.6)
-		draw_colored_polygon(fan, col)
-
-	# Bords du cône
-	if fan.size() >= 3:
-		var edge_col := Color(1.0, 0.85, 0.4, 0.5)
-		draw_line(Vector2.ZERO, fan[1], edge_col, 1.5)
-		draw_line(Vector2.ZERO, fan[fan.size() - 2], edge_col, 1.5)
-
 	if _current_target and is_instance_valid(_current_target):
 		_draw_target_indicator(_current_target)
 
