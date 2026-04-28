@@ -8,6 +8,8 @@ const MAX_HEALTH := 60
 const SPRITE_SCALE := Vector2(4.0, 4.0)
 const ATTACK_DAMAGE := 10
 const ATTACK_COOLDOWN := 1.2
+@onready var agent = $NavigationAgent2D
+
 # Local units; effective range in pixels = ATTACK_RANGE * SPRITE_SCALE.x
 const ATTACK_RANGE := 16.0
 
@@ -31,6 +33,10 @@ func _ready() -> void:
 	collision_mask = 1
 	network_position = global_position
 	_setup_animations()
+	await get_tree().physics_frame
+	agent.path_desired_distance = 128.0
+	agent.target_desired_distance = 128.0
+	agent.path_max_distance = 100.0
 
 
 func _setup_animations() -> void:
@@ -72,17 +78,25 @@ func _process_authoritative(delta: float) -> void:
 		velocity = Vector2.ZERO
 		return
 
-	var to_player := target_position - global_position
-	var dir := to_player.normalized()
-	velocity = dir * SPEED
-	move_and_slide()
-	_update_animation(dir)
+	# ← Remplace l'ancienne ligne "var to_player := target_position - global_position"
+	agent.set_target_position(target_position)
 
+	var next_debug: Vector2 = agent.get_next_path_position()
+	print("pos: ", global_position, " | next: ", next_debug, " | finished: ", agent.is_navigation_finished())
+	
+	var to_player := target_position - global_position  # Garde ça pour le range check
+	
+	if not agent.is_navigation_finished():
+		var next: Vector2 = agent.get_next_path_position()		
+		var dir := (next - global_position).normalized()
+		velocity = dir * SPEED
+		move_and_slide()
+		_update_animation(dir)
+	
 	attack_timer -= delta
 	if to_player.length() < ATTACK_RANGE * SPRITE_SCALE.x and attack_timer <= 0.0:
 		attack_timer = ATTACK_COOLDOWN
 		emit_signal("attack_player", target_player_id, ATTACK_DAMAGE)
-
 
 func _process_replica(delta: float) -> void:
 	if not has_network_state:

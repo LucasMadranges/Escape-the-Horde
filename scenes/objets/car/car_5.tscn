@@ -12,7 +12,4 @@ position = Vector2(7.6293945e-06, 3.8146973e-06)
 scale = Vector2(2.7499998, 2.75)
 texture = ExtResource("1_fwlb0")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D2" unique_id=1849281354]
-position = Vector2(2.2374992, 1.2499995)
-scale = Vector2(2.9218752, 2.9218748)
-polygon = PackedVector2Array(-19.5, 10, 19.5, 10, 19.5, -7.6, 8.700001, -10, -10.8, -10, -15.5, -7.1, -15.5, -6, -19.5, -6)
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="StaticBody2D2" unique_id=1163622958]
