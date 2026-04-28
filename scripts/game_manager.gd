@@ -83,6 +83,8 @@ func _announce_wave() -> void:
 
 func _go_to_shop() -> void:
 	await get_tree().create_timer(1.5).timeout
+	if is_host and realtime_client and realtime_client.has_method("send_scene_change"):
+		realtime_client.send_scene_change("shop")
 	GameData.current_level += 1
 	get_tree().change_scene_to_file("res://scenes/shop.tscn")
 
@@ -90,6 +92,9 @@ func _go_to_shop() -> void:
 func _on_scene_change_received(payload: Dictionary) -> void:
 	var target: String = payload.get("target", "")
 	if target == "shop":
+		if _shop_triggered:
+			return
+		_shop_triggered = true
 		GameData.current_level += 1
 		get_tree().change_scene_to_file("res://scenes/shop.tscn")
 
