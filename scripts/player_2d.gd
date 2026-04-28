@@ -126,8 +126,8 @@ func _physics_process(delta: float) -> void:
 	_shoot_timer = maxf(_shoot_timer - delta, 0.0)
 	var dir := _get_input()
 	velocity = dir * SPEED
-	move_and_slide()
 	global_position = global_position.clamp(-ARENA_HALF, ARENA_HALF)
+	move_and_slide()
 	_update_animation(dir)
 
 
