@@ -88,12 +88,16 @@ func _update_fov() -> void:
 	var new_targets: Array[Node2D] = []
 
 	for zombie in zombies:
+		if not is_instance_valid(zombie):
+			continue
 		if _is_in_fov(zombie):
 			new_targets.append(zombie)
+			zombie.visible = true
 			if zombie not in targets_in_fov:
 				target_in_fov.emit(zombie)
+		else:
+			zombie.visible = false
 
-	# Vérifier les zombies qui ont quitté le FOV
 	for zombie in targets_in_fov:
 		if zombie not in new_targets:
 			target_left_fov.emit(zombie)
