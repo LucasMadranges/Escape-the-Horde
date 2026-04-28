@@ -3,7 +3,10 @@ shader_type canvas_item;
 uniform vec2 player_screen_pos = vec2(0.0, 0.0);
 uniform vec2 arc_points[128];
 uniform int arc_count = 0;
-uniform float overlay_alpha : hint_range(0.0, 1.0) = 0.85;
+uniform float overlay_alpha : hint_range(0.0, 1.0) = 0.88;
+uniform float fov_screen_radius = 280.0;
+uniform vec2 aim_dir = vec2(1.0, 0.0);
+uniform float fov_half_cos = 0.707; // cos(45deg)
 
 bool point_in_fan(vec2 p) {
 	if (arc_count < 2) return false;
@@ -38,9 +41,35 @@ bool point_in_fan(vec2 p) {
 }
 
 void fragment() {
-	if (point_in_fan(FRAGCOORD.xy)) {
-		COLOR = vec4(0.0, 0.0, 0.0, 0.0);
-	} else {
+	vec2 pixel = FRAGCOORD.xy;
+
+	if (!point_in_fan(pixel)) {
 		COLOR = vec4(0.0, 0.0, 0.0, overlay_alpha);
+		return;
 	}
+
+	vec2 to_pixel = pixel - player_screen_pos;
+	float dist = length(to_pixel);
+	float t = clamp(dist / fov_screen_radius, 0.0, 1.0);
+
+	// Falloff angular : centre du faisceau plus brillant que les bords
+	float cos_a = dist > 0.5 ? dot(normalize(to_pixel), aim_dir) : 1.0;
+	float angle_t = clamp(1.0 - (cos_a - fov_half_cos) / max(1.0 - fov_half_cos, 0.001), 0.0, 1.0);
+	// angle_t = 0 au centre du faisceau, 1 au bord du cône
+
+	// Noyau très lumineux (t < 0.18) : superposition blanc chaud → éclaircissement
+	float hot_core = max(0.0, 1.0 - t / 0.18) * (1.0 - angle_t * 0.6);
+	if (hot_core > 0.001) {
+		COLOR = vec4(1.0, 0.96, 0.82, hot_core * 0.55);
+		return;
+	}
+
+	// Zone intermédiaire : transparente (jeu normal visible)
+	float mid_clear = smoothstep(0.18, 0.45, t);
+
+	// Bord du cône : assombrissement progressif + falloff angulaire
+	float edge_shadow = smoothstep(0.45, 1.0, t) * (0.4 + angle_t * 0.3) * overlay_alpha;
+
+	float alpha = mix(0.0, edge_shadow, mid_clear);
+	COLOR = vec4(0.0, 0.0, 0.0, alpha);
 }

@@ -61,6 +61,8 @@ func _ready() -> void:
 	rect.material = fov_overlay.get_shader_material()
 	_fov_canvas_layer.add_child(rect)
 
+	fov_overlay.set_fov_params(field_of_view.fov_angle)
+
 	field_of_view.visibility_polygon_updated.connect(
 		func(origin: Vector2, arc: PackedVector2Array) -> void:
 			fov_overlay.on_visibility_polygon_updated(origin, arc)
